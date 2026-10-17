@@ -4,6 +4,15 @@
 #include "remote_scales.h"
 
 #include <HX711_2.h>
+#include <cmath>
+
+#if defined(DRIP_TRAY_ZERO_RAW_1) && defined(DRIP_TRAY_ZERO_RAW_2) \
+  && (DRIP_TRAY_ZERO_RAW_1 != 0L || DRIP_TRAY_ZERO_RAW_2 != 0L)
+  #define DRIP_TRAY_GUARD_CONFIGURED 1
+#else
+  #define DRIP_TRAY_GUARD_CONFIGURED 0
+#endif
+
 namespace {
   class LoadCellSingleton {
   public:
@@ -88,10 +97,55 @@ bool scalesIsPresent(void) {
   return hwScalesPresent || remoteScalesIsPresent();
 }
 
-float scalesDripTrayWeight() {
-  long value[2] = {};
-  if (hwScalesPresent) {
-    LoadCellSingleton::getInstance().read_average(value, 4);
+DripTrayStatus scalesGetDripTrayStatus(float *grossWeight) {
+  if (grossWeight != nullptr) {
+    *grossWeight = NAN;
   }
-  return ((float)value[0] + (float)value[1]);
+
+  if (!DRIP_TRAY_GUARD_CONFIGURED) {
+    return DripTrayStatus::Unconfigured;
+  }
+  if (!hwScalesPresent) {
+    return DripTrayStatus::Unavailable;
+  }
+
+  auto& loadCells = LoadCellSingleton::getInstance();
+  if (!loadCells.wait_ready_timeout(150, 10)) {
+    return DripTrayStatus::Unavailable;
+  }
+
+  long taredRaw[2] = {};
+  long currentOffsets[2] = {};
+  float scaleFactors[2] = {};
+  loadCells.read_average(taredRaw, 4);
+  loadCells.get_offset(currentOffsets);
+  loadCells.get_scale(scaleFactors);
+
+  const long noTrayOffsets[2] = {
+#if DRIP_TRAY_GUARD_CONFIGURED
+    DRIP_TRAY_ZERO_RAW_1,
+    DRIP_TRAY_ZERO_RAW_2
+#else
+    0L,
+    0L
+#endif
+  };
+  const float measuredGrossWeight = calculateDripTrayGrossWeight(
+    taredRaw,
+    currentOffsets,
+    noTrayOffsets,
+    scaleFactors
+  );
+
+  if (grossWeight != nullptr) {
+    *grossWeight = measuredGrossWeight;
+  }
+
+  return classifyDripTray(
+    true,
+    hwScalesPresent,
+    std::isfinite(measuredGrossWeight),
+    measuredGrossWeight,
+    DRIP_TRAY_MIN_WEIGHT_G
+  );
 }

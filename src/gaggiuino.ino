@@ -794,6 +794,33 @@ static bool sysReadinessCheck(void) {
   return true;
 }
 
+static bool dripTrayAllowsPressureRelease(void) {
+#if DRIP_TRAY_GUARD_ENABLED
+  float grossWeight = NAN;
+  const DripTrayStatus trayStatus = scalesGetDripTrayStatus(&grossWeight);
+
+  switch (trayStatus) {
+    case DripTrayStatus::Present:
+      return true;
+    case DripTrayStatus::Missing:
+      LOG_ERROR("Pressure release blocked: drip tray gross weight is %.1lf g", static_cast<double>(grossWeight));
+      lcdShowPopup("INSERT DRIP TRAY");
+      return false;
+    case DripTrayStatus::Unconfigured:
+      LOG_ERROR("Pressure release blocked: drip tray guard is not calibrated");
+      lcdShowPopup("TRAY GUARD SETUP");
+      return false;
+    case DripTrayStatus::Unavailable:
+    default:
+      LOG_ERROR("Pressure release blocked: hardware scales unavailable");
+      lcdShowPopup("SCALES ERROR - NO RELEASE");
+      return false;
+  }
+#else
+  return true;
+#endif
+}
+
 static inline void sysHealthCheck(float pressureThreshold) {
   //Reloading the watchdog timer, if this function fails to run MCU is rebooted
   watchdogReload();
@@ -853,11 +880,16 @@ static inline void sysHealthCheck(float pressureThreshold) {
           break;
         default:
           sensorsRead();
-          lcdShowPopup("Releasing pressure!");
           setPumpOff();
           setBoilerOff();
           setSteamValveRelayOff();
           setSteamBoilerRelayOff();
+          if (!dripTrayAllowsPressureRelease()) {
+            closeValve();
+            systemHealthTimer = millis() + DRIP_TRAY_RETRY_MS;
+            return;
+          }
+          lcdShowPopup("Releasing pressure!");
           openValve();
           break;
       }

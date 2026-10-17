@@ -11,6 +11,7 @@
 #include "legacy/eeprom_data_v10.h"
 #include "legacy/eeprom_data_v11.h"
 #include "../log.h"
+#include <cstring>
 
 namespace {
 
@@ -186,7 +187,15 @@ void eepromInit(void) {
     eepromMetadata.values = getEepromDefaults();
   }
 
-  if (!readSuccess || version != EEPROM_DATA_VERSION) {
+  // Preserve user settings while replacing the former stock profile once.
+  bool profileDefaultsUpdated = false;
+  constexpr int turboProfileIndex = 3;
+  if (readSuccess && std::strcmp(eepromMetadata.values.profiles[turboProfileIndex].name, "Filter 2.1") == 0) {
+    eepromMetadata.values.profiles[turboProfileIndex] = getEepromDefaults().profiles[turboProfileIndex];
+    profileDefaultsUpdated = true;
+  }
+
+  if (!readSuccess || version != EEPROM_DATA_VERSION || profileDefaultsUpdated) {
     eepromWrite(eepromMetadata.values);
   }
 }

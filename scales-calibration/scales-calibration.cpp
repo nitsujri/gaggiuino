@@ -39,7 +39,14 @@ void setup() {
   loadcell.power_up();
   loadcell.tare();
 
+  long noTrayOffsets[2] = {};
+  loadcell.get_offset(noTrayOffsets);
+
   USART_DEBUG.println("Initialized");
+  USART_DEBUG.println("No-tray calibration values for extra_defines.ini:");
+  USART_DEBUG.printf("\t-DDRIP_TRAY_ZERO_RAW_1=%ldL\n", noTrayOffsets[0]);
+  USART_DEBUG.printf("\t-DDRIP_TRAY_ZERO_RAW_2=%ldL\n", noTrayOffsets[1]);
+  USART_DEBUG.println("Place the empty drip tray on the scales to measure its gross weight.");
 }
 
 void loop() {
