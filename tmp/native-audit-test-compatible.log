@@ -1,0 +1,586 @@
+Verbosity level can be increased via `-v, -vv, or -vvv` option
+Collected 1 tests
+
+Processing * in test environment
+--------------------------------------------------------------------------------
+Building...
+In file included from .pio/libdeps/test/ArduinoFake/src/EEPROMFake.cpp:2:
+In file included from .pio/libdeps/test/ArduinoFake/src/ArduinoFake.h:12:
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7462:5: warning: identifier '_Times' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7459 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Times
+ 7460 |     ""
+      |     ~~
+ 7461 | 
+ 7462 |     _Times(unsigned long long n) {
+      |     ^~~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7469:5: warning: identifier '_Time' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7466 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Time
+ 7467 |     ""
+      |     ~~
+ 7468 | 
+ 7469 |     _Time(unsigned long long n) {
+      |     ^~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7972:46: warning: a template argument list is expected after a name prefixed by the template keyword [-Wmissing-template-arg-list-after-template-kw]
+ 7972 |                 ParamWalker<N - 1>::template Assign(arg_vals, std::forward<arglist>(args)...);
+      |                                              ^
+In file included from test/test_main.cpp:2:
+In file included from test/./tests/test_pressure_profiler.cpp:2:
+In file included from lib/Common/profiling_phases.h:5:
+In file included from lib/Common/utils.h:5:
+In file included from .pio/libdeps/test/ArduinoFake/src/Arduino.h:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/ArduinoFake.h:12:
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7462:5: warning: identifier '_Times' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7459 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Times
+ 7460 |     ""
+      |     ~~
+ 7461 | 
+ 7462 |     _Times(unsigned long long n) {
+      |     ^~~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7469:5: warning: identifier '_Time' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7466 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Time
+ 7467 |     ""
+      |     ~~
+ 7468 | 
+ 7469 |     _Time(unsigned long long n) {
+      |     ^~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7972:46: warning: a template argument list is expected after a name prefixed by the template keyword [-Wmissing-template-arg-list-after-template-kw]
+ 7972 |                 ParamWalker<N - 1>::template Assign(arg_vals, std::forward<arglist>(args)...);
+      |                                              ^
+In file included from .pio/libdeps/test/ArduinoFake/src/PrintFake.cpp:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/ArduinoFake.h:12:
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7462:5: warning: identifier '_Times' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7459 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Times
+ 7460 |     ""
+      |     ~~
+ 7461 | 
+ 7462 |     _Times(unsigned long long n) {
+      |     ^~~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7469:5: warning: identifier '_Time' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7466 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Time
+ 7467 |     ""
+      |     ~~
+ 7468 | 
+ 7469 |     _Time(unsigned long long n) {
+      |     ^~~~~
+In file included from .pio/libdeps/test/ArduinoFake/src/SPIFake.cpp:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/ArduinoFake.h:12:
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7462:5: warning: identifier '_Times' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7459 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Times
+ 7460 |     ""
+      |     ~~
+ 7461 | 
+ 7462 |     _Times(unsigned long long n) {
+      |     ^~~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7469:5: warning: identifier '_Time' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7466 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Time
+ 7467 |     ""
+      |     ~~
+ 7468 | 
+ 7469 |     _Time(unsigned long long n) {
+      |     ^~~~~
+In file included from .pio/libdeps/test/ArduinoFake/src/ClientFake.cpp:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/ArduinoFake.h:12:
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7462:5: warning: identifier '_Times' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7459 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Times
+ 7460 |     ""
+      |     ~~
+ 7461 | 
+ 7462 |     _Times(unsigned long long n) {
+      |     ^~~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7469:5: warning: identifier '_Time' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7466 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Time
+ 7467 |     ""
+      |     ~~
+ 7468 | 
+ 7469 |     _Time(unsigned long long n) {
+      |     ^~~~~
+In file included from .pio/libdeps/test/ArduinoFake/src/ArduinoFake.cpp:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/ArduinoFake.h:12:
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7462:5: warning: identifier '_Times' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7459 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Times
+ 7460.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7972:46: warning: a template argument list is expected after a name prefixed by the template keyword [-Wmissing-template-arg-list-after-template-kw]
+ 7972 |                 ParamWalker<N - 1>::template Assign(arg_vals, std::forward<arglist>(args)...);
+      |                                              ^
+ |     ""
+      |     ~~
+ 7461 | 
+ 7462 |     _Times(unsigned long long n) {
+      |     ^~~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7469:5: warning: identifier '_Time' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7466 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Time
+ 7467 |     ""
+      |     ~~
+ 7468 | 
+ 7469 |     _Time(unsigned long long n) {
+      |     ^~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7972:46: warning: a template argument list is expected after a name prefixed by the template keyword [-Wmissing-template-arg-list-after-template-kw]
+ 7972 |                 ParamWalker<N - 1>::template Assign(arg_vals, std::forward<arglist>(args)...);
+      |                                              ^
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7972:46: warning: a template argument list is expected after a name prefixed by the template keyword [-Wmissing-template-arg-list-after-template-kw]
+ 7972 |                 ParamWalker<N - 1>::template Assign(arg_vals, std::forward<arglist>(args)...);
+      |                                              ^
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7972:46: warning: a template argument list is expected after a name prefixed by the template keyword [-Wmissing-template-arg-list-after-template-kw]
+ 7972 |                 ParamWalker<N - 1>::template Assign(arg_vals, std::forward<arglist>(args)...);
+      |                                              ^
+In file included from .pio/libdeps/test/ArduinoFake/src/FunctionFake.cpp:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/FunctionFake.h:3:
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7462:5: warning: identifier '_Times' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7459 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Times
+ 7460 |     ""
+      |     ~~
+ 7461 | 
+ 7462 |     _Times(unsigned long long n) {
+      |     ^~~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7469:5: warning: identifier '_Time' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7466 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Time
+ 7467 |     ""
+      |     ~~
+ 7468 | 
+ 7469 |     _Time(unsigned long long n) {
+      |     ^~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7972:46: warning: a template argument list is expected after a name prefixed by the template keyword [-Wmissing-template-arg-list-after-template-kw]
+ 7972 |                 ParamWalker<N - 1>::template Assign(arg_vals, std::forward<arglist>(args)...);
+      |                                              ^
+In file included from .pio/libdeps/test/ArduinoFake/src/SerialFake.cpp:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/ArduinoFake.h:12:
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7462:5: warning: identifier '_Times' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7459 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Times
+ 7460 |     ""
+      |     ~~
+ 7461 | 
+ 7462 |     _Times(unsigned long long n) {
+      |     ^~~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7469:5: warning: identifier '_Time' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7466 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Time
+ 7467 |     ""
+      |     ~~
+ 7468 | 
+ 7469 |     _Time(unsigned long long n) {
+      |     ^~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7972:46: warning: a template argument list is expected after a name prefixed by the template keyword [-Wmissing-template-arg-list-after-template-kw]
+ 7972 |                 ParamWalker<N - 1>::template Assign(arg_vals, std::forward<arglist>(args)...);
+      |                                              ^
+3 warnings generated.
+3 warnings generated.
+3 warnings generated.
+3 warnings generated.
+3 warnings generated.
+3 warnings generated.
+3 warnings generated.
+3 warnings generated.
+In file included from .pio/libdeps/test/ArduinoFake/src/WireFake.cpp:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/ArduinoFake.h:12:
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7462:5: warning: identifier '_Times' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7459 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Times
+ 7460 |     ""
+      |     ~~
+ 7461 | 
+ 7462 |     _Times(unsigned long long n) {
+      |     ^~~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7469:5: warning: identifier '_Time' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7466 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Time
+ 7467 |     ""
+      |     ~~
+ 7468 | 
+ 7469 |     _Time(unsigned long long n) {
+      |     ^~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7972:46: warning: a template argument list is expected after a name prefixed by the template keyword [-Wmissing-template-arg-list-after-template-kw]
+ 7972 |                 ParamWalker<N - 1>::template Assign(arg_vals, std::forward<arglist>(args)...);
+      |                                              ^
+In file included from .pio/libdeps/test/ArduinoFake/src/StreamFake.cpp:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/ArduinoFake.h:12:
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7462:5: warning: identifier '_Times' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7459 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Times
+ 7460 |     ""
+      |     ~~
+ 7461 | 
+ 7462 |     _Times(unsigned long long n) {
+      |     ^~~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7469:5: warning: identifier '_Time' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7466 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Time
+ 7467 |     ""
+      |     ~~
+ 7468 | 
+ 7469 |     _Time(unsigned long long n) {
+      |     ^~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7972:46: warning: a template argument list is expected after a name prefixed by the template keyword [-Wmissing-template-arg-list-after-template-kw]
+ 7972 |                 ParamWalker<N - 1>::template Assign(arg_vals, std::forward<arglist>(args)...);
+      |                                              ^
+In file included from test-lib/mocks/EasyNextionLibrary.cpp:2:
+In file included from test-lib/mocks/EasyNextionLibrary.h:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/Arduino.h:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/ArduinoFake.h:12:
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7462:5: warning: identifier '_Times' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7459 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Times
+ 7460 |     ""
+      |     ~~
+ 7461 | 
+ 7462 |     _Times(unsigned long long n) {
+      |     ^~~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7469:5: warning: identifier '_Time' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7466 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Time
+ 7467 |     ""
+      |     ~~
+ 7468 | 
+ 7469 |     _Time(unsigned long long n) {
+      |     ^~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7972:46: warning: a template argument list is expected after a name prefixed by the template keyword [-Wmissing-template-arg-list-after-template-kw]
+ 7972 |                 ParamWalker<N - 1>::template Assign(arg_vals, std::forward<arglist>(args)...);
+      |                                              ^
+In file included from test-lib/mocks/HX711_2.cpp:1:
+In file included from test-lib/mocks/HX711_2.h:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/Arduino.h:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/ArduinoFake.h:12:
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7462:5: warning: identifier '_Times' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7459 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Times
+ 7460 |     ""
+      |     ~~
+ 7461 | 
+ 7462 |     _Times(unsigned long long n) {
+      |     ^~~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7469:5: warning: identifier '_Time' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7466 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Time
+ 7467 |     ""
+      |     ~~
+ 7468 | 
+ 7469 |     _Time(unsigned long long n) {
+      |     ^~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7972:46: warning: a template argument list is expected after a name prefixed by the template keyword [-Wmissing-template-arg-list-after-template-kw]
+ 7972 |                 ParamWalker<N - 1>::template Assign(arg_vals, std::forward<arglist>(args)...);
+      |                                              ^
+In file included from test-lib/mocks/IWatchdog.cpp:1:
+In file included from test-lib/mocks/IWatchdog.h:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/Arduino.h:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/ArduinoFake.h:12:
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7462:5: warning: identifier '_Times' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7459 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Times
+ 7460 |     ""
+      |     ~~
+ 7461 | 
+ 7462 |     _Times(unsigned long long n) {
+      |     ^~~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7469:5: warning: identifier '_Time' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7466 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Time
+ 7467 |     ""
+      |     ~~
+ 7468 | 
+ 7469 |     _Time(unsigned long long n) {
+      |     ^~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7972:46: warning: a template argument list is expected after a name prefixed by the template keyword [-Wmissing-template-arg-list-after-template-kw]
+ 7972 |                 ParamWalker<N - 1>::template Assign(arg_vals, std::forward<arglist>(args)...);
+      |                                              ^
+In file included from test-lib/mocks/PSM.cpp:1:
+In file included from test-lib/mocks/PSM.h:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/Arduino.h:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/ArduinoFake.h:12:
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7462:5: warning: identifier '_Times' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7459 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Times
+ 7460 |     ""
+      |     ~~
+ 7461 | 
+ 7462 |     _Times(unsigned long long n) {
+      |     ^~~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7469:5: warning: identifier '_Time' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7466 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Time
+ 7467 |     ""
+      |     ~~
+ 7468 | 
+ 7469 |     _Time(unsigned long long n) {
+      |     ^~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7972:46: warning: a template argument list is expected after a name prefixed by the template keyword [-Wmissing-template-arg-list-after-template-kw]
+ 7972 |                 ParamWalker<N - 1>::template Assign(arg_vals, std::forward<arglist>(args)...);
+      |                                              ^
+In file included from .pio/libdeps/test/SerialTransfer/src/I2CTransfer.cpp:1:
+In file included from .pio/libdeps/test/SerialTransfer/src/I2CTransfer.h:2:
+In file included from .pio/libdeps/test/ArduinoFake/src/Arduino.h:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/ArduinoFake.h:12:
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7462:5: warning: identifier '_Times' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7459 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Times
+ 7460 |     ""
+      |     ~~
+ 7461 | 
+ 7462 |     _Times(unsigned long long n) {
+      |     ^~~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7469:5: warning: identifier '_Time' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7466 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Time
+ 7467 |     ""
+      |     ~~
+ 7468 | 
+ 7469 |     _Time(unsigned long long n) {
+      |     ^~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7972:46: warning: a template argument list is expected after a name prefixed by the template keyword [-Wmissing-template-arg-list-after-template-kw]
+ 7972 |                 ParamWalker<N - 1>::template Assign(arg_vals, std::forward<arglist>(args)...);
+      |                                              ^
+3 warnings generated.
+3 warnings generated.
+In file included from .pio/libdeps/test/SerialTransfer/src/Packet.cpp:1:
+In file included from .pio/libdeps/test/SerialTransfer/src/Packet.h:15:
+In file included from .pio/libdeps/test/ArduinoFake/src/Arduino.h:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/ArduinoFake.h:12:
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7462:5: warning: identifier '_Times' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7459 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Times
+ 7460 |     ""
+      |     ~~
+ 7461 | 
+ 7462 |     _Times(unsigned long long n) {
+      |     ^~~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7469:5: warning: identifier '_Time' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7466 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Time
+ 7467 |     ""
+      |     ~~
+ 7468 | 
+ 7469 |     _Time(unsigned long long n) {
+      |     ^~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7972:46: warning: a template argument list is expected after a name prefixed by the template keyword [-Wmissing-template-arg-list-after-template-kw]
+ 7972 |                 ParamWalker<N - 1>::template Assign(arg_vals, std::forward<arglist>(args)...);
+      |                                              ^
+3 warnings generated.
+3 warnings generated.
+3 warnings generated.
+3 warnings generated.
+3 warnings generated.
+3 warnings generated.
+In file included from .pio/libdeps/test/SerialTransfer/src/SPITransfer.cpp:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/Arduino.h:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/ArduinoFake.h:12:
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7462:5: warning: identifier '_Times' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7459 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Times
+ 7460 |     ""
+      |     ~~
+ 7461 | 
+ 7462 |     _Times(unsigned long long n) {
+      |     ^~~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7469:5: warning: identifier '_Time' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7466 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Time
+ 7467 |     ""
+      |     ~~
+ 7468 | 
+ 7469 |     _Time(unsigned long long n) {
+      |     ^~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7972:46: warning: a template argument list is expected after a name prefixed by the template keyword [-Wmissing-template-arg-list-after-template-kw]
+ 7972 |                 ParamWalker<N - 1>::template Assign(arg_vals, std::forward<arglist>(args)...);
+      |                                              ^
+In file included from .pio/libdeps/test/SerialTransfer/src/SerialTransfer.cpp:1:
+In file included from .pio/libdeps/test/SerialTransfer/src/SerialTransfer.h:2:
+In file included from .pio/libdeps/test/ArduinoFake/src/Arduino.h:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/ArduinoFake.h:12:
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7462:5: warning: identifier '_Times' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7459 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Times
+ 7460 |     ""
+      |     ~~
+ 7461 | 
+ 7462 |     _Times(unsigned long long n) {
+      |     ^~~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7469:5: warning: identifier '_Time' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7466 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Time
+ 7467 |     ""
+      |     ~~
+ 7468 | 
+ 7469 |     _Time(unsigned long long n) {
+      |     ^~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7972:46: warning: a template argument list is expected after a name prefixed by the template keyword [-Wmissing-template-arg-list-after-template-kw]
+ 7972 |                 ParamWalker<N - 1>::template Assign(arg_vals, std::forward<arglist>(args)...);
+      |                                              ^
+3 warnings generated.
+In file included from lib/Common/mcu_comms.cpp:2:
+In file included from lib/Common/mcu_comms.h:5:
+In file included from .pio/libdeps/test/ArduinoFake/src/Arduino.h:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/ArduinoFake.h:12:
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7462:5: warning: identifier '_Times' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7459 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Times
+ 7460 |     ""
+      |     ~~
+ 7461 | 
+ 7462 |     _Times(unsigned long long n) {
+      |     ^~~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7469:5: warning: identifier '_Time' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7466 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Time
+ 7467 |     ""
+      |     ~~
+ 7468 | 
+ 7469 |     _Time(unsigned long long n) {
+      |     ^~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7972:46: warning: a template argument list is expected after a name prefixed by the template keyword [-Wmissing-template-arg-list-after-template-kw]
+ 7972 |                 ParamWalker<N - 1>::template Assign(arg_vals, std::forward<arglist>(args)...);
+      |                                              ^
+In file included from lib/Common/measurements.cpp:2:
+In file included from lib/Common/measurements.h:4:
+In file included from .pio/libdeps/test/ArduinoFake/src/Arduino.h:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/ArduinoFake.h:12:
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7462:5: warning: identifier '_Times' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7459 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Times
+ 7460 |     ""
+      |     ~~
+ 7461 | 
+ 7462 |     _Times(unsigned long long n) {
+      |     ^~~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7469:5: warning: identifier '_Time' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7466 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Time
+ 7467 |     ""
+      |     ~~
+ 7468 | 
+ 7469 |     _Time(unsigned long long n) {
+      |     ^~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7972:46: warning: a template argument list is expected after a name prefixed by the template keyword [-Wmissing-template-arg-list-after-template-kw]
+ 7972 |                 ParamWalker<N - 1>::template Assign(arg_vals, std::forward<arglist>(args)...);
+      |                                              ^
+In file included from lib/Common/profiling_phases.cpp:2:
+In file included from lib/Common/profiling_phases.h:5:
+In file included from lib/Common/utils.h:5:
+In file included from .pio/libdeps/test/ArduinoFake/src/Arduino.h:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/ArduinoFake.h:12:
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7462:5: warning: identifier '_Times' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7459 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Times
+ 7460 |     ""
+      |     ~~
+ 7461 | 
+ 7462 |     _Times(unsigned long long n) {
+      |     ^~~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7469:5: warning: identifier '_Time' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7466 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Time
+ 7467 |     ""
+      |     ~~
+ 7468 | 
+ 7469 |     _Time(unsigned long long n) {
+      |     ^~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7972:46: warning: a template argument list is expected after a name prefixed by the template keyword [-Wmissing-template-arg-list-after-template-kw]
+ 7972 |                 ParamWalker<N - 1>::template Assign(arg_vals, std::forward<arglist>(args)...);
+      |                                              ^
+3 warnings generated.
+In file included from lib/Common/utils.cpp:2:
+In file included from lib/Common/utils.h:5:
+In file included from .pio/libdeps/test/ArduinoFake/src/Arduino.h:1:
+In file included from .pio/libdeps/test/ArduinoFake/src/ArduinoFake.h:12:
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7462:5: warning: identifier '_Times' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7459 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Times
+ 7460 |     ""
+      |     ~~
+ 7461 | 
+ 7462 |     _Times(unsigned long long n) {
+      |     ^~~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7469:5: warning: identifier '_Time' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 7466 |     inline QuantifierFunctor operator
+      |                              ~~~~~~~~
+      |                              operator""_Time
+ 7467 |     ""
+      |     ~~
+ 7468 | 
+ 7469 |     _Time(unsigned long long n) {
+      |     ^~~~~
+.pio/libdeps/test/ArduinoFake/src/fakeit.hpp:7972:46: warning: a template argument list is expected after a name prefixed by the template keyword [-Wmissing-template-arg-list-after-template-kw]
+ 7972 |                 ParamWalker<N - 1>::template Assign(arg_vals, std::forward<arglist>(args)...);
+      |                                              ^
+3 warnings generated.
+3 warnings generated.
+3 warnings generated.
+3 warnings generated.
+Testing...
+test/test_main.cpp:190: test_current_phase_calculation	[PASSED]
+test/test_main.cpp:191: test_get_pressure_for_phase	[PASSED]
+test/test_main.cpp:192: test_get_pressure_for_phase_with_negative_change	[PASSED]
+test/test_main.cpp:193: test_get_pressure_for_phase_with_time_larger_than_duration	[PASSED]
+test/test_main.cpp:194: test_phases_with_zero_duration_are_skipped	[PASSED]
+test/test_main.cpp:195: test_phases_with_weight_stop_condition	[PASSED]
+test/test_main.cpp:196: test_phases_with_stop_conditions_and_skipped_phases	[PASSED]
+test/test_main.cpp:197: test_phases_stay_constant	[PASSED]
+test/test_main.cpp:18: test_pump_clicks_for_flow_correct_binary_search	[PASSED]
+test/test_main.cpp:19: test_pump_get_flow	[PASSED]
+test/test_main.cpp:25: test_profile_serializer_works_correctly	[PASSED]
+test/test_main.cpp:83: test_drip_tray_gross_weight_survives_tare_changes	[PASSED]
+test/test_main.cpp:84: test_drip_tray_gross_weight_supports_signed_calibration	[PASSED]
+test/test_main.cpp:85: test_drip_tray_invalid_scale_factor_is_not_a_weight	[PASSED]
+test/test_main.cpp:86: test_drip_tray_status_fails_closed	[PASSED]
+test/test_main.cpp:87: test_drip_tray_status_uses_minimum_weight	[PASSED]
+---------------------- test:* [PASSED] Took 6.44 seconds ----------------------
+
+=================================== SUMMARY ===================================
+Environment    Test    Status    Duration
+-------------  ------  --------  ------------
+test           *       PASSED    00:00:06.437
+================= 16 test cases: 16 succeeded in 00:00:06.437 =================

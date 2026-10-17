@@ -1,5 +1,6 @@
 /* 09:32 15/03/2023 - change triggering comment */
 #include "lcd.h"
+#include "indigo.h"
 #include "pindef.h"
 #include "log.h"
 #include <Arduino.h>
@@ -7,6 +8,7 @@
 EasyNex myNex(USART_LCD);
 volatile NextionPage lcdCurrentPageId;
 volatile NextionPage lcdLastCurrentPageId;
+static int cleaningCycle=0;
 
 // decode/encode bit packing.
 // format is 000000sd rrrrrrrr gggggggg bbbbbbbb, where s = state, d = disco, r/g/b = colors
@@ -30,6 +32,11 @@ uint32_t lcdEncodeLedSettings(bool state, bool disco, uint8_t r, uint8_t g, uint
 
 void lcdInit(void) {
   myNex.begin(115200);
+#ifdef INDIGO_UI
+  // A controller-only SWD reset leaves the display running. Request the
+  // restart packet explicitly rather than waiting for a physical power cycle.
+  myNex.writeStr("rest");
+#endif
   while (!lcdCheckSerialInit("\x88\xFF\xFF\xFF", 4)) {
     LOG_VERBOSE("Connecting to Nextion LCD...");
     delay(5);
@@ -59,6 +66,7 @@ bool lcdCheckSerialInit(const char* expectedOutput, size_t expectedLen) {
 }
 
 void lcdListen(void) {
+  if(indigoActive()){indigoListen();return;}
   myNex.NextionListen();
   lcdCurrentPageId = static_cast<NextionPage>(myNex.currentPageId);
 }
@@ -359,7 +367,7 @@ void lcdFetchTransitionProfile(eepromValues_t::profile_t &profile) {
     profile.tfProfileStart = myNex.readNumber("tp.tStart.val") / 10.f;
     profile.tfProfileEnd = myNex.readNumber("tp.tEnd.val") / 10.f;
     profile.tfProfileHold = myNex.readNumber("tp.tHold.val");
-    profile.tfProfileHoldLimit = myNex.readNumber("tp.tLim.val") / 10.f;
+    profile.tfProfileHoldLimit = myNex.readNumber("tp.hLim.val") / 10.f;
     profile.tfProfileSlope = myNex.readNumber("tp.tSlope.val");
     profile.tfProfileSlopeShape = myNex.readNumber("paCrv");
     profile.tfProfilingPressureRestriction = myNex.readNumber("tp.tLim.val") / 10.f;
@@ -372,6 +380,7 @@ void lcdFetchDoseSettings(eepromValues_t::profile_t &profile) {
   profile.shotDose                       = myNex.readNumber("dS.numDose.val") / 10.f;
   profile.shotStopOnCustomWeight         = myNex.readNumber("dS.numDoseForced.val") / 10.f;
   profile.shotPreset                     = myNex.readNumber("shotPreset");
+  profile.shotRatioX100=profile.shotPreset*100u;
 }
 
 void lcdFetchTemp(eepromValues_t::profile_t &profile) {
@@ -487,6 +496,7 @@ bool lcdGetTransitionFlowState(void) {
 }
 
 int lcdGetManualFlowVol(void) {
+  if(indigoActive())return indigoUi()->manualTarget();
   return myNex.readNumber("h0.val");
 }
 
@@ -499,10 +509,13 @@ int lcdGetSelectedOperationalMode(void) {
 }
 
 int lcdGetDescaleCycle(void) {
+  if(indigoActive())return cleaningCycle;
   return myNex.readNumber("j0.val");
 }
 
 void lcdSetDescaleCycle(int cycle) {
+  cleaningCycle=cycle;
+  if(indigoActive())return;
   myNex.writeNum("j0.val", cycle);
 }
 
@@ -523,11 +536,12 @@ void lcdSetTemperatureDecimal(uint16_t val) {
 }
 
 void lcdSetWeight(float val) {
-  char tmp[6];
-  int check = snprintf(tmp, sizeof(tmp), "%.1f", static_cast<double>(val));
-  if (check > 0 && static_cast<unsigned int>(check) <= sizeof(tmp)) {
-    strcat(tmp, "g");
+  char tmp[16];
+  int check = snprintf(tmp, sizeof(tmp), "%.1fg", static_cast<double>(val));
+  if (check > 0 && static_cast<unsigned int>(check) < sizeof(tmp)) {
     myNex.writeStr("weight.txt", tmp);
+  } else {
+    myNex.writeStr("weight.txt", "--");
   }
 }
 
@@ -541,6 +555,7 @@ void lcdShowDebug(int val1, int val2) {
 }
 
 void lcdShowPopup(const char *msg) {
+  if(indigoActive()){indigoUi()->message(msg);return;}
   static unsigned int timer;
   if(millis() > timer + 1150) {
     myNex.writeStr("popupMSG.t0.txt", msg);
@@ -553,6 +568,9 @@ void lcdSetTankWaterLvl(uint16_t val) {
   myNex.writeNum("j0.val", val);
 }
 void lcdTargetState(int val) {
+  static int last=-1;
+  if(indigoActive()&&last==val)return;
+  last=val;
   myNex.writeNum("targetState", val);
 }
 

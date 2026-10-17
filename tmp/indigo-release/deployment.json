@@ -1,0 +1,14 @@
+{
+  "uploaded": true,
+  "stlinkSerial": "37FF71064E573436982F1543",
+  "target": "STM32F411xC/E 512KB",
+  "mainImageSha256": "8e371228ec4983198e04cf550b138d8fd05d3ce1599f9f1871cb07a58f3dc77c",
+  "fullFlashPrefixVerified": true,
+  "freshBackup": "tmp/indigo-release/preflash/controller-flash.bin",
+  "settingsMigration": "Not yet run: touchscreen startup handshake pending",
+  "settingsSchemaObserved": 12,
+  "hardwareCommissioned": false,
+  "automaticFillAndIdleReleaseMinimumG": 150,
+  "manualHomeFlushIgnoresTrayWeight": true,
+  "utcRecorded": "2026-10-17T11:02:41.461088+00:00"
+}

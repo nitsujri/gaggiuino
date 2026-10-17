@@ -22,8 +22,8 @@ enum class DescalingState {
   FINISHED
 };
 
+void abortCleaning();
 void deScale(eepromValues_t &runningCfg, const SensorState &currentState);
-void solenoidBeat(void);
 void backFlush(const SensorState &currentState);
 void flushActivated(void);
 void flushDeactivated(void);

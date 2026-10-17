@@ -1,0 +1,5 @@
+Vendored from banoz/HX711 feature/timer, pinned source52b172f used by this
+frozen project. Original MIT license/header notices retained. Only Indigo
+extension: HX711_2::try_read provides an atomic nonblocking conversion with a
+success result, so a timeout cannot masquerade as a valid zero/gross tray load.
+Existing read/read_average/tare methods remain for calibration compatibility.

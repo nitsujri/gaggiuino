@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Matcha — Gaggiuino wheel trials</title><link rel="stylesheet" href="style.css"></head>
+<body data-concept="8">
+<header class="page-header"><div class="eyebrow">Gaggiuino / temperature wheel / round 02</div><h1>Matcha</h1><p>The familiar temperature fill wheel stays at the center. Water stays visible as a vertical fill column, with the selected profile above. Try ten new palettes, with a quiet Flush toggle on Home and the full settings behind Menu.</p><div class="specs"><span>320 × 240 native pixels</span><span>16-bit RGB565 / 65,536 colors</span><span>10 RGB565 palettes / no red accent</span></div><p class="notice">Interactive trials with simulated sensors. These pages do not connect to or control the machine.</p></header>
+<main class="layout"><section class="single-area" aria-label="Touchscreen designs">
+
+<nav class="single-nav"><a href="index.html">All ten palettes</a><a id="previous-design">Previous</a><a id="next-design">Next</a></nav><div class="toolbar"><label for="zoom">Display zoom</label><select id="zoom"><option value="1">1× / native size</option><option value="2" selected>2× / pixel doubled</option><option value="3">3× / pixel tripled</option></select><span class="note">The framebuffer stays 320 × 240.</span></div><div id="designs"></div></section>
+<aside class="lab" aria-label="Simulated machine controls"><h2>Try the behavior</h2><p class="muted">Sensor inputs for this concept. The tray is a simulated 170 g load; the real no-tray baseline still needs calibration.</p>
+<label class="check"><input id="tray-present" type="checkbox" checked>Tray / container installed</label>
+<label class="check"><input id="cup-present" type="checkbox">Add a 120 g cup</label>
+<label for="scale-status">Hardware scale signal<select id="scale-status"><option value="ok">Fresh and valid</option><option value="offline">Disconnected</option><option value="stale">Stale reading</option><option value="invalid">Invalid reading</option><option value="unconfigured">Tray guard uncalibrated</option></select></label>
+<label for="temperature">Boiler temperature <strong id="temperature-value">74.6 °C</strong></label><input id="temperature" type="range" min="20" max="165" step="0.1" value="74.6"><button class="wide" id="brew-temperature">At brew temperature: 93 °C</button><label for="distance">ToF distance <strong id="distance-value">62 mm</strong></label><input id="distance" type="range" min="8" max="160" value="62" step="1">
+<label class="check"><input id="tof-valid" type="checkbox" checked>ToF reading valid</label>
+<div class="button-row"><button id="tank-full">Filled tank: 42 mm</button><button id="tank-low">Low water</button></div>
+<div class="button-row"><button id="open-water">Tank setup</button><button id="open-home">Home</button></div>
+<output id="lab-status" aria-live="polite" style="white-space:pre-line"></output>
+<hr><div class="note">Physical switch simulation</div><div class="button-row"><button id="brew-switch" aria-pressed="false">Brew switch OFF</button><button id="steam-switch" aria-pressed="false">Steam switch</button></div>
+<hr><button class="wide" id="reset-trials">Reset trials to backup</button><div class="button-row optional"><button id="export-settings">Export settings</button><button id="export-image">Save 320×240 PNG</button></div>
+<p class="muted">Try: start Flush, then lift the tray. Also test stale scales after taring. For tank calibration, select a filled-tank distance, open Tank setup, capture 100%, then Save.</p>
+</aside></main>
+<details class="feature-note"><summary>Functionality and hardware notes</summary><ul>
+<li>All five saved profiles and every stored profile/system field are available through Menu. No profile switcher occupies Home.</li>
+<li>Preinfusion, soak, transition, pressure/flow profiling, graph preview, dose/stop weight, manual flow, steam, hot water, backflush, descale, tare, screen sleep/brightness, warmup, lighting, Save, and defaults remain accessible.</li>
+<li>Tank full calibration changes the upper mapping. The installed low-water boundary remains 125 mm: readings above it return 9% and trigger the existing &lt;10% warning.</li>
+<li>Group flush and backflush require fresh, valid hardware gross weight above the tray threshold. Tare and hiding the scale display do not bypass this. Removing the load or losing the reading stops an active flush. Descale group-head output uses the same guard.</li>
+<li>The actual controller currently has no no-tray raw baseline configured. The future firmware implementation must remain fail-closed until that baseline is recorded; the 170 g load here is illustrative.</li>
+<li>Only native-size rectangles, lines, text, bitmap-compatible temperature wheels, and waveform plots are used. Every presented pixel is quantized to RGB565. These are design trials, not compiled HMI/TFT images.</li>
+<li>Existing page/component commands must be retained or migrated with the controller code before installation. Current controller settings and firmware remain available in the saved checkpoints.</li>
+</ul><a href="../touchscreen-designs/index.html">First ten designs</a> · <a href="requirements.json">Feature coverage / implementation requirements</a></details>
+<script src="settings.js"></script><script src="model.js"></script><script src="view.js"></script><script src="wheels.js"></script><script src="app.js"></script></body></html>

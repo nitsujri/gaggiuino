@@ -1,155 +1,156 @@
-/* 09:32 15/03/2023 - change triggering comment */
 #include "scales.h"
+#include "indigo/control.h"
 #include "pindef.h"
 #include "remote_scales.h"
 #include "scales_clock.h"
-
 #include <HX711_2.h>
+#include <algorithm>
 #include <cmath>
 
-#if defined(DRIP_TRAY_ZERO_RAW_1) && defined(DRIP_TRAY_ZERO_RAW_2) \
-  && (DRIP_TRAY_ZERO_RAW_1 != 0L || DRIP_TRAY_ZERO_RAW_2 != 0L)
-  #define DRIP_TRAY_GUARD_CONFIGURED 1
-#else
-  #define DRIP_TRAY_GUARD_CONFIGURED 0
-#endif
-
 namespace {
-  class LoadCellSingleton {
-  public:
-    static HX711_2& getInstance() {
-      static HX711_2 instance(TIM3);
-      return instance;
-    }
-  private:
-    LoadCellSingleton() = default;
-    ~LoadCellSingleton() = default;
-  };
+HX711_2 &cells() {
+  static HX711_2 value(TIM3);
+  return value;
 }
-
 bool hwScalesPresent = false;
-
-#if defined SINGLE_HX711_BOARD
-unsigned char scale_clk = OUTPUT;
-#else
-unsigned char scale_clk = OUTPUT_OPEN_DRAIN;
-#endif
-
-void scalesInit(float scalesF1, float scalesF2) {
-  hwScalesPresent = false;
-  // Forced predicitve scales in case someone with actual hardware scales wants to use them.
-  if (FORCE_PREDICTIVE_SCALES) {
+eepromValues_t *trayCfg = nullptr;
+long absoluteRaw[2] = {};
+long recent[4][2] = {};
+unsigned count = 0, head = 0;
+uint32_t lastSample = 0;
+bool haveSample = false;
+float factors[2] = {3920.f, 4210.f};
+bool fresh() { return sampleIsFresh(haveSample, lastSample, millis(), 300); }
+} // namespace
+void scalesConfigure(eepromValues_t &cfg) {
+  trayCfg = &cfg;
+  factors[0] = cfg.scalesF1;
+  factors[1] = cfg.scalesF2;
+  if (hwScalesPresent)
+    cells().set_scale(factors[0], factors[1]);
+}
+void scalesPoll() {
+  if (!hwScalesPresent)
+    return;
+  long raw[2], offset[2];
+  if (!cells().try_read(raw))
+    return;
+  cells().get_offset(offset);
+  const long next[2] = {raw[0] + offset[0], raw[1] + offset[1]};
+  if (!hx711RawPairValid(next)) {
+    haveSample = false;
+    count = 0;
+    head = 0;
     return;
   }
-
+  if (!fresh()) {
+    count = 0;
+    head = 0;
+  }
+  for (unsigned i = 0; i < 2; i++) {
+    absoluteRaw[i] = next[i];
+    recent[head][i] = absoluteRaw[i];
+  }
+  head = (head + 1) % 4;
+  if (count < 4)
+    count++;
+  lastSample = millis();
+  haveSample = true;
+}
+void scalesInit(float f1, float f2) {
+  hwScalesPresent = false;
+  haveSample = false;
+  count = 0;
+  if (FORCE_PREDICTIVE_SCALES)
+    return;
 #ifndef DISABLE_HW_SCALES
-  auto& loadCells = LoadCellSingleton::getInstance();
-  loadCells.begin(HX711_dout_1, HX711_dout_2, HX711_sck_1, 128U, scale_clk);
+  auto &c = cells();
+#ifdef SINGLE_HX711_BOARD
+  const auto clockMode = OUTPUT;
+#else
+  const auto clockMode = OUTPUT_OPEN_DRAIN;
+#endif
+  c.begin(HX711_dout_1, HX711_dout_2, HX711_sck_1, 128U, clockMode);
 #if defined(ARDUINO_ARCH_STM32)
   configureScalesClock(HX711_sck_1, TIM3);
 #endif
-  loadCells.set_scale(scalesF1, scalesF2);
-  loadCells.power_up();
-
-  if (loadCells.wait_ready_timeout(1000, 10)) {
-    loadCells.tare(4);
+  factors[0] = f1;
+  factors[1] = f2;
+  c.set_scale(f1, f2);
+  c.power_up();
+  if (c.wait_ready_timeout(1000, 10)) {
+    c.tare(4);
     hwScalesPresent = true;
-  }
-  else {
-    loadCells.power_down();
-  }
+  } else
+    c.power_down();
 #endif
-
-  if (!hwScalesPresent && remoteScalesIsPresent()) {
+  if (!hwScalesPresent && remoteScalesIsPresent())
     remoteScalesTare();
-  }
 }
-
-void scalesTare(void) {
-  if (hwScalesPresent) {
-    auto& loadCells = LoadCellSingleton::getInstance();
-    if (loadCells.wait_ready_timeout(150, 10)) {
-      loadCells.tare(4);
-    }
-  }
-  else if (remoteScalesIsPresent()) {
+void scalesTare() {
+  if (hwScalesPresent && fresh() && count) {
+    long mean[2] = {};
+    for (unsigned i = 0; i < count; i++)
+      for (unsigned j = 0; j < 2; j++)
+        mean[j] += recent[i][j] / static_cast<long>(count);
+    cells().set_offset(mean[0], mean[1]);
+  } else if (remoteScalesIsPresent())
     remoteScalesTare();
-  }
 }
-
-Measurement scalesGetWeight(void) {
-  Measurement currentWeight = Measurement{ .value = 0.f, .millis = 0 };
-  if (hwScalesPresent) {
-    auto& loadCells = LoadCellSingleton::getInstance();
-    if (loadCells.wait_ready_timeout(150, 10)) {
-      float values[2];
-      loadCells.get_units(values);
-      currentWeight = Measurement{ .value=values[0] + values[1], .millis=millis() };
-    }
+Measurement scalesGetWeight() {
+  if (hwScalesPresent && fresh()) {
+    long offset[2];
+    cells().get_offset(offset);
+    if (factors[0] == 0 || factors[1] == 0)
+      return {0.f, 0};
+    const float w = (absoluteRaw[0] - offset[0]) / factors[0] +
+                    (absoluteRaw[1] - offset[1]) / factors[1];
+    if (std::isfinite(w))
+      return {w, lastSample};
   }
-  else if (remoteScalesIsPresent()) {
-    currentWeight = remoteScalesGetWeight();
-  }
-  return currentWeight;
+  if (remoteScalesIsPresent())
+    return remoteScalesGetWeight();
+  return {0.f, 0};
 }
-
-bool scalesIsPresent(void) {
-  // Forced predicitve scales in case someone with actual hardware scales wants to use them.
-  if (FORCE_PREDICTIVE_SCALES) {
-    return false;
-  }
-  return hwScalesPresent || remoteScalesIsPresent();
+bool scalesIsPresent() {
+  return !FORCE_PREDICTIVE_SCALES &&
+         ((hwScalesPresent && fresh()) || remoteScalesIsPresent());
 }
-
-DripTrayStatus scalesGetDripTrayStatus(float *grossWeight) {
-  if (grossWeight != nullptr) {
-    *grossWeight = NAN;
-  }
-
-  if (!DRIP_TRAY_GUARD_CONFIGURED) {
+DripTrayStatus scalesGetDripTrayStatus(float *gross) {
+  if (gross)
+    *gross = NAN;
+  if (!trayCfg || !trayCfg->trayGuardCalibrated)
     return DripTrayStatus::Unconfigured;
-  }
-  if (!hwScalesPresent) {
+  if (!hwScalesPresent || !fresh())
     return DripTrayStatus::Unavailable;
+  const long zero[2] = {trayCfg->trayZeroRaw[0], trayCfg->trayZeroRaw[1]},
+             noOffset[2] = {0, 0};
+  const float w =
+      calculateDripTrayGrossWeight(absoluteRaw, noOffset, zero, factors);
+  if (gross)
+    *gross = w;
+  return classifyDripTray(true, true, std::isfinite(w), w,
+                          trayCfg->trayMinWeightG);
+}
+bool scalesCaptureTrayZero(eepromValues_t &cfg) {
+  if (!hwScalesPresent || !fresh() || count < 4)
+    return false;
+  int32_t zeros[2];
+  for (unsigned j = 0; j < 2; j++) {
+    long lo = recent[0][j], hi = lo;
+    int64_t sum = 0;
+    for (unsigned i = 0; i < count; i++) {
+      lo = std::min(lo, recent[i][j]);
+      hi = std::max(hi, recent[i][j]);
+      sum += recent[i][j];
+    }
+    if (!std::isfinite(factors[j]) || factors[j] == 0 ||
+        std::fabs((hi - lo) / factors[j]) > 1.f)
+      return false;
+    zeros[j] = static_cast<int32_t>(sum / count);
   }
-
-  auto& loadCells = LoadCellSingleton::getInstance();
-  if (!loadCells.wait_ready_timeout(150, 10)) {
-    return DripTrayStatus::Unavailable;
-  }
-
-  long taredRaw[2] = {};
-  long currentOffsets[2] = {};
-  float scaleFactors[2] = {};
-  loadCells.read_average(taredRaw, 4);
-  loadCells.get_offset(currentOffsets);
-  loadCells.get_scale(scaleFactors);
-
-  const long noTrayOffsets[2] = {
-#if DRIP_TRAY_GUARD_CONFIGURED
-    DRIP_TRAY_ZERO_RAW_1,
-    DRIP_TRAY_ZERO_RAW_2
-#else
-    0L,
-    0L
-#endif
-  };
-  const float measuredGrossWeight = calculateDripTrayGrossWeight(
-    taredRaw,
-    currentOffsets,
-    noTrayOffsets,
-    scaleFactors
-  );
-
-  if (grossWeight != nullptr) {
-    *grossWeight = measuredGrossWeight;
-  }
-
-  return classifyDripTray(
-    true,
-    hwScalesPresent,
-    std::isfinite(measuredGrossWeight),
-    measuredGrossWeight,
-    DRIP_TRAY_MIN_WEIGHT_G
-  );
+  cfg.trayZeroRaw[0] = zeros[0];
+  cfg.trayZeroRaw[1] = zeros[1];
+  cfg.trayGuardCalibrated = true;
+  return true;
 }

@@ -4,7 +4,7 @@ import subprocess
 Import("env")
 
 def get_firmware_version_build_flag():
-  ret = subprocess.run(["git", "describe", "--always"], stdout=subprocess.PIPE, text=True)
+  ret = subprocess.run(["git", "describe", "--always", "--dirty=-dirty"], stdout=subprocess.PIPE, text=True)
 
   if ret.returncode == 0:
     build_version = ret.stdout.strip()

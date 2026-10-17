@@ -1,0 +1,243 @@
+{
+  "prototype": true,
+  "round": 1,
+  "display": {
+    "width": 320,
+    "height": 240,
+    "format": "RGB565",
+    "colors": 65536,
+    "source": "Installed generation Nextion/TJC TFT headers and HMI home page dimensions",
+    "rendering": "Canvas raster quantized to RGB565, including antialiasing. Fonts are trial assets; TFT compilation and memory budget still require verification."
+  },
+  "concepts": [
+    {
+      "id": "daily",
+      "name": "Daily",
+      "description": "Balanced temperature and weight, with a wide flush key.",
+      "number": 1
+    },
+    {
+      "id": "flush-dock",
+      "name": "Flush dock",
+      "description": "A permanent service column for frequent rinsing.",
+      "number": 2
+    },
+    {
+      "id": "instrument",
+      "name": "Instrument",
+      "description": "A pressure dial and a compact bank of live readings.",
+      "number": 3
+    },
+    {
+      "id": "scale-first",
+      "name": "Scale first",
+      "description": "A bright weighing surface with oversized grams.",
+      "number": 4
+    },
+    {
+      "id": "quiet",
+      "name": "Quiet",
+      "description": "One large temperature reading and a calm action row.",
+      "number": 5
+    },
+    {
+      "id": "side-rail",
+      "name": "Side rail",
+      "description": "A fixed navigation rail with a dedicated flush toggle.",
+      "number": 6
+    },
+    {
+      "id": "workshop",
+      "name": "Workshop",
+      "description": "Four equally weighted instruments and direct controls.",
+      "number": 7
+    },
+    {
+      "id": "timeline",
+      "name": "Timeline",
+      "description": "The shot curve is visible before entering the graph page.",
+      "number": 8
+    },
+    {
+      "id": "service-strip",
+      "name": "Service strip",
+      "description": "Large dual readouts above a full-width utility strip.",
+      "number": 9
+    },
+    {
+      "id": "focus",
+      "name": "Focus",
+      "description": "A prominent flush action and a compact readiness checklist.",
+      "number": 10
+    }
+  ],
+  "home": {
+    "profileSelection": "Menu > Profiles",
+    "selectedProfileVisible": false,
+    "temperatureWheel": false,
+    "waterIndicator": "varies by concept",
+    "flush": "home action",
+    "trayStatusVisible": true
+  },
+  "profileFields": {
+    "Temperature & dose": [
+      "setpoint",
+      "stopOnWeightState",
+      "shotDose",
+      "shotStopOnCustomWeight",
+      "shotPreset"
+    ],
+    "Preinfusion": [
+      "preinfusionState",
+      "preinfusionFlowState",
+      "preinfusionSec",
+      "preinfusionBar",
+      "preinfusionFlowVol",
+      "preinfusionFlowTime",
+      "preinfusionFlowPressureTarget",
+      "preinfusionPressureFlowTarget",
+      "preinfusionFilled",
+      "preinfusionPressureAbove",
+      "preinfusionWeightAbove"
+    ],
+    "Soak": [
+      "soakState",
+      "soakTimePressure",
+      "soakTimeFlow",
+      "soakKeepPressure",
+      "soakKeepFlow",
+      "soakBelowPressure",
+      "soakAbovePressure",
+      "soakAboveWeight"
+    ],
+    "Ramp": [
+      "preinfusionRamp",
+      "preinfusionRampSlope"
+    ],
+    "Transition": [
+      "tpState",
+      "tpType",
+      "tpProfilingStart",
+      "tpProfilingFinish",
+      "tpProfilingHold",
+      "tpProfilingHoldLimit",
+      "tpProfilingSlope",
+      "tpProfilingSlopeShape",
+      "tpProfilingFlowRestriction",
+      "tfProfileStart",
+      "tfProfileEnd",
+      "tfProfileHold",
+      "tfProfileHoldLimit",
+      "tfProfileSlope",
+      "tfProfileSlopeShape",
+      "tfProfilingPressureRestriction"
+    ],
+    "Brew profiling": [
+      "profilingState",
+      "mfProfileState",
+      "mpProfilingStart",
+      "mpProfilingFinish",
+      "mpProfilingSlope",
+      "mpProfilingSlopeShape",
+      "mpProfilingFlowRestriction",
+      "mfProfileStart",
+      "mfProfileEnd",
+      "mfProfileSlope",
+      "mfProfileSlopeShape",
+      "mfProfilingPressureRestriction"
+    ]
+  },
+  "systemFields": {
+    "Boiler": [
+      "steamSetPoint",
+      "offsetTemp",
+      "hpwr",
+      "mainDivider",
+      "brewDivider"
+    ],
+    "Scales & pump": [
+      "scalesF1",
+      "scalesF2",
+      "pumpFlowAtZero"
+    ],
+    "Screen & warmup": [
+      "lcdSleep",
+      "warmupState",
+      "brightness"
+    ],
+    "Brew preferences": [
+      "homeOnShotFinish",
+      "brewDeltaState",
+      "basketPrefill"
+    ],
+    "Power & lighting": [
+      "powerLineFrequency",
+      "ledState",
+      "ledDisco",
+      "ledR",
+      "ledG",
+      "ledB"
+    ]
+  },
+  "routes": [
+    "home",
+    "menu",
+    "profiles",
+    "profile",
+    "system",
+    "boiler",
+    "scales",
+    "water",
+    "tray",
+    "cleaning",
+    "backflush",
+    "descale",
+    "steam",
+    "hot-water",
+    "manual",
+    "shot",
+    "graph-preview",
+    "led"
+  ],
+  "tankCalibration": {
+    "action": "Menu > Water tank / set full > capture current distance > Save",
+    "fullPoint": "Software-defined valid ToF distance below 125 mm maps to 100%",
+    "lowWarning": "Existing distance threshold retained: above 125 mm maps to 9%, warning below 10%",
+    "intermediateMapping": "Linear from calibrated full point to 10% at 125 mm; differs from original stepped display"
+  },
+  "flushGuard": {
+    "source": "fresh hardware gross weight, independent of tare and scale display",
+    "blocked": [
+      "load below threshold",
+      "invalid reading",
+      "stale reading",
+      "disconnected scales",
+      "zero/invalid calibration factor",
+      "missing no-tray baseline"
+    ],
+    "whileRunning": "Stop immediately when guard fails",
+    "homeStatus": "Guard runs silently; blocked or stopped actions explain the reason",
+    "prototypeLoadGrams": 170,
+    "prototypeMinimumGrams": 100,
+    "realMachine": "No-tray raw offsets still require calibration. Do not copy the illustrative prototype calibration into firmware."
+  },
+  "retained": [
+    "five profiles and all stored settings",
+    "profile naming, selection and editing",
+    "preinfusion, soak, ramp, transition, profiling and dose",
+    "temperature and boiler settings",
+    "scales, tare and calibration factors",
+    "manual flow and shot graph",
+    "steam and hot-water functions",
+    "flush, backflush and descale",
+    "LED settings",
+    "save and reset"
+  ],
+  "limitations": [
+    "No connection to or control of the machine",
+    "Browser localStorage only; Export settings is a trial artifact",
+    "Cleaning timing and graph curves are illustrative simulations",
+    "New tank calibration and expanded flush guard are prototype requirements, not deployed firmware",
+    "No HMI/TFT compiled, firmware flashed, or settings written to controller"
+  ]
+}

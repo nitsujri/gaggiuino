@@ -10,15 +10,25 @@
 #include "legacy/eeprom_data_v9.h"
 #include "legacy/eeprom_data_v10.h"
 #include "legacy/eeprom_data_v11.h"
+#include "legacy/eeprom_data_v12.h"
+#include "indigo/settings.h"
+
+REGISTER_LEGACY_EEPROM_DATA(12,eepromValues_t_v12,upgradeSchema_v12);
 #include "../log.h"
 #include <cstring>
+#include "../peripherals/scales.h"
+
+#if defined(ARDUINO_ARCH_STM32)
+static_assert(sizeof(eepromValues_t)==1056,"schema13 configuration layout");
+static_assert(sizeof(eepromMetadata_t)==1072,"schema13 metadata layout");
+#endif
 
 namespace {
 
   struct eepromMetadata_t eepromMetadata;
 
   eepromValues_t getEepromDefaults(void) {
-    eepromValues_t defaultData;
+    eepromValues_t defaultData{};
 
     // Profiles
     defaultData.activeProfile = 0;
@@ -88,6 +98,7 @@ namespace {
       defaultData.profiles[i].shotDose = defaultsProfile[i].shotDose;
       defaultData.profiles[i].shotStopOnCustomWeight = defaultsProfile[i].shotStopOnCustomWeight;
       defaultData.profiles[i].shotPreset = defaultsProfile[i].shotPreset;
+      defaultData.profiles[i].shotRatioX100 = defaultsProfile[i].shotPreset*100u;
     }
     // General brew settings
     defaultData.homeOnShotFinish = false;
@@ -111,6 +122,14 @@ namespace {
     defaultData.ledG = 0;
     defaultData.ledB = 9;
 
+    defaultData.tankFullDistanceMm=30;
+    defaultData.brightness=90;
+    defaultData.trayMinWeightG=DRIP_TRAY_MIN_WEIGHT_G;
+#if defined(DRIP_TRAY_ZERO_RAW_1) && defined(DRIP_TRAY_ZERO_RAW_2)
+    defaultData.trayZeroRaw[0]=DRIP_TRAY_ZERO_RAW_1;
+    defaultData.trayZeroRaw[1]=DRIP_TRAY_ZERO_RAW_2;
+    defaultData.trayGuardCalibrated=true;
+#endif
     return defaultData;
   }
 
@@ -121,45 +140,26 @@ namespace {
     return true;
   }
 
-  bool loadCurrentEepromData EEPROM_METADATA_LOADER(EEPROM_DATA_VERSION, eepromMetadata_t, copy_t);
+  bool loadCurrentEepromData(eepromValues_t& target) {
+    eepromMetadata_t data;EEPROM.get(0,data);
+    if(data.version!=EEPROM_DATA_VERSION||data.versionTimestampXOR!=(data.timestamp^data.version))return false;
+    if(data.valuesChecksum!=settingsChecksum(&data.values,sizeof(data.values)))return false;
+    if(!settingsValid(data.values))return false;
+    target=data.values;return true;
+  }
 
 }
 
 
 bool eepromWrite(eepromValues_t eepromValuesNew) {
-  const char *errMsg = "Data out of range";
-  /* Check various profile array values */
-  for (int i=0; i<MAX_PROFILES; i++) {
-    if ( eepromValuesNew.profiles[i].preinfusionFlowVol < 0.f
-      || eepromValuesNew.profiles[i].mfProfileStart < 0.f
-      || eepromValuesNew.profiles[i].mfProfileEnd < 0.f
-      || eepromValuesNew.profiles[i].mpProfilingStart < 0.f
-      || eepromValuesNew.profiles[i].mpProfilingFinish < 0.f
-      || eepromValuesNew.profiles[i].setpoint < 1)
-    {
-      LOG_ERROR(errMsg);
-      return false;
-    }
-  }
-  /* Check various global values */
-  if (eepromValuesNew.steamSetPoint < 1
-  || eepromValuesNew.steamSetPoint > 165
-  || eepromValuesNew.mainDivider < 1
-  || eepromValuesNew.brewDivider < 1
-  || eepromValuesNew.pumpFlowAtZero < 0.210f
-  || eepromValuesNew.pumpFlowAtZero > 0.310f
-  || eepromValuesNew.scalesF1 < -20000
-  || eepromValuesNew.scalesF2 > 20000)
-  {
-    LOG_ERROR(errMsg);
-    return false;
-  }
+  if(!settingsValid(eepromValuesNew)){LOG_ERROR("Data out of range");return false;}
 
   /* Saving the values struct + validation and versioning metadata */
   eepromMetadata.timestamp = millis();
   eepromMetadata.version = EEPROM_DATA_VERSION;
   eepromMetadata.values = eepromValuesNew;
   eepromMetadata.versionTimestampXOR = eepromMetadata.timestamp ^ eepromMetadata.version;
+  eepromMetadata.valuesChecksum=settingsChecksum(&eepromMetadata.values,sizeof(eepromMetadata.values));
   EEPROM.put(0, eepromMetadata);
 
   return true;
@@ -187,12 +187,12 @@ void eepromInit(void) {
     eepromMetadata.values = getEepromDefaults();
   }
 
-  // Preserve user settings while replacing the former stock profile once.
-  bool profileDefaultsUpdated = false;
-  constexpr int turboProfileIndex = 3;
-  if (readSuccess && std::strcmp(eepromMetadata.values.profiles[turboProfileIndex].name, "Filter 2.1") == 0) {
-    eepromMetadata.values.profiles[turboProfileIndex] = getEepromDefaults().profiles[turboProfileIndex];
-    profileDefaultsUpdated = true;
+  // Install requested recipes once on versioned migration, preserving all
+  // machine calibration and slots 3..5. Original profiles are in the preflight backup.
+  bool profileDefaultsUpdated=readSuccess&&initializeIndigoUpgrade(eepromMetadata.values,getEepromDefaults(),version);
+  if(readSuccess&&!settingsValid(eepromMetadata.values)){
+    LOG_ERROR("Invalid legacy settings: using defaults; verify calibration");
+    eepromMetadata.values=getEepromDefaults();readSuccess=false;
   }
 
   if (!readSuccess || version != EEPROM_DATA_VERSION || profileDefaultsUpdated) {

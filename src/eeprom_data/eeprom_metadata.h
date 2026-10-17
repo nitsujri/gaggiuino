@@ -4,7 +4,7 @@
 
 #include <Arduino.h>
 
-#define EEPROM_DATA_VERSION 12
+#define EEPROM_DATA_VERSION 13
 
 #define EEPROM_METADATA_T(__eepromValues_tName) \
   {                                             \
@@ -14,7 +14,13 @@
     uint32_t versionTimestampXOR;               \
   }
 
-struct eepromMetadata_t EEPROM_METADATA_T(eepromValues_t);
+struct eepromMetadata_t {
+  uint16_t version;
+  unsigned long timestamp;
+  eepromValues_t values;
+  uint32_t versionTimestampXOR;
+  uint32_t valuesChecksum;
+};
 
 #define EEPROM_METADATA_LOADER(__eepromDataVersion, __eepromMetadata_tName, __upgradeSchema_fName)  \
   (eepromValues_t & targetValues)                                                                   \

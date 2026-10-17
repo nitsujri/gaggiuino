@@ -1,0 +1,3 @@
+wine: dlls/ntdll/unix/virtual.c:267: anon_mmap_fixed: Assertion `!((UINT_PTR)start & host_page_mask)' failed.
+qemu: uncaught target signal 6 (Aborted) - core dumped
+bash: line 1:    28 Aborted                 DISPLAY=:99 WINEDEBUG=-all WINEPREFIX=/work/wine-prefix wineboot -u

@@ -1,0 +1,46 @@
+xPack OpenOCD x86_64 Open On-Chip Debugger 0.11.0+dev (2021-10-17-00:18)
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.org/doc/doxygen/bugs.html
+Info : auto-selecting first available session transport "hla_swd". To override use 'transport select <transport>'.
+Info : The selected transport took over low-level target control. The results might differ compared to plain JTAG/SWD
+Info : clock speed 2000 kHz
+Info : STLINK V2J37S7 (API v2) VID:PID 0483:3748
+Info : Target voltage: 3.215936
+Info : stm32f4x.cpu: Cortex-M4 r0p1 processor detected
+Info : stm32f4x.cpu: target has 6 breakpoints, 4 watchpoints
+Info : starting gdb server for stm32f4x.cpu on 3333
+Info : Listening on port 3333 for gdb connections
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+GPIO:
+0x40020400: 0000a281 000000c1 c00ff3c3 40000101 0000b7d0 00000000 
+
+TIMER:
+0x40000428: 00000000 000005ff 
+
+HX:
+0x2000602c: fffd99cb 00034588 45750000 45839000 200079a0 fffd99c3 000345db 00fd99c3 
+0x2000604c: 000345db 0000004e 00001380 
+
+HX:
+0x2000602c: fffd99cb 00034588 45750000 45839000 200079a0 fffd999e 00034586 00fd999e 
+0x2000604c: 00034586 00000063 000018c0 
+
+HX:
+0x2000602c: fffd99cb 00034588 45750000 45839000 200079a0 fffd99dd 000345c5 00fd99dd 
+0x2000604c: 000345c5 00000078 00001e40 
+
+HX:
+0x2000602c: fffd99cb 00034588 45750000 45839000 200079a0 fffd99cb 0003459b 00fd99cb 
+0x2000604c: 0003459b 0000008d 00002380 
+
+HX:
+0x2000602c: fffd99cb 00034588 45750000 45839000 200079a0 fffd99fb 000345c6 00fd99fb 
+0x2000604c: 000345c6 000000a3 000028c0 
+
+HX:
+0x2000602c: fffd99cb 00034588 45750000 45839000 200079a0 fffd99aa 0003459c 00fd9800 
+0x2000604c: 00034500 000000b8 00002e25 
+
+shutdown command invoked

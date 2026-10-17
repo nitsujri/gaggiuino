@@ -1,0 +1,174 @@
+INDIGO TOUCHSCREEN — IMPLEMENTED CONTRACT, REVISION3
+Target: frozen release/stm32-blackpill, CoffeeHat/GCP PCBv3 LV, STM32F411CE.
+Status: software first-load candidate; physical acceptance pending.
+
+1. Architecture and display
+Controller-native320x240/RGB565 drawing through existing115200 UART and
+FF FF FF command terminators. No replacement HMI/TFT or compiler required.
+Stock global variables/fonts and original brewGraph/graphPreview/bM slider
+are reused. Controller owns navigation, editable settings and operating mode.
+Original visual timers/touch handlers are disabled on overlay pages. Raw0x67
+coordinate frames activate targets only after press+release within one target.
+Sleep0x68 cannot activate controls; wake0x87 redraws overlays; reset0x88 returns
+Home and expires the flush heartbeat. Legacy Home/Tare on native graph remain.
+Versioned command extensions to the display are unnecessary: the new protocol
+is implemented entirely in the controller using existing native instructions.
+Do not change currently installed TFT to a different model/generation.
+
+Native drawing uses fill,xstr,cir,cirs,line; stock font IDs0,1,6. Font6 renders
+temperature, ASCII 'C' avoids unsupported degree glyph. Names1..24 printable
+ASCII bytes. Native fonts retain stock assets; preview PNGs substitute Arial,
+so physical text width/fit and TJC parity remain acceptance items.
+TX bounded400commands, each<192bytes; max2commands per control-loop pass,
+only when full command+terminator fits available buffer; UART TX256bytes
+compile-time checked. RX fixed16bytes, validates packet terminators/timeouts.
+No new framebuffer or bitmap ring assets. Native graph timings remain on TFT.
+Controller startup explicitly restarts the display for its serial handshake
+after SWD-only resets. Display errors are counted and logged on USB. Heartbeat sendme250ms; Home
+Flush stops when valid display contact age>=1500ms, including display reset.
+
+2. Home and navigation
+Indigo RGB565: background0x10e6,foreground0xef9f,panel0x21aa,line0x42ef,
+muted0xadfa,accent0x9d7f,water0x76bb. Celadon-sized circle center102,116,
+outer diameter148/stroke12, temperature-centric. Vertical water indicator.
+Active profile visible; no branding/tray status on Home. Footer Tare left,
+quiet Flush+adjacent on/off circle centered together, Menu tile right.
+Menu: Profiles,Manual flow,Machine settings,Water tank,Cleaning,Tray guard.
+Temperature tap edits active profile's Temp & dose; scale tap opens settings;
+water tap opens calibration. Uptime lives in Machine settings. Weight readout
+can be hidden without disabling scales, predictive behavior or flush guard.
+Sleep minutes, saved brightness,touch wake,physical brew wake retained.
+Warnings are persistent acknowledgable notices; repeated warnings do not
+restart the drawing queue. Critical faults continue stopping outputs regardless
+of notice acknowledgement. Warmup and steam states shown in temperature circle.
+
+3. Profiles and recipes
+Five independent slots. Name selects and persists selection alone; Edit/Rename/
+Defaults never select or commit other draft values. Same selection causes no
+flash write. Saves scoped to one profile or system settings. Reset ALL requires
+confirmation. Active physical switches/brewing/flushing block config changes.
+Six overview buttons: Temp & dose,Preinfusion,Soak,Ramp,Transition,Brew profile.
+Each step all settings on one page, top All/left/right/title/Save. Mode banks
+pressure/flow retain inactive values; all five curve enums0..4 preserved.
+Rename1..24ASCII with uppercase/lowercase/digits/space/-/underscore/period.
+Cancel does not mutate the edited field; draft changes apply in RAM and require
+explicit scope Save for reboot persistence.
+
+Stop on weight retains original first1s inhibition,response compensation and
+controller phase stop; modes OFF / Ratio1:x / fixed positive grams. Canonical
+ratio uint16 hundredths,1:2.50=>250; range0.01..655.35. Fixed0 means ratio.
+Dose positive,float<=1e6; fixed grams>=0,float<=1e6. These are typed storage
+limits, not advice to brew extreme amounts. Legacy shotPreset preserved for
+compatibility and fallback; UI uses ratio field. Computed grams out displayed.
+
+Original basket fill,PI pressure/flow time+exit conditions,soak holds/exits,
+PI ramp,transition hold/ramp caps and main profiling execute original engine.
+Seconds converted using32-bit millis. Empty/reset/finished engine indexing
+fixed and tested. Flow transition hold limit reads correct independent field.
+Original preview uses selected EDITOR draft uploaded to stock graphPreview;
+retains original preview's limitations: linear approximations, incomplete
+conditional exits/curve representation. It is not a full execution simulator.
+Preview never changes the controller active selection or executing recipe.
+
+First schema12->13 migration installs Turbo/SOUP in slots1/2 and selects Turbo,
+only once. Slots3..5 and machine calibration preserved. Originals in backup.
+Turbo92C/15g/fixed45g/constant6bar/6ml/s,noPI/soak/transition.
+SOUP86C/17g/1:3(51g),2s2.5ml/s wetting with1bar cap,8s1bar soak,
+6ml/s extraction with1bar cap,no transition. Generic adaptable starter.
+
+4. Brew and manual
+Automatic brew uses ORIGINAL brewGraph page/assets/colors: pressure893,flow
+65504,weight16051,temp63488,timer64171,black background. Original Home/Tare;
+no added bottom controls. Graph rectangle0,41,320,144;220mscolumn;45pxdivision
+=>9.9seconds;130%yscale;fourchannels,dir1. MCU150ms refresh is not timebase.
+50ms timer retained. Finished trace freezes; optional Home after10seconds.
+Tare preserves physical/predictive behavior and clears only weight channel.
+
+Manual is independent Menu route, native h0 slider0..130=>0..13ml/s,0.1steps,
+zero on entry,250ms asynchronous target reads. Readouts current temperature,
+pressure,elapsed,pump-estimated flow,local/remote weight if available,target.
+Physical brew starts/stops. No auto weight cutoff. Physical hotwater/steam
+precedence retained. Auto/Back cannot leave Manual while Brew switch held.
+No manual target stored in recipe. New controller ignores old HMI modeSelect.
+
+5. Tank
+ToF enabled, four-sample average; valid range/status, freshness<=1000ms.
+Full initial30mm,persisted1..124. Capture fresh full-tank reading or enter;
+explicit Save. mm<=full=>100%;full<mm<=125=>round(10+90*(125-mm)/(125-full));
+mm>125=>9%. Low warning<10 unchanged. Invalid/stale shows unavailable and
+is treated low for physical pump/steam and all automatic flush operations.
+Sensor polls on every page; init one bounded attempt; missing at boot requires
+powercycle after repair. Low-water recovery with any physical switch held
+latches outputs off until ALL physical switches turned OFF, then restart.
+
+6. Scales and flush
+Installed shared-clock dual HX711/FPC retained, internalCLKpullup/16us recovery.
+Atomic nonblocking read preserves conversion status; timeout cannot become0
+valid gross load. Local cached readingsfresh<=300ms,rail/hard0invalid. Tare
+uses recent absolute readings. Remote/predictive fallback stays available for
+ordinary espresso/manual; neither can authorize automatic group discharge.
+No SINGLE_HX711_BOARD or forced-predictive flag. Both signed factors retained.
+
+Gross=sum((absolute_raw-no_tray_raw)/factor),independent tare/readout toggle.
+UI Capture NO-TRAY needs4fresh settled conversions (<=1g spread/channel),
+tray removed confirmation; stores both offsets atomically in RAM, then Save.
+Uncalibrated/offline/stale/invalid/missing gross denies automatic boiler fill
+and pressure release (and retained automatic cleaning cycles). Positive
+minimum defaults150g,75% of a200g aftermarket tray listing; OEM assembly weight
+was not verified. Real empty tray margin must be tested.
+Sufficient load detects a container, not geometric tray identity.
+
+Home Flush explicit toggle with full pump/open group valve/heaterOFF. Requires
+no competing physical switches,good water,fresh display. It ignores tray
+weight and can run while automatic startup fill is waiting for calibration. OFF always allowed. Loss stops and clears latch; no autoresume.
+Automatic boiler fill/idle pressure release and cleaning cycles use the local
+gross policy. Cleaning
+checks every loop including pulses; interrupted cleaning requires BrewOFF to
+reset. Ordinary shot valve is separate. Startup fill checks local gross,water and
+switches on every loop,independent of overlays/notices. Its normal pressure/
+time rules start only once prerequisites are met; loss resets the fill budget
+and stops outputs. Calibration notices are deduplicated so Menu stays usable.
+
+7. Heat, cleaning and auxiliaries
+Production boiler startup fill and thermocouple warning restored; no bench
+lockout/bypass. Invalid/nonfinite/<=0/>=170C forces pump/boiler/steam boilerOFF,
+closes cleaning outputs, cancels HomeFlush, and keeps watchdog/UI serviced.
+Compiler Ofast removed so nonfinite tests cannot be optimized away.
+Forgotten-steam loop now refreshes physical switches to permit recovery.
+Idle-pressure release yields when physical switches change. Normal steam,
+hotwater/brew+steam combo,dreamsteam,heater offsets/dividers,zero-cross50/60Hz,
+pumpmodel,LED settings/effects (when an LED driver is configured),ESP communications and USB logging preserved.
+
+Cleaning state machines made nonblocking. Backflush:pressure>5bar andelapsed
+>7s gate once,then11counts of5s alternating; pressure fall cannot restart rest.
+Descale30s raw10/60sOFF/10s raw30,then1sclosed/200msopen threeclosures,
+original100count progression; unheated; never writes profile temperature9.
+Guard/switch/water/temp loss aborts immediately on observed input; actual
+sensor/loop latency must be measured on hardware, not asserted from unit tests.
+
+8. Settings schema and validation
+Schema13 cfg1056bytes/profile200; metadata1072,valuesoffset8. Frozen schema12
+cfg1040/profile200 retained explicitly. New ratio occupies old tailpadding;
+field-by-field migration ignores old padding. New globals full distance,
+brightness,traycalibrated,bothsignedrawzeros,minimum. CRC32 values plus old
+version/timestampXOR detects damage; validates loaded and saved configuration.
+Actual1040byte capture fixture migration tested. All75originalstored fields
+mapped in field-matrix; added fields/actions explicit. No name-based startup
+replacement. Bad/unsupported data logs and defaults; CRC is not power-fail
+journaling. Sudden loss during EEPROM erase/write may require backup restore.
+
+Validation: temp1..165,dividers/heater>=1,50/60Hz,factorsnonzero+-20000,
+pumpzero0.2100..0.3100,curve0..4,full1..124,brightness1..100,positive minimum,
+finite/nonnegative recipe values. Settings CRC corruption is detectable; do
+not claim old EEPROM persistence is atomic across a power loss.
+
+9. Verification and deployment
+Main all-pcb-stlink and calibration builds required; ASan/UBSan native tests;
+actual productionrenderer PNG commands/layout checks; realcapturemigration;
+read-only schema12/13 backupdecoder and hash manifest. No hardware upload has
+been performed. See ACCEPTANCE.csv for physical checks still NOT RUN. No
+software test proves safe actual pump/heater/valve/touchscreen response.
+Load controller only via ST-Link, mains disconnected. Do not press BOOT/NRST
+normally. First full pair powercycle,settings verification,tray/tank setup,
+then controlled machine commissioning. See LOADING.txt. Matching full flash
+backup required for schema13 rollback; original TFT remains unchanged.

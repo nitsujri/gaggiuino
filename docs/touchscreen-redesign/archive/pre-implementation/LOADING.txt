@@ -1,0 +1,125 @@
+INDIGO LOADING AND ROLLBACK — CONDITIONAL PROCEDURE, NOT A RELEASE
+
+Current status: DO NOT INSTALL INDIGO YET. There is no Indigo TFT or paired
+controller integration. The existing .tft files in the repository are stock.
+The built .pio/build/all-pcb-stlink/firmware.bin contains audit fixes and the
+old interface; it is not the new interface, and local ToF enable is absent.
+The browser HTML cannot be copied to a Nextion/TJC or flashed to the STM32.
+
+What is needed before these instructions become executable
+- Exact display model printed on its rear label, including Basic/Discovery/TJC.
+- Native HMI implementation and a successfully compiled exact-model TFT.
+- Matching controller protocol, versioned settings migration, persistent
+  selection/ratio/tank calibration, comprehensive flush guard implementation.
+- Real no-tray baseline calibration and the required acceptance evidence.
+See AUDIT.txt for remaining work, not just missing display identification.
+
+The eventual installation is TWO separate loads
+1. Controller firmware goes to the STM32 BlackPill via ST-Link/SWD.
+2. Compiled touchscreen .tft goes to the display, normally via its microSD.
+The BlackPill USB-C port is not the display's SD programmer. BOOT/NRST on
+BlackPill do not put the display into an upload mode.
+
+Before either load
+1. Disconnect the coffee machine from mains. Let it cool; switches OFF.
+2. Keep the known controller/display pair, full flash, decoded settings and
+   EEPROM backup. Repeat the settings capture immediately before deployment
+   because today's capture may no longer equal the latest user settings.
+3. Confirm the low-voltage power arrangement. Do not add ST-Link power to an
+   already-powered rail blindly. Use the established safe board supply and
+   common ground; ST-Link signal reference must match the BlackPill supply.
+4. Use BlackPill SWD, not PCBv3 J27 UART/BOOT/RESET header as a substitute.
+5. Check exact model and hashes against the final paired release manifest.
+   The manifest must say ready=true with actual artifacts and acceptance.
+   Current release-status.json intentionally says ready=false.
+
+Controller load (ONLY AFTER A VERIFIED PAIRED RELEASE EXISTS)
+In /Users/justin/dev/castlelouie/gaggiuino use the released source and exact
+released extra_defines.ini. Default environment stays all-pcb-stlink. Preserve
+HX711_CLOCK_PULLUP and HX711_CLOCK_HALF_PERIOD_US=16; explicitly enable ToF
+in the final production config and supply both real no-tray raw offsets.
+No SINGLE_HX711_BOARD, forced predictive or LEGO environment.
+
+Build:
+    pio run -e all-pcb-stlink
+
+After matching the resulting firmware hash to the release, machine still
+unplugged from mains, connect ST-Link to SWD and upload:
+    pio run -e all-pcb-stlink -t upload
+
+ST-Link normally needs NEITHER BOOT nor NRST button. Keep BOOT released/low.
+Wait for successful programming and verification. If connection fails, stop
+and diagnose SWD/power/reset; do not use DFU button instructions at random.
+A connect-under-reset recovery requires a deliberate NRST/SWD arrangement.
+
+Touchscreen load (Nextion procedure; TJC requires model-specific validation)
+1. Use the final exact-model Indigo .tft, not any of the stock .tft files.
+2. Prepare a supported FAT32 microSD smaller than32GB; preserve any files on
+   an existing card before reformatting. Put only the matching .tft at its root.
+3. With display power OFF, insert the card into the DISPLAY's microSD socket.
+4. Power the display from the confirmed low-voltage supply, with machine mains
+   disconnected. Do not interrupt the update. Wait for its success indication.
+5. Power OFF, remove the card, then power ON. Confirm Indigo boot and version.
+6. Keep heaters/pump/valve outputs disconnected or otherwise inhibited for the
+   first integrated boot while validating the new pair and migrated settings.
+   Do not run the machine with a mismatched old/new controller/display pair.
+
+Manufacturer SD method source:
+https://itead.cc/nextion/how-to-use-nextion-to-work-with-raspberry-pi/
+Manufacturer compile/debug/TFT workflow:
+https://itead.cc/nextion/nextion-editor%EF%BC%9Aa-basic-introduction/
+These support the general Nextion procedure; exact installed model remains
+unconfirmed. Do not apply a Nextion firmware file to TJC by resemblance.
+
+First paired boot and commissioning
+- Verify original system offset7, factors3920/4210 and pump-zero0.2225 against
+  the FRESH capture, not just these historical values. Verify all other system
+  values and three retained profiles, and intended Turbo/SOUP initialization.
+- Verify default tank-full30mm; fill tank then use software full calibration.
+  Check low warning beyond125mm unchanged. Invalid sensor cannot calibrate.
+- Verify local dual scales and record both no-tray raw baselines with no tray.
+  Refit empty tray; choose measured threshold with margin. Guard stays blocked
+  until configured. Test tare/weight-displayOFF do not bypass it.
+- Verify all buttons, profile save/select/rename persistence, manual mode,
+  physical switches and fault paths with outputs inhibited. Work through
+  ACCEPTANCE.csv; current NOT RUN rows are not evidence of readiness.
+- Production must restore boiler-fill and temperature-fault handling. The last
+  verified installed image was a sensor-only bench image. Changing to normal
+  heating/pump behavior is a distinct commissioning step, not just a new skin.
+- Disconnect programming/power safely before reconnecting machine mains for
+  controlled functional testing. Do not leave live mains exposed while wiring.
+
+Rollback
+A settings schema upgrade can make an old firmware reset settings. Restore
+the matching old controller+EEPROM+display pair, not just an old firmware.bin.
+
+Available historical controller backup:
+    tmp/settings-backup/controller-flash.bin       full512KB incl EEPROM
+    tmp/settings-backup/eeprom-page.bin            captured settings page
+    tmp/settings-backup/running-config.bin         decoded RAM source
+    tmp/settings-backup/settings.json              saved/running schema12
+Durable duplicate:
+    .git/local-backups/2026-10-17-touchscreen-settings/
+
+The full backup's firmware prefix was checked against the verified bench
+image SHA25636f744337858f02aae39db0966929091282f42d0e7bb4afe4a3e7de497fd58ba.
+It restores SENSOR-ONLY BENCH behavior, not a commissioned normal machine.
+Do not infer that restoring this full backup makes espresso operation ready.
+
+Use an established ST-Link flash tool to restore that exact full image at
+0x08000000, including its settings, and VERIFY readback; machine mains must
+remain disconnected. A normal pio upload does not perform this full settings
+rollback. Restore the exact previous-model TFT separately. Stock candidates
+are nextion-basic-lcd.tft / nextion-discovery-lcd.tft / tjc-basic-lcd.tft; choose
+only after confirming the actual installed model and compatibility. The exact
+currently installed display bytes were NOT read back, so stock TFTs are
+reference candidates, not a verified byte-for-byte display backup.
+
+Reproduction commands that are safe to run NOW (no hardware writes)
+    python3 tools/touchscreen-audit/audit.py
+    node tmp/touchscreen-indigo/test-trials.cjs
+    pio run -e all-pcb-stlink
+    PLATFORMIO_BUILD_FLAGS='-std=gnu++17 -Wno-error=missing-template-arg-list-after-template-kw -fsanitize=address,undefined -fno-omit-frame-pointer' pio test -e test
+Run PlatformIO commands sequentially: environment switches can clean shared
+build directories. Native compatibility override is for Apple Clang21 with
+old ArduinoFake; no dependency sources were modified.

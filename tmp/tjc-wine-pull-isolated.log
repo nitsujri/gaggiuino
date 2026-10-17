@@ -1,0 +1,66 @@
+stable: Pulling from scottyhardy/docker-wine
+a60ef8ec184e: Pulling fs layer
+34741082285b: Pulling fs layer
+465b955879a7: Pulling fs layer
+d05af141efc2: Pulling fs layer
+e13036e6531c: Pulling fs layer
+c5a57636d473: Pulling fs layer
+57c983250821: Pulling fs layer
+952f602cafaa: Pulling fs layer
+58ea6f1e65e8: Pulling fs layer
+16493c479463: Pulling fs layer
+a94c6f101296: Pulling fs layer
+af5c203c2c4a: Pulling fs layer
+46f01a2d4a0d: Pulling fs layer
+d05af141efc2: Waiting
+e13036e6531c: Waiting
+c5a57636d473: Waiting
+57c983250821: Waiting
+952f602cafaa: Waiting
+58ea6f1e65e8: Waiting
+16493c479463: Waiting
+a94c6f101296: Waiting
+af5c203c2c4a: Waiting
+46f01a2d4a0d: Waiting
+465b955879a7: Verifying Checksum
+465b955879a7: Download complete
+d05af141efc2: Verifying Checksum
+d05af141efc2: Download complete
+e13036e6531c: Verifying Checksum
+e13036e6531c: Download complete
+a60ef8ec184e: Verifying Checksum
+a60ef8ec184e: Download complete
+a60ef8ec184e: Pull complete
+c5a57636d473: Verifying Checksum
+c5a57636d473: Download complete
+952f602cafaa: Verifying Checksum
+952f602cafaa: Download complete
+58ea6f1e65e8: Verifying Checksum
+58ea6f1e65e8: Download complete
+16493c479463: Verifying Checksum
+16493c479463: Download complete
+a94c6f101296: Verifying Checksum
+a94c6f101296: Download complete
+af5c203c2c4a: Verifying Checksum
+af5c203c2c4a: Download complete
+46f01a2d4a0d: Verifying Checksum
+46f01a2d4a0d: Download complete
+34741082285b: Verifying Checksum
+34741082285b: Download complete
+57c983250821: Verifying Checksum
+57c983250821: Download complete
+34741082285b: Pull complete
+465b955879a7: Pull complete
+d05af141efc2: Pull complete
+e13036e6531c: Pull complete
+c5a57636d473: Pull complete
+57c983250821: Pull complete
+952f602cafaa: Pull complete
+58ea6f1e65e8: Pull complete
+16493c479463: Pull complete
+a94c6f101296: Pull complete
+af5c203c2c4a: Pull complete
+46f01a2d4a0d: Pull complete
+Digest: sha256:2133f429d75dd4f652580554279212105bf91d9eafd5ff8e7773dbe83a8b5b2f
+Status: Downloaded newer image for scottyhardy/docker-wine:stable
+docker.io/scottyhardy/docker-wine:stable

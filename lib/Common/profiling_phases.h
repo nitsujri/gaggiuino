@@ -118,7 +118,10 @@ private:
   Profile& profile;
   size_t currentPhaseIdx = 0; // The index at which the profiler currently is.
   ShotSnapshot phaseChangedSnapshot = ShotSnapshot{0, 0, 0, 0, 0, 0}; // State when the profiler move to this currentPhaseIdx
-  CurrentPhase currentPhase = CurrentPhase(0, profile.phases[0], 0, phaseChangedSnapshot);
+  // Construction happens before the global profile has any phases. Keep a
+  // valid zero-output phase for that state and after an empty profile reset.
+  Phase idlePhase = {PHASE_TYPE::PHASE_TYPE_PRESSURE, Transition(0.f), 0.f, PhaseStopConditions{}};
+  CurrentPhase currentPhase = CurrentPhase(-1, idlePhase, 0, phaseChangedSnapshot);
 
 public:
   PhaseProfiler(Profile& profile);

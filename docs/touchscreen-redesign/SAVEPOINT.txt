@@ -1,0 +1,33 @@
+SAVED WORK — 17 OCTOBER 2026
+
+Branch: ui/redesign
+This is an experimental work-in-progress savepoint, not a deployment release.
+All redesign source, tests, specs, interactive designs, captured machine settings,
+firmware artifacts and rollback evidence are preserved in this branch.
+
+Installed controller: exact pre-Indigo sensor-only testing firmware and settings.
+Restoration was verified against the full 512KB backup byte for byte.
+Installed display: unchanged TJC3224T028. No new TFT has been compiled or loaded.
+Indigo is not currently installed. A paired TFT build and physical acceptance
+remain unfinished. See release-status.json and tmp/indigo-rollback/restore-result.json.
+
+Earlier loading instructions and generated package metadata retain historical
+controller-only/no-TFT claims. Those claims are withdrawn. Do not use them as
+current deployment approval. The restored image includes the previous testing
+bypasses; it is not a production-ready machine image.
+
+A normal build/upload from this branch would build the experimental Indigo
+controller. The exact restored image is preserved at:
+  tmp/settings-backup/controller-flash.bin
+SHA256: 5eaf7905ee786803836b3324ac386e57c8fe46137ed8e2ff0fce4dab0f8ce400
+
+Saved interactive designs: tmp/touchscreen-designs*, tmp/touchscreen-indigo/
+Native renderer previews: tmp/indigo-native-preview/
+Sensor probe source and dashboard: tools/blackpill-logic-probe/
+Sensor captures and firmware recovery evidence: tmp/blackpill-probe/
+Build/test evidence and experimental binaries: tmp/indigo-release/
+Local hardware flags are gitignored; docs/touchscreen-redesign/
+extra_defines.indigo.ini provides the saved Indigo configuration example.
+
+Downloaded third-party TJC/Wine tools and build/browser caches remain local
+and are excluded from Git. They contain no unique redesign source.

@@ -1,0 +1,15 @@
+{
+  "controller_serial": "3563377A3534",
+  "firmware_sha256": "36f744337858f02aae39db0966929091282f42d0e7bb4afe4a3e7de497fd58ba",
+  "firmware_bytes": 129376,
+  "clock_pullup": true,
+  "half_period_us": 16,
+  "external_pullup": false,
+  "bench_actuator_lockout": true,
+  "main_build": "passed",
+  "bench_build": "passed",
+  "calibration_build": "passed",
+  "upload_verification": "OpenOCD Verified OK",
+  "reset_log": "clock-fix-reset-verification.log",
+  "timestamp_utc": "2026-10-17T06:59:53Z"
+}

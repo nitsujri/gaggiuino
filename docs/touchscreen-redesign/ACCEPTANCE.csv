@@ -1,0 +1,62 @@
+id,acceptance_test,status,evidence
+BUILD01,Build all-pcb-stlink from released source/config; record RAM/flash/hash,PASS (SOFTWARE),main/calibration build logs in tmp/indigo-release
+TEST01,Run original/new native cases with address+undefined sanitizers,PASS (SOFTWARE),49native cases underASan/UBSan; tmp/indigo-tests.log
+TEST02,Run all prototype behavior/field/navigation checks,REFERENCE ONLY,557old browser checks; superseded by actual C++ UI tests for implementation evidence
+INV01,Enumerate every original HMI component/event and stored field,PASS (SOFTWARE),inventory.json baseline field coverage + HMI inventory
+MODEL01,Confirm exact installed display model from rear label/connect response,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+HMI01,Compile native Indigo HMI for exact model; zero errors; archive source/TFT/compiler,N/A,No new display artifact; native controller drawing on unchanged stockTFT. Actual font/UART checks remain HMI03/HMI04.
+HMI02,Measure native image/font/script flash and working RAM with margin,N/A,No new display artifact; native controller drawing on unchanged stockTFT. Actual font/UART checks remain HMI03/HMI04.
+HMI03,Verify every touch target and glyph at320x240 with real display,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+HMI04,Verify temperature ring update/sampling does not starve UART/safety loop,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+PROTO01,Verify all legacy serial reads/writes/triggers or paired migrations,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+PROTO02,Handshake mismatch or disconnect cannot start/latch flush,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+PROFILE01,Every55 profile field roundtrips for each of5 slots incl inactive banks,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+PROFILE02,All19 non-selection globals roundtrip; scope never bleeds,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+PROFILE03,Select each profile then powercycle; selection remembered without saving drafts,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+PROFILE04,Edit/rename/default inactive profile; selection stays unchanged across reboot,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+PROFILE05,Switch pressure/flow banks repeatedly with pending edits and save/reboot,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+PROFILE06,Step previous/next/keyboard Cancel retain editor/step; all controls one page,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+PROFILE07,Invalid index/name/failed serial read rejected; no partial save or startup selection,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+PROFILE08,Select/edit during brew cannot reconfigure the active shot,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+RATIO01,Decimal1:2.50 exact persistence and execution; fixedgrams mode independent of dose,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+RATIO02,StopOFF disables global weight stop; compare response-compensation/first1s behavior,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+PHASE01,Compare phase graphs for all captured recipes before/after migration,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+PHASE02,Exercise PI time/pressure/weight/water exits; soak above/below/weight exits,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+PHASE03,Exercise pressure+flow transition hold/ramp caps independently and main limits,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+PHASE04,Verify all5 curves incl adaptive start0;65/66/90s transitions no overflow,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+PHASE05,Construct/reset/finish/clear empty and zero-time phases; early global stop,PASS (SOFTWARE),native profiler tests underASan/UBSan
+GRAPH01,220ms/column45px9.9s divisions; four channels130%; correct scroll direction,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+GRAPH02,Timer/pause/Finished/frozen traces/original top controls/no bottom additions,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+GRAPH03,Tare clears only weight trace; hardware tare and predictive force-start retained,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+GRAPH04,Home-after-shot waits10s; sleep/wake and entering menus cannot start/stop accidentally,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+PREVIEW01,Verify retained stock preview of edited settings; document inherited curve/conditional-exit limitations,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+MANUAL01,0..13ml/s0.1 steps;zeroentry;slider live;physical switchON/OFF;scale disconnected,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+MANUAL02,No automatic weight stop or profile writes; safe Auto/Back transition during flow,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+SCALE01,Dual local channels both factors/signs; tare; smoothing; disconnect/reconnect,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+SCALE02,Remote/predictive automatic fallback retained and labeled estimated,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+TRAY01,Calibrate no-tray raw1/raw2 and measured empty tray threshold; save/reboot,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+TRAY02,Automatic boiler fill/idle release deny missing/offline/stale/invalid/unconfigured local gross; manual Home Flush bypasses tray,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+TRAY03,Tare/hide scale/remove cup cannot bypass gross guard; predictive/remote rejected,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+TRAY04,Remove tray during automatic fill/release and cleaning; stop on stale/missing local data; Home Flush remains available manually,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+TRAY05,Timeout each sample inside average rejected; guard checked during solenoid pulses,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+TRAY06,Brew/manual/steamwand-onlywater remain usable when scales fail,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+WATER01,Full default30;validcapture;save/reboot;boundaries1/full/124/125/126mm,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+WATER02,Low threshold>125=>9 unchanged; invalid/stale ranges cannot calibrate or show100,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+WATER03,Missing sensor boot bounded; reads continue offHome; fault/recovery behavior,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+CLEAN01,Backflush>7s+>5bar then11-count5s phases;stop at all stages;guard loss,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+CLEAN02,Descale30sraw10/60sOFF/10sraw30/pulses/cycle100;physicalstop;guard loss,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+CLEAN03,Descale heat override restored on every exit; original profile saved unchanged,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+HEAT01,Production boiler-fill requires tray gross>=150g and restarts timer after prerequisite wait; temperature protection enabled,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+HEAT02,Inject0/negative/NaN/infinity/>=170 temp; prove all required outputsOFF,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+HEAT03,Brew/idle heat and delta/offset behavior/timing with original calibration,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+STEAM01,Physical switch precedence;pressure/temp limits;dreamsteam;forgotten15min,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+WATERMODE01,Physical water and brew+steam combo;proper valves/pump/temp limit,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+AUX01,Sleepminute/brightness/touch+brewwake/uptime/warmup/steam indications,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+AUX02,All LED states/disco/colors;50/60Hzdetect;pumpzero/ESPtelemetry/USBlogs/watchdog,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+COMMS01,Profile serialize/deserialize content+count;empty/truncated/overflowedcount payloads,PASS (SOFTWARE),native serializer tests underASan/UBSan
+DATA01,Migrate actual schema12 captured1040-byte config;allcalibration+3retainedprofiles exact,PASS (SOFTWARE),captured1040byte fixture migration test
+DATA02,InitialTurbo/SOUP once;reboot preserves edited values/lastselected;no name overwrite,PASS (SOFTWARE),once-only migration and independent save/select tests
+DATA03,Invalid/corrupt/unsupportedversion/powerfailure storage never silently reset calibration,PARTIAL (SOFTWARE),CRC/validation corruption tests pass; actual powerfailure NOT RUN; no journaling
+DATA04,Backup/hash/readback and restore matched oldfirmware+EEPROM+display onspare,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed
+RELEASE01,Controller artifact manifest and native integration; stock display assets unchanged,PASS (SOFTWARE),manifest+controller-native implementation; existingTFT retained
+RELEASE02,Controlled outputs-disconnected integration tests then machine commissioning,NOT RUN (HARDWARE),Software source/native coverage described in AUDIT.txt; physical procedure not performed

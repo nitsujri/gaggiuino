@@ -11,7 +11,7 @@
 #endif
 
 #ifndef DRIP_TRAY_MIN_WEIGHT_G
-#define DRIP_TRAY_MIN_WEIGHT_G 100.f
+#define DRIP_TRAY_MIN_WEIGHT_G 150.f
 #endif
 
 #ifndef DRIP_TRAY_RETRY_MS
@@ -19,8 +19,12 @@
 #endif
 
 #include "measurements.h"
+#include "../eeprom_data/eeprom_data.h"
 #include "drip_tray_guard.h"
 
+void scalesPoll();
+void scalesConfigure(eepromValues_t& cfg);
+bool scalesCaptureTrayZero(eepromValues_t& cfg);
 void scalesInit(float scalesF1, float scalesF2);
 void scalesTare(void);
 Measurement scalesGetWeight(void);

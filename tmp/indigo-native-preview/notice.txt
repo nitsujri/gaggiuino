@@ -1,0 +1,15 @@
+page home
+tm0.en=0
+bkcmd=2
+tsw 255,0
+vis 255,0
+sendxy=1
+thsp=960
+thup=1
+dim=90
+fill 0,0,320,240,4326
+xstr 8,32,304,32,1,65535,4326,0,1,1,"Notice"
+xstr 12,80,296,23,0,65535,4326,0,1,1,"Flush stopped: check tray / tank /"
+xstr 12,104,296,23,0,65535,4326,0,1,1,"display"
+fill 60,190,200,36,8618
+xstr 62,191,196,34,0,61343,8618,1,1,1,"OK"

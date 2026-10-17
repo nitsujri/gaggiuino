@@ -1,0 +1,381 @@
+Processing all-pcb-stlink (framework: arduino; platform: ststm32@15.6.0; board: blackpill_f411ce)
+--------------------------------------------------------------------------------
+Verbose mode can be enabled via `-v, --verbose` option
+
+FIRMWARE VERSION: 18d3e32
+
+PROJECT SOURCE DIR: //$PROJECT_DIR/src
+
+PROJECT DATA DIR: //$PROJECT_DIR/src/data
+CONFIGURATION: https://docs.platformio.org/page/boards/ststm32/blackpill_f411ce.html
+PLATFORM: ST STM32 (15.6.0) > WeAct Studio BlackPill V2.0 (STM32F411CE)
+HARDWARE: STM32F411CEU6 100MHz, 128KB RAM, 512KB Flash
+DEBUG: Current (stlink) External (blackmagic, cmsis-dap, jlink, stlink)
+PACKAGES: 
+ - framework-arduinoststm32 @ 4.20400.0 (2.4.0) 
+ - framework-cmsis @ 2.50700.210515 (5.7.0) 
+ - tool-cppcheck @ 1.260.0 (2.60) 
+ - toolchain-gccarmnoneeabi @ 1.90201.191206 (9.2.1)
+Converting gaggiuino.ino
+LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf
+LDF Modes: Finder ~ chain, Compatibility ~ strict
+Found 29 compatible libraries
+Scanning dependencies...
+Dependency Graph
+|-- ADS1X15 @ 0.3.7
+|-- FlashStorage_STM32 @ 1.2.0
+|-- SerialTransfer @ 3.1.5
+|-- SimpleKalmanFilter @ 0.2.0+sha.fc29b51
+|-- Easy Nextion Library @ 1.0.6+sha.1272a6d
+|-- PSM @ 0.0.1+sha.8a920d6
+|-- HX711 @ 0.7.5+sha.52b172f
+|-- NCP5623 @ 0.0.0+20260829075240.sha.962798c
+|-- Adafruit_VL53L0X @ 1.2.2+sha.0aff489
+|-- movingAvg @ 2.3.2+sha.63dfeb5
+|-- PCA9632 @ 1.1.1+sha.8cc2bc7
+|-- Adafruit MAX31855 library @ 1.3.0
+|-- Common
+|-- IWatchdog @ 1.0.0
+|-- Wire @ 1.0.0
+Building in release mode
+Compiling .pio/build/all-pcb-stlink/FrameworkArduinoVariant/PeripheralPins.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduinoVariant/PeripheralPins_BLACKPILL_F411CE.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduinoVariant/PeripheralPins_THUNDERPACK_F411.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduinoVariant/generic_clock.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduinoVariant/variant_BLACKPILL_F411CE.cpp.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduinoVariant/variant_THUNDERPACK_F411.cpp.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduinoVariant/variant_generic.cpp.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_adc.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_adc_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_can.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_cec.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_comp.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_comp_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_cordic.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_cortex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_crc.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_crc_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_cryp.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_cryp_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dac.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dac_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dcache.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dcmi.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dcmi_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dfsdm.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dfsdm_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dma.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dma2d.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dma_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dsi.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dts.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_eth.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_eth_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_exti.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_fdcan.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_firewall.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_flash.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_flash_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_flash_ramfunc.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_fmac.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_fmpi2c.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_fmpi2c_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_fmpsmbus.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_fmpsmbus_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_gfxmmu.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_gpio.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_gpio_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_gpu2d.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_gtzc.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_hash.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_hash_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_hcd.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_hrtim.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_hsem.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_i2c.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_i2c_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_i2s.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_i2s_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_icache.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_ipcc.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_irda.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_iwdg.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_jpeg.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_lcd.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_lptim.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_ltdc.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_ltdc_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_mdf.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_mdios.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_mdma.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_mmc.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_mmc_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_nand.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_nor.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_opamp.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_opamp_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_ospi.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_otfdec.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_pccard.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_pcd.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_pcd_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_pka.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_pssi.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_pwr.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_pwr_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_qspi.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_ramcfg.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_ramecc.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_rcc.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_rcc_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_rng.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_rng_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_rtc.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_rtc_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_sai.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_sai_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_sd.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_sd_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_sdadc.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_sdram.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_smartcard.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_smartcard_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_smbus.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_smbus_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_spdifrx.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_spi.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_spi_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_sram.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_subghz.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_swpmi.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_tim.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_tim_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_tsc.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_uart.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_uart_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_usart.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_usart_ex.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_wwdg.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_xspi.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/HardwareTimer.cpp.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_adc.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_bdma.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_comp.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_cordic.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_crc.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_crs.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_dac.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_delayblock.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_dlyb.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_dma.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_dma2d.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_exti.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_fmac.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_fmc.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_fmpi2c.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_fsmc.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_gpio.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_hrtim.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_i2c.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_icache.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_lpgpio.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_lptim.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_lpuart.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_mdma.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_opamp.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_pka.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_pwr.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_rcc.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_rng.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_rtc.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_sdmmc.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_spi.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_swpmi.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_tim.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_ucpd.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_usart.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_usb.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/LL/stm32yyxx_ll_utils.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/new.cpp.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/stm32/PortNames.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/stm32/analog.cpp.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/stm32/bootloader.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/stm32/clock.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/stm32/core_callback.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/stm32/dwt.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/stm32/hw_config.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/stm32/interrupt.cpp.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/stm32/otp.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/stm32/pinmap.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/stm32/stm32_def.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/stm32/system_stm32yyxx.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/stm32/timer.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/stm32/uart.c.o
+Compiling .pio/build/all-pcb-stlink/SrcWrapper/src/syscalls.c.o
+Compiling .pio/build/all-pcb-stlink/src/eeprom_data/eeprom_data.cpp.o
+Compiling .pio/build/all-pcb-stlink/src/functional/descale.cpp.o
+Compiling .pio/build/all-pcb-stlink/src/functional/just_do_coffee.cpp.o
+Compiling .pio/build/all-pcb-stlink/src/gaggiuino.ino.cpp.o
+Compiling .pio/build/all-pcb-stlink/src/lcd/nextion.cpp.o
+Compiling .pio/build/all-pcb-stlink/src/log.cpp.o
+Compiling .pio/build/all-pcb-stlink/src/peripherals/esp_comms.cpp.o
+Compiling .pio/build/all-pcb-stlink/src/peripherals/pressure_sensor.cpp.o
+/Users/justin/dev/castlelouie/gaggiuino/src/gaggiuino.ino: In function 'void addMainExtractionPhasesAndRamp()':
+/Users/justin/dev/castlelouie/gaggiuino/src/gaggiuino.ino:591:57: warning: narrowing conversion of 'curveTime' from 'uint32_t' {aka 'long unsigned int'} to 'long int' [-Wnarrowing]
+  591 |         addFlowPhase(Transition{ fpStart, fpEnd, curve, curveTime }, ACTIVE_PROFILE(runningCfg).tfProfilingPressureRestriction, curveTime, -1, -1, -1, -1);
+      |                                                         ^~~~~~~~~
+/Users/justin/dev/castlelouie/gaggiuino/src/gaggiuino.ino:609:61: warning: narrowing conversion of 'curveTime' from 'uint32_t' {aka 'long unsigned int'} to 'long int' [-Wnarrowing]
+  609 |         addPressurePhase(Transition{ ppStart, ppEnd, curve, curveTime }, ACTIVE_PROFILE(runningCfg).tpProfilingFlowRestriction, curveTime, -1, -1, -1, -1);
+      |                                                             ^~~~~~~~~
+Compiling .pio/build/all-pcb-stlink/src/peripherals/pump.cpp.o
+Compiling .pio/build/all-pcb-stlink/src/peripherals/remote_scales.cpp.o
+Compiling .pio/build/all-pcb-stlink/src/peripherals/scales.cpp.o
+Compiling .pio/build/all-pcb-stlink/liba1f/Wire/Wire.cpp.o
+Compiling .pio/build/all-pcb-stlink/liba1f/Wire/utility/twi.c.o
+Compiling .pio/build/all-pcb-stlink/lib73b/ADS1X15/ADS1X15.cpp.o
+Compiling .pio/build/all-pcb-stlink/lib168/EEPROM/utility/stm32_eeprom.c.o
+Compiling .pio/build/all-pcb-stlink/libc3f/SPI/SPI.cpp.o
+Compiling .pio/build/all-pcb-stlink/libc3f/SPI/utility/spi_com.c.o
+Compiling .pio/build/all-pcb-stlink/lib47b/SerialTransfer/I2CTransfer.cpp.o
+Archiving .pio/build/all-pcb-stlink/lib168/libEEPROM.a
+Compiling .pio/build/all-pcb-stlink/lib47b/SerialTransfer/Packet.cpp.o
+Compiling .pio/build/all-pcb-stlink/lib47b/SerialTransfer/SPITransfer.cpp.o
+Indexing .pio/build/all-pcb-stlink/lib168/libEEPROM.a
+Archiving .pio/build/all-pcb-stlink/liba1f/libWire.a
+Compiling .pio/build/all-pcb-stlink/lib47b/SerialTransfer/SerialTransfer.cpp.o
+Indexing .pio/build/all-pcb-stlink/liba1f/libWire.a
+Archiving .pio/build/all-pcb-stlink/lib73b/libADS1X15.a
+Compiling .pio/build/all-pcb-stlink/lib760/SimpleKalmanFilter/SimpleKalmanFilter.cpp.o
+Indexing .pio/build/all-pcb-stlink/lib73b/libADS1X15.a
+Compiling .pio/build/all-pcb-stlink/liba21/Easy Nextion Library/EasyNextionLibrary.cpp.o
+Compiling .pio/build/all-pcb-stlink/liba21/Easy Nextion Library/callTriggers.cpp.o
+Compiling .pio/build/all-pcb-stlink/liba21/Easy Nextion Library/readCustomCommands.cpp.o
+Compiling .pio/build/all-pcb-stlink/libda8/PSM/PSM.cpp.o
+Archiving .pio/build/all-pcb-stlink/libc3f/libSPI.a
+Compiling .pio/build/all-pcb-stlink/lib744/HX711/HX711.cpp.o
+Indexing .pio/build/all-pcb-stlink/libc3f/libSPI.a
+Archiving .pio/build/all-pcb-stlink/lib47b/libSerialTransfer.a
+Archiving .pio/build/all-pcb-stlink/lib760/libSimpleKalmanFilter.a
+Compiling .pio/build/all-pcb-stlink/lib744/HX711/HX711_2.cpp.o
+Indexing .pio/build/all-pcb-stlink/lib47b/libSerialTransfer.a
+Indexing .pio/build/all-pcb-stlink/lib760/libSimpleKalmanFilter.a
+Compiling .pio/build/all-pcb-stlink/lib902/NCP5623/NCP5623.cpp.o
+Archiving .pio/build/all-pcb-stlink/liba21/libEasy Nextion Library.a
+Compiling .pio/build/all-pcb-stlink/lib78c/Adafruit_VL53L0X/Adafruit_VL53L0X.cpp.o
+Compiling .pio/build/all-pcb-stlink/lib78c/Adafruit_VL53L0X/core/src/vl53l0x_api.cpp.o
+Compiling .pio/build/all-pcb-stlink/lib78c/Adafruit_VL53L0X/core/src/vl53l0x_api_calibration.cpp.o
+Indexing .pio/build/all-pcb-stlink/liba21/libEasy Nextion Library.a
+Archiving .pio/build/all-pcb-stlink/libda8/libPSM.a
+Indexing .pio/build/all-pcb-stlink/libda8/libPSM.a
+Compiling .pio/build/all-pcb-stlink/lib78c/Adafruit_VL53L0X/core/src/vl53l0x_api_core.cpp.o
+Compiling .pio/build/all-pcb-stlink/lib78c/Adafruit_VL53L0X/core/src/vl53l0x_api_ranging.cpp.o
+Compiling .pio/build/all-pcb-stlink/lib78c/Adafruit_VL53L0X/core/src/vl53l0x_api_strings.cpp.o
+Archiving .pio/build/all-pcb-stlink/lib744/libHX711.a
+Archiving .pio/build/all-pcb-stlink/lib902/libNCP5623.a
+Indexing .pio/build/all-pcb-stlink/lib744/libHX711.a
+Indexing .pio/build/all-pcb-stlink/lib902/libNCP5623.a
+Compiling .pio/build/all-pcb-stlink/lib78c/Adafruit_VL53L0X/platform/src/vl53l0x_i2c_comms.cpp.o
+Compiling .pio/build/all-pcb-stlink/lib78c/Adafruit_VL53L0X/platform/src/vl53l0x_platform.cpp.o
+Compiling .pio/build/all-pcb-stlink/lib118/movingAvg/movingAvg.cpp.o
+Compiling .pio/build/all-pcb-stlink/libd0f/PCA9632/PCA9632.cpp.o
+Compiling .pio/build/all-pcb-stlink/lib1c9/Adafruit BusIO/Adafruit_BusIO_Register.cpp.o
+Compiling .pio/build/all-pcb-stlink/lib1c9/Adafruit BusIO/Adafruit_GenericDevice.cpp.o
+Compiling .pio/build/all-pcb-stlink/lib1c9/Adafruit BusIO/Adafruit_I2CDevice.cpp.o
+Archiving .pio/build/all-pcb-stlink/lib118/libmovingAvg.a
+Indexing .pio/build/all-pcb-stlink/lib118/libmovingAvg.a
+Compiling .pio/build/all-pcb-stlink/lib1c9/Adafruit BusIO/Adafruit_SPIDevice.cpp.o
+Compiling .pio/build/all-pcb-stlink/liba00/Adafruit MAX31855 library/Adafruit_MAX31855.cpp.o
+Compiling .pio/build/all-pcb-stlink/lib3c7/Common/drip_tray_guard.cpp.o
+Archiving .pio/build/all-pcb-stlink/lib78c/libAdafruit_VL53L0X.a
+Archiving .pio/build/all-pcb-stlink/libd0f/libPCA9632.a
+Indexing .pio/build/all-pcb-stlink/lib78c/libAdafruit_VL53L0X.a
+Compiling .pio/build/all-pcb-stlink/lib3c7/Common/mcu_comms.cpp.o
+Indexing .pio/build/all-pcb-stlink/libd0f/libPCA9632.a
+Compiling .pio/build/all-pcb-stlink/lib3c7/Common/measurements.cpp.o
+Compiling .pio/build/all-pcb-stlink/lib3c7/Common/profiling_phases.cpp.o
+Compiling .pio/build/all-pcb-stlink/lib3c7/Common/utils.cpp.o
+Compiling .pio/build/all-pcb-stlink/lib592/IWatchdog/IWatchdog.cpp.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/HardwareSerial.cpp.o
+Archiving .pio/build/all-pcb-stlink/liba00/libAdafruit MAX31855 library.a
+Archiving .pio/build/all-pcb-stlink/lib1c9/libAdafruit BusIO.a
+Indexing .pio/build/all-pcb-stlink/liba00/libAdafruit MAX31855 library.a
+Indexing .pio/build/all-pcb-stlink/lib1c9/libAdafruit BusIO.a
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/IPAddress.cpp.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/Print.cpp.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/RingBuffer.cpp.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/Stream.cpp.o
+Archiving .pio/build/all-pcb-stlink/lib592/libIWatchdog.a
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/Tone.cpp.o
+Indexing .pio/build/all-pcb-stlink/lib592/libIWatchdog.a
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/USBSerial.cpp.o
+Archiving .pio/build/all-pcb-stlink/lib3c7/libCommon.a
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/VirtIOSerial.cpp.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/WInterrupts.cpp.o
+Indexing .pio/build/all-pcb-stlink/lib3c7/libCommon.a
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/WMath.cpp.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/WSerial.cpp.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/WString.cpp.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/abi.cpp.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/avr/dtostrf.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/board.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/core_debug.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/hooks.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/itoa.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/main.cpp.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/pins_arduino.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/device.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/generic/condition.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/generic/cortexm/sys.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/generic/generic_device.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/generic/generic_init.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/generic/generic_io.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/generic/generic_shmem.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/generic/time.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/init.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/io.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/log.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/shmem.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/OpenAMP/mbox_ipcc.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/OpenAMP/open-amp/remoteproc/remoteproc_virtio.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/OpenAMP/open-amp/rpmsg/rpmsg.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/OpenAMP/open-amp/rpmsg/rpmsg_virtio.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/OpenAMP/openamp.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/OpenAMP/rsc_table.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/OpenAMP/virt_uart.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/OpenAMP/virtio/virtio.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/OpenAMP/virtio/virtqueue.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/OpenAMP/virtio_buffer.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/OpenAMP/virtio_log.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/startup_stm32yyxx.S.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/usb/cdc/cdc_queue.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/usb/cdc/usbd_cdc.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/usb/cdc/usbd_cdc_if.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/usb/hid/usbd_hid_composite.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/usb/hid/usbd_hid_composite_if.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/usb/usb_device_core.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/usb/usb_device_ctlreq.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/usb/usb_device_ioreq.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/usb/usbd_conf.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/usb/usbd_desc.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/usb/usbd_ep_conf.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/stm32/usb/usbd_if.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/wiring_analog.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/wiring_digital.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/wiring_pulse.cpp.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/wiring_shift.c.o
+Compiling .pio/build/all-pcb-stlink/FrameworkArduino/wiring_time.c.o
+Archiving .pio/build/all-pcb-stlink/libFrameworkArduino.a
+Indexing .pio/build/all-pcb-stlink/libFrameworkArduino.a
+Linking .pio/build/all-pcb-stlink/firmware.elf
+Checking size .pio/build/all-pcb-stlink/firmware.elf
+Advanced Memory Usage is available via "PlatformIO Home > Project Inspect"
+RAM:   [==        ]  22.0% (used 28856 bytes from 131072 bytes)
+Flash: [===       ]  25.1% (used 131640 bytes from 524288 bytes)
+Building .pio/build/all-pcb-stlink/firmware.bin
+========================= [SUCCESS] Took 16.78 seconds =========================
+
+Environment     Status    Duration
+--------------  --------  ------------
+all-pcb-stlink  SUCCESS   00:00:16.778
+========================= 1 succeeded in 00:00:16.778 =========================

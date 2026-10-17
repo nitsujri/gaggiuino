@@ -1,0 +1,18 @@
+page home
+tm0.en=0
+bkcmd=2
+tsw 255,0
+vis 255,0
+sendxy=1
+thsp=960
+thup=1
+dim=90
+fill 0,0,320,240,4326
+fill 4,3,70,28,8618
+xstr 6,4,66,26,0,61343,8618,1,1,1,"< Back"
+xstr 80,3,236,28,0,65535,4326,0,1,1,"Backflush"
+fill 4,34,312,1,17135
+xstr 8,61,304,35,1,65535,4326,0,1,1,"Brew switch starts / stops"
+xstr 8,111,304,30,0,44538,4326,0,1,1,"Use normal cleaning procedure"
+xstr 8,151,304,30,0,44538,4326,0,1,1,"Guard remains active"
+xstr 8,192,304,30,0,30395,4326,0,1,1,"Cycle 0"

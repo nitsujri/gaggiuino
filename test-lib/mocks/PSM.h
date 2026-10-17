@@ -18,3 +18,5 @@ public:
   void setDivider(unsigned char divider = 1);
   void shiftDividerCounter(char value = 1);
 };
+
+extern unsigned int lastPumpValue;

@@ -9,24 +9,33 @@ size_t ProfileSerializer::neededBufferSize(Profile& profile) const {
 }
 
 vector<uint8_t> ProfileSerializer::serializeProfile(Profile& profile) const {
-  vector<uint8_t> buffer;
-  buffer.reserve(neededBufferSize(profile));
+  vector<uint8_t> buffer(neededBufferSize(profile));
   size_t phaseCount = profile.phaseCount();
 
   memcpy(buffer.data(), &phaseCount, sizeof(phaseCount));
-  memcpy(buffer.data() + sizeof(phaseCount), profile.phases.data(), phaseCount * sizeof(Phase));
+  if (phaseCount > 0) {
+    memcpy(buffer.data() + sizeof(phaseCount), profile.phases.data(), phaseCount * sizeof(Phase));
+  }
   memcpy(buffer.data() + sizeof(phaseCount) + phaseCount * sizeof(Phase), &profile.globalStopConditions, sizeof(profile.globalStopConditions));
 
   return buffer;
 }
 
-void ProfileSerializer::deserializeProfile(vector<uint8_t>& buffer, Profile& profile) const {
+bool ProfileSerializer::deserializeProfile(vector<uint8_t>& buffer, Profile& profile) const {
+  const size_t fixedSize = sizeof(profile.phaseCount()) + sizeof(profile.globalStopConditions);
+  if (buffer.size() < fixedSize) return false;
+
   size_t phaseCount;
   memcpy(&phaseCount, buffer.data(), sizeof(profile.phaseCount()));
-  profile.phases.clear();
-  profile.phases.reserve(phaseCount);
-  memcpy(profile.phases.data(), buffer.data() + sizeof(profile.phaseCount()), phaseCount * sizeof(Phase));
+  // Validate before multiplying an untrusted count or modifying the profile.
+  const size_t phaseBytes = buffer.size() - fixedSize;
+  if (phaseBytes % sizeof(Phase) != 0 || phaseCount != phaseBytes / sizeof(Phase)) return false;
+  profile.phases.resize(phaseCount);
+  if (phaseCount > 0) {
+    memcpy(profile.phases.data(), buffer.data() + sizeof(profile.phaseCount()), phaseCount * sizeof(Phase));
+  }
   memcpy(&profile.globalStopConditions, buffer.data() + sizeof(profile.phaseCount()) + phaseCount * sizeof(Phase), sizeof(profile.globalStopConditions));
+  return true;
 }
 
 //---------------------------------------------------------------------------------
@@ -314,8 +323,8 @@ void McuComms::readDataAndTick() {
       log("Received a profile packet\n");
       vector<uint8_t> data = receiveMultiPacket();
       Profile profile;
-      profileSerializer.deserializeProfile(data, profile);
-      profileReceived(profile);
+      if (profileSerializer.deserializeProfile(data, profile)) profileReceived(profile);
+      else log("ERROR: Invalid profile payload\n");
       break;
     } case McuCommsMessageType::MCUC_DATA_SENSOR_STATE_SNAPSHOT: {
       log("Received a sensor state snapshot packet\n");

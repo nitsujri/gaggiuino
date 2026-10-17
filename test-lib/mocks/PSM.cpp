@@ -1,7 +1,8 @@
 #include "PSM.h"
+unsigned int lastPumpValue=0;
 PSM::PSM(unsigned char sensePin, unsigned char controlPin, unsigned int range, int mode, unsigned char divider, unsigned char interruptMinTimeDiff) {
 }
-void PSM::set(unsigned int value) {
+void PSM::set(unsigned int value) {lastPumpValue=value;
 }
 long PSM::getCounter() {
   return 1;

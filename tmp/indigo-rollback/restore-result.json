@@ -1,0 +1,13 @@
+{
+  "status": "RESTORED_AND_VERIFIED",
+  "utc": "2026-10-17T11:28:31.856760+00:00",
+  "sourceBackup": "tmp/indigo-release/preflash/controller-flash.bin",
+  "readbackBytes": 524288,
+  "readbackSha256": "5eaf7905ee786803836b3324ac386e57c8fe46137ed8e2ff0fce4dab0f8ce400",
+  "fullFlashByteForByteMatch": true,
+  "settingsSchema": 12,
+  "displayFlashed": false,
+  "indigoCurrentlyInstalled": false,
+  "restoredConfiguration": "Exact pre-Indigo sensor-only testing firmware and saved settings",
+  "stlinkSerial": "37FF71064E573436982F1543"
+}

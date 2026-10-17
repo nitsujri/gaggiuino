@@ -1,0 +1,76 @@
+INDIGO IMPLEMENTATION / DEEP PARITY AUDIT — 2026-10-17
+
+Baseline: frozen release/stm32-blackpill controller and stock HMI inventory.
+Previous pre-implementation audit archived under archive/pre-implementation.
+Current code is a real controller-native UI; browser reference is no longer
+used as implementation evidence. No new TFT is necessary for this approach.
+
+Retained: all original55 profile fields (including name),20global fields
+(including selection),five slots,both pressure/flow banks,five curves,physical
+brew/manual/steam/hotwater controls,original native brewGraph/timebase/colors,
+native slider,original profile preview,scale fallback,heat/pumpmodel,LED/ESP/
+watchdog. Field and behavior matrices provide source traceability.
+Intentional changes: independent select/edit,persistent selection,decimalratio,
+30mmfull/capture,persistent tray baseline,HomeFlushguard,menu reorganization,
+persistent notices,uptime moved to settings,readout hidden without disabling
+scaleguard. Startupfill and automatic pressure release require fresh gross>=150g; Home
+Flush is explicitly manual and bypasses only the tray check,including before
+startup fill. Automatic cleaning cycles retain their existing gross guard.
+
+Inherited defects corrected during integration:
+- Empty/finalized profiler indexing and discarded last phase state.
+- Profile serialization vectors had reserve without size; malformed count and
+  truncated payload now reject before changing target; wire format unchanged.
+- Flow transition hold read used ramp restriction instead of hold restriction.
+- Weight formatting overflow/truncation; bounded single snprintf.
+- Ofast invalidated NaN temperature detection; useO3+finite check instead.
+- Long transition/hold millisecond locals changed to32bits.
+- Water readiness OR predicate was always true; now actual low-water block.
+- Blocking HX711 reads/timeouts could masquerade as valid zero; new atomic
+  cached conversion path and freshness/rail checks; calibration API retained.
+- Blocking descale solenoid pulses now interruptible; profile temp never9.
+- Backflush pressure gate latched so pressure loss during rest cannot restart.
+- Initial fill now requires a calibrated local tray load and restarts its fill
+  budget after waiting for tray; manual Home Flush bypasses this restriction.
+- Initial fill continued correctly on Indigo notice/menu pages, checks water/
+  switches,stops on timeout; does not depend on stock Home page being visible.
+- LED enable preference now gates color/effect output when a driver is configured.
+- Startup uptime/target serial spam reduced; finite rendering prevents math
+  cast errors; fault loops service display and physical switch recovery.
+
+Storage: exact archived schema12 layout and captured fixture verified; schema13
+CRC and field migration; slots1/2intentionally replaced only on upgrade.
+Source backup originals remain. Save scopes preserve unrelated draft settings.
+EEPROM power-loss journaling not added; corruption detectable,backup essential.
+
+Automated evidence
+-49native tests under AddressSanitizer+UndefinedBehaviorSanitizer,including
+  UI actual touch/navigation/banks/edit locks,actual savedcapturemigration,
+  CRC/ratios/tank boundaries,empty/finished engine,serializer faults,and actual
+  production backflush/descale.cpp with mocked sensors/time/output commands.
+-Main production firmware and separate calibration firmware compile.
+-Preview harness executes production C++ renderer under same sanitizers;
+  actual native commands rasterized for layout QA. Font is a labelled substitute.
+-Read-only inventory checks every old field mapped to native descriptor/action;
+  original stock HMI/TFT assets unchanged; source/config/artifact hashes recorded.
+-Backupdecoder covers schema12 and13+CRC/truncation/corrupt/unknown fixtures.
+These are software/source findings. Hardware acceptance remains NOT RUN.
+
+Remaining practical limitations and commissioning requirements
+1. Exact installed display/font metrics/touch/sendxy/Nextion or TJC native
+   compatibility not physically exercised. No new display image needs compiling.
+2. Full UART draw timing,CPU/heap high-water and physical stop latency need
+   measurement; native mocks do not reproduce serial or actual peripherals.
+3. Tray baseline/minimum must be captured/measured and checked after reboot.
+   Guard remains blocked until setup.150g is a provisional estimate,not a measured OEM tray value.
+4. Original graphPreview retains its existing linear/conditional-exit limitations;
+   it is based on edited settings, not a full engine-equivalent simulator.
+5. ToF missing at boot gets one bounded init attempt; repair needs powercycle.
+6. EEPROM CRC detects damage but sudden power failure can require full restore.
+7. Old full backup restores BENCH firmware; new image is PRODUCTION. First
+   powered machine test must verify fill/temperature/actuation,not only styling.
+8. Invalid scales can use original predictive espresso behavior; no remote or
+   predicted weight authorizes group flushing. Physical rail tests pending.
+
+No hardware was flashed,reset or powered during this implementation. The next
+step is the concrete load procedure in LOADING.txt after mains is unplugged.

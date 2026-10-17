@@ -36,6 +36,7 @@ void TEST_ASSERT_EQUAL_PHASE(Phase& expected, Phase& actual) {
 }
 
 void TEST_ASSERT_EQUAL_PROFILE(Profile& expected, Profile& actual) {
+  TEST_ASSERT_EQUAL_MESSAGE(expected.phaseCount(), actual.phaseCount(), "Profile.phaseCount");
   TEST_ASSERT_EQUAL_GLOBAL_STOP_CONDITIONS(expected.globalStopConditions, actual.globalStopConditions);
   for (int i = 0; i < expected.phaseCount(); i++) {
     TEST_ASSERT_EQUAL_PHASE(expected.phases[i], actual.phases[i]);

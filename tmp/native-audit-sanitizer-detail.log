@@ -1,0 +1,76 @@
+test/test_main.cpp:253:test_current_phase_calculation:PASS
+test/test_main.cpp:254:test_get_pressure_for_phase:PASS
+test/test_main.cpp:255:test_get_pressure_for_phase_with_negative_change:PASS
+test/test_main.cpp:256:test_get_pressure_for_phase_with_time_larger_than_duration:PASS
+test/test_main.cpp:257:test_phases_with_zero_duration_are_skipped:PASS
+test/test_main.cpp:258:test_phases_with_weight_stop_condition:PASS
+test/test_main.cpp:259:test_phases_with_stop_conditions_and_skipped_phases:PASS
+test/test_main.cpp:260:test_phases_stay_constant:PASS
+test/test_main.cpp:261:test_empty_profile_can_be_constructed_reset_and_finished:PASS
+test/test_main.cpp:262:test_completed_profile_keeps_last_valid_phase:PASS
+test/test_main.cpp:263:test_all_zero_duration_phases_finish_without_invalid_phase:PASS
+test/test_main.cpp:264:test_global_stop_keeps_actual_phase_instead_of_last_recipe_phase:PASS
+test/test_main.cpp:18:test_pump_clicks_for_flow_correct_binary_search:PASS
+test/test_main.cpp:19:test_pump_get_flow:PASS
+=================================================================
+==1730==ERROR: AddressSanitizer: container-overflow on address 0x611000000900 at pc 0x000102db6bb4 bp 0x00016da096f0 sp 0x00016da08ea0
+WRITE of size 8 at 0x611000000900 thread T0
+    #0 0x000102db6bb0 in __asan_memcpy+0x330 (libclang_rt.asan_osx_dynamic.dylib:arm64e+0x3ebb0)
+    #1 0x0001024e9ca0 in ProfileSerializer::serializeProfile(Profile&) const+0x184 (program:arm64+0x1000f5ca0)
+    #2 0x0001023fee98 in test_profile_serializer_works_correctly()+0x4ac (program:arm64+0x10000ae98)
+    #3 0x0001024e889c in UnityDefaultTestRun+0x224 (program:arm64+0x1000f489c)
+    #4 0x0001023ff208 in runAllProfileSerializerTests()+0x1c (program:arm64+0x10000b208)
+    #5 0x0001023ffdb4 in main+0x28 (program:arm64+0x10000bdb4)
+    #6 0x00018fc97dfc in start+0x1b4c (dyld:arm64e+0x1fdfc)
+
+0x611000000900 is located 0 bytes inside of 240-byte region [0x611000000900,0x6110000009f0)
+allocated by thread T0 here:
+    #0 0x000102dc7f50 in _Znwm+0x74 (libclang_rt.asan_osx_dynamic.dylib:arm64e+0x4ff50)
+    #1 0x0001024f488c in unsigned char* std::__1::__libcpp_allocate[abi:nqe210106]<unsigned char>(std::__1::__element_count, unsigned long)+0x8c (program:arm64+0x10010088c)
+    #2 0x0001024f47f0 in std::__1::allocator<unsigned char>::allocate[abi:nqe210106](unsigned long)+0xa4 (program:arm64+0x1001007f0)
+    #3 0x0001024f4728 in std::__1::__allocation_result<std::__1::allocator_traits<std::__1::allocator<unsigned char>>::pointer> std::__1::__allocate_at_least[abi:nqe210106]<std::__1::allocator<unsigned char>>(std::__1::allocator<unsigned char>&, unsigned long)+0x1c (program:arm64+0x100100728)
+    #4 0x0001024f4354 in std::__1::__split_buffer<unsigned char, std::__1::allocator<unsigned char>&>::__split_buffer(unsigned long, unsigned long, std::__1::allocator<unsigned char>&)+0x29c (program:arm64+0x100100354)
+    #5 0x0001024f3974 in std::__1::__split_buffer<unsigned char, std::__1::allocator<unsigned char>&>::__split_buffer(unsigned long, unsigned long, std::__1::allocator<unsigned char>&)+0x68 (program:arm64+0x1000ff974)
+    #6 0x0001024ea254 in std::__1::vector<unsigned char, std::__1::allocator<unsigned char>>::reserve(unsigned long)+0x238 (program:arm64+0x1000f6254)
+    #7 0x0001024e9c24 in ProfileSerializer::serializeProfile(Profile&) const+0x108 (program:arm64+0x1000f5c24)
+    #8 0x0001023fee98 in test_profile_serializer_works_correctly()+0x4ac (program:arm64+0x10000ae98)
+    #9 0x0001024e889c in UnityDefaultTestRun+0x224 (program:arm64+0x1000f489c)
+    #10 0x0001023ff208 in runAllProfileSerializerTests()+0x1c (program:arm64+0x10000b208)
+    #11 0x0001023ffdb4 in main+0x28 (program:arm64+0x10000bdb4)
+    #12 0x00018fc97dfc in start+0x1b4c (dyld:arm64e+0x1fdfc)
+
+HINT: if you don't care about these errors you may set ASAN_OPTIONS=detect_container_overflow=0.
+If you suspect a false positive see also: https://github.com/google/sanitizers/wiki/AddressSanitizerContainerOverflow.
+SUMMARY: AddressSanitizer: container-overflow (program:arm64+0x1000f5ca0) in ProfileSerializer::serializeProfile(Profile&) const+0x184
+Shadow bytes around the buggy address:
+  0x611000000680: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x611000000700: 00 00 00 00 00 00 00 00 00 00 00 00 00 fa fa fa
+  0x611000000780: fa fa fa fa fa fa fa fa 00 00 00 00 00 00 00 00
+  0x611000000800: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x611000000880: 00 00 00 00 00 00 00 00 fa fa fa fa fa fa fa fa
+=>0x611000000900:[fc]fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+  0x611000000980: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fa fa
+  0x611000000a00: fa fa fa fa fa fa fa fa fd fd fd fd fd fd fd fd
+  0x611000000a80: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+  0x611000000b00: fd fd fd fd fd fd fd fa fa fa fa fa fa fa fa fa
+  0x611000000b80: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07 
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+==1730==ABORTING

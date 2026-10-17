@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BlackPill scales probe</title>
+<style>
+[hidden]{display:none!important}
+:root{color-scheme:dark;font:15px system-ui;background:#101820;color:#e8f0f4}body{max-width:1200px;margin:30px auto;padding:0 20px}h1{font-size:28px;margin-bottom:6px}p{color:#b5c6d1;line-height:1.5}button,select,input{font:inherit}button,select{padding:9px 12px;border:1px solid #536776;border-radius:7px;background:#203340;color:inherit}button{cursor:pointer}button:disabled,select:disabled{opacity:.5;cursor:default}button.primary{background:#236b61;border-color:#58bca7}button.running{background:#754b23;border-color:#d7a46c}.controls{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:18px 0}label{display:flex;gap:7px;align-items:center}canvas{display:block;width:100%;height:310px;background:#0b1218;border:1px solid #425767;border-radius:8px;touch-action:none;cursor:grab}table{width:100%;border-collapse:collapse;margin:18px 0}th,td{text-align:left;border-bottom:1px solid #344754;padding:11px}.notice{padding:12px 14px;background:#253746;border-radius:8px;font-size:14px}#error{color:#ff9f91;min-height:20px;margin:8px 0}#summary{min-height:24px;margin:8px 0}.zoom input{width:180px}.muted{font-size:13px;color:#a6bbc8}.badge{display:inline-block;border:1px solid #536776;border-radius:20px;padding:5px 12px;font-size:13px}#status.live{color:#79e5b2;border-color:#407b60}.subtle{color:#95aab8}#history{max-width:290px}.legend{margin-left:auto}#rate{font-variant-numeric:tabular-nums}details{color:#b5c6d1;line-height:1.5}summary{cursor:pointer}input[type=checkbox]{accent-color:#70dcc5}
+</style>
+<h1>BlackPill scales probe</h1>
+<p>Voltage and digital traces · CLK on PA0 · common GND · analog input: 0–3.3 V only</p>
+<div class="controls">
+<label>Mode <select id="mode"><option value="analog">Analog PA0 voltage</option><option value="digital" selected>Digital logic</option></select></label>
+<button id="run" class="primary">Run live</button><button id="single">Single</button><span id="status" class="badge" aria-live="polite">Paused</span><span id="rate" class="muted"></span>
+<label id="digitalsettings" class="legend">Window <select id="duration"><option value="50">50 ms</option><option value="100">100 ms</option><option value="250" selected>250 ms</option><option value="1000">1 second</option></select></label>
+</div>
+<div id="analogsettings" class="controls" hidden>
+<label>ADC <select id="preset"><option value="0" selected>Fastest: 4 MS/s · 6 bit</option><option value="1">Detail: 2.4 MS/s · 12 bit</option><option value="2">Long acquisition: 73.2 kS/s · 12 bit</option></select></label>
+<label>Samples <select id="samples"><option value="4096">4,096</option><option value="16384">16,384</option><option value="32768" selected>32,768</option></select></label>
+<label>Voltage scale <select id="vertical"><option value="full">Full range</option><option value="auto">Auto zoom</option></select></label>
+<label>Edge threshold <input id="threshold" type="number" min="0.01" max="3.3" step="0.05" value="1.65" style="width:70px">V</label>
+</div>
+<div class="controls">
+<label>Time scale <select id="timebase"><option value="fit" selected>Fit window</option><option value="1">1 µs / div</option><option value="2">2 µs / div</option><option value="10">10 µs / div</option><option value="100">100 µs / div</option><option value="1000">1 ms / div</option><option value="10000">10 ms / div</option><option value="100000">100 ms / div</option></select></label>
+<label>Align <select id="trigger"><option value="free">Free run</option><option value="rising">CLK rising edge</option><option value="falling">CLK falling edge</option></select></label>
+<label><input id="holdedge" type="checkbox">Freeze on edge</label>
+</div>
+<p id="identity" class="muted">Connecting to local capture service…</p>
+<p id="error" role="alert"></p><p id="summary" aria-live="polite">Ready for a capture.</p>
+<canvas id="wave" aria-label="Digital waveforms for clock and both scales data channels"></canvas>
+<div class="controls zoom">
+<label>Zoom <input id="zoom" type="range" min="0" max="17" step="0.1" value="0"></label><label>Position <input id="position" type="range" min="0" max="1000" step="0.01" value="0"></label><button id="fit">Fit</button>
+</div>
+<div class="controls">
+<span class="muted">Show inputs:</span><label><input id="channel0" type="checkbox" checked>CLK</label><label><input id="channel1" type="checkbox">D1</label><label><input id="channel2" type="checkbox">D2</label>
+<label class="legend">History <select id="history" disabled><option>No captures yet</option></select></label><button id="download" disabled>Save JSON</button>
+</div>
+<table><thead id="statshead"><tr><th>Channel</th><th>Initial → final</th><th>Rising edges</th><th>Falling edges</th><th>Time HIGH</th></tr></thead><tbody id="stats"></tbody></table>
+<p class="notice"><strong>Repeated capture windows, with gaps.</strong> The probe stops sampling while transferring each capture over USB. Short events can occur in those gaps. Trigger and freeze inspect captured windows only.</p>
+<details><summary>Measurement limits and controls</summary><p>Analog mode records actual ADC voltage samples on PA0 using DMA. Fastest mode has 64 levels (about 52 mV per step); Detail mode has 4,096 levels. The voltage reference is estimated from the chip's factory-calibrated internal reference. This unbuffered ADC loads the source; high-impedance signals may need the Long acquisition preset. Inputs must remain between GND and the spare's 3.3 V supply. No negative voltage or 5 V input.</p><p>Each analog window is uniformly sampled without CPU interrupt gaps, then sampling stops for USB transfer. An 8.192 ms window at 4 MS/s is not a continuous stream over USB. Digital mode records HIGH/LOW timing only; its polling gaps are shown. Disconnected inputs float. Overview plots preserve sample minima and maxima; zoom in for individual sample points.</p><p>Run live updates at the fastest rate capture and USB transfer allow. Pause freezes the displayed trace immediately; an in-flight capture may finish and enter history. Select History while paused to inspect it. Scroll to zoom and drag to pan. Input checkboxes apply to digital traces. Analog edge alignment uses the selected voltage threshold.</p></details>
+<script>
+'use strict';
+const el=id=>document.getElementById(id),canvas=el('wave'),ctx=canvas.getContext('2d');
+let data=null,busy=false,running=false,held=false,epoch=0,timer=null,left=0,span=1,drag=null;
+let history=[],nextId=1,displayedId=null,lastFinished=null;
+const selected=bit=>el('channel'+bit).checked;
+const analog=(capture=data)=>capture&&capture.kind==='analog';
+const total=()=>data?(analog()?(data.count-1)/data.sample_hz*1e6:data.duration_ticks/data.hz*1e6):1;
+const clamp=(x,lo,hi)=>Math.max(lo,Math.min(hi,x));
+function controls(){
+ el('run').textContent=running?'Pause':'Run live';el('run').className=running?'running':'primary';
+ el('single').disabled=busy||running;el('history').disabled=running||history.length===0;
+ el('analogsettings').hidden=el('mode').value!=='analog';el('digitalsettings').hidden=el('mode').value==='analog';
+ el('status').textContent=running?'Live':held?'Held on CLK edge':busy?'Paused · finishing transfer…':'Paused';el('status').className=running?'badge live':'badge';
+}
+function setRunning(value){
+ running=value;held=false;epoch++;clearTimeout(timer);timer=null;lastFinished=null;controls();
+ if(running&&!busy)capture();
+}
+function clockEdge(capture,kind){
+ if(analog(capture)){
+  const threshold=Number(el('threshold').value)/(capture.vdda_mv/1000)*((1<<capture.bits)-1);
+  for(let i=1;i<capture.samples.length;i++){
+   const before=capture.samples[i-1]>=threshold,after=capture.samples[i]>=threshold;
+   if(before!==after&&(kind==='any'||kind==='rising'&&after||kind==='falling'&&!after))return i/capture.sample_hz*1e6;
+  }
+  return null;
+ }
+ for(let i=1;i<capture.events.length;i++){
+  const before=capture.events[i-1][1]&1,after=capture.events[i][1]&1;
+  if(before!==after&&(kind==='any'||kind==='rising'&&after===1||kind==='falling'&&after===0))return capture.events[i][0]/capture.hz*1e6;
+ }
+ return null;
+}
+function syncView(){
+ span=total()/2**Number(el('zoom').value);left=Number(el('position').value)/1000*Math.max(0,total()-span);draw();
+}
+function align(){
+ const mode=el('trigger').value;
+ if(mode==='free'||!data)return;
+ const edge=clockEdge(data,mode);
+ if(edge!==null){left=clamp(edge-span*.2,0,Math.max(0,total()-span));el('position').value=total()>span?left/(total()-span)*1000:0;}
+}
+function applyTimebase(){
+ const chosen=el('timebase').value;
+ if(chosen==='fit')el('zoom').value=0;
+ else el('zoom').value=clamp(Math.log2(total()/(Number(chosen)*10)),0,17);
+ syncView();align();draw();
+}
+function fit(){el('timebase').value='fit';el('position').value=0;applyTimebase();}
+function draw(){
+ const width=canvas.clientWidth,height=310,ratio=devicePixelRatio||1;
+ canvas.width=Math.round(width*ratio);canvas.height=height*ratio;ctx.setTransform(ratio,0,0,ratio,0,0);ctx.clearRect(0,0,width,height);
+ const margin=100,end=width-18,plot=Math.max(1,end-margin),colors=['#ffcf70','#70dcc5','#9db8ff'];
+ ctx.font='12px system-ui';
+ ctx.fillStyle='#a6bbc8';const division=span/10;ctx.fillText((division<1000?division.toFixed(2)+' µs':(division/1000).toFixed(3)+' ms')+' / div',Math.max(margin,end-140),17);
+ for(let i=0;i<=10;i++){
+  const x=margin+plot*i/10;ctx.strokeStyle='#21333f';ctx.beginPath();ctx.moveTo(x,25);ctx.lineTo(x,270);ctx.stroke();
+  if(i%2===0){ctx.fillStyle='#a6bbc8';const value=left+span*i/10;const label=span<1000?value.toFixed(2)+' µs':(value/1000).toFixed(3)+' ms';ctx.fillText(label,clamp(x-20,margin,end-68),292);}
+ }
+ if(analog()){
+  const reference=data.vdda_mv/1000,scale=reference/((1<<data.bits)-1),step=1e6/data.sample_hz;
+  let vmin=0,vmax=reference;
+  if(el('vertical').value==='auto'){
+   const padding=Math.max(.03,(data.max_v-data.min_v)*.15);
+   vmin=Math.max(0,data.min_v-padding);vmax=Math.min(reference,Math.max(data.max_v+padding,vmin+.06));
+   if(vmax-vmin<.06)vmin=Math.max(0,vmax-.06);
+  }
+  const y=v=>260-(v-vmin)/(vmax-vmin)*225;
+  for(let i=0;i<=4;i++){const v=vmin+(vmax-vmin)*i/4;ctx.fillStyle='#a6bbc8';ctx.fillText(v.toFixed(3)+' V',20,y(v)+4);ctx.strokeStyle='#21333f';ctx.beginPath();ctx.moveTo(margin,y(v));ctx.lineTo(end,y(v));ctx.stroke();}
+  const first=clamp(Math.floor(left/step),0,data.count-1),last=clamp(Math.ceil((left+span)/step),0,data.count-1);
+  ctx.save();ctx.beginPath();ctx.rect(margin,25,plot,245);ctx.clip();ctx.strokeStyle='#ffcf70';ctx.fillStyle='#ffcf70';ctx.lineWidth=1.2;ctx.beginPath();
+  if((last-first)/plot>2){
+   for(let pixel=0;pixel<plot;pixel++){
+    const a=clamp(Math.floor((left+pixel*span/plot)/step),0,data.count-1),b=clamp(Math.ceil((left+(pixel+1)*span/plot)/step),a+1,data.count);
+    let lo=Infinity,hi=-Infinity;for(let i=a;i<b;i++){lo=Math.min(lo,data.samples[i]);hi=Math.max(hi,data.samples[i]);}
+    ctx.moveTo(margin+pixel,y(lo*scale));ctx.lineTo(margin+pixel+1,y(lo*scale));
+    ctx.moveTo(margin+pixel,y(lo*scale));ctx.lineTo(margin+pixel,y(hi*scale));
+   }
+  }else{
+   for(let i=first;i<=last;i++){const x=margin+(i*step-left)/span*plot;if(i===first)ctx.moveTo(x,y(data.samples[i]*scale));else ctx.lineTo(x,y(data.samples[i]*scale));}
+  }
+  ctx.stroke();if(last-first<400)for(let i=first;i<=last;i++){const x=margin+(i*step-left)/span*plot;ctx.fillRect(x-1.5,y(data.samples[i]*scale)-1.5,3,3);}ctx.restore();return;
+ }
+ for(let bit=0;bit<3;bit++){
+  const low=90+bit*80,high=low-35;ctx.fillStyle=selected(bit)?colors[bit]:'#5e7280';ctx.fillText(['CLK · PA0','D1 · PA1','D2 · PA2'][bit],8,high+20);
+  if(!selected(bit)){ctx.fillText('hidden',margin+10,high+20);continue;}
+  if(!data)continue;
+  ctx.save();ctx.beginPath();ctx.rect(margin,20,plot,250);ctx.clip();ctx.strokeStyle=colors[bit];ctx.lineWidth=1.5;ctx.beginPath();
+  let state=data.events[0][1],started=false;
+  for(const [tick,next] of data.events){
+   const us=tick/data.hz*1e6;if(us<left){state=next;continue;}
+   if(!started){ctx.moveTo(margin,state&(1<<bit)?high:low);started=true;}
+   const x=margin+(us-left)/span*plot;ctx.lineTo(x,state&(1<<bit)?high:low);ctx.lineTo(x,next&(1<<bit)?high:low);state=next;if(us>left+span)break;
+  }
+  if(!started)ctx.moveTo(margin,state&(1<<bit)?high:low);ctx.lineTo(end,state&(1<<bit)?high:low);ctx.stroke();ctx.restore();
+ }
+}
+function statistics(){
+ el('stats').replaceChildren();if(!data)return;
+ canvas.setAttribute('aria-label',analog()?'Analog voltage samples on PA0':'Digital waveforms for clock and both scales data channels');
+ for(let bit=0;bit<3;bit++)el('channel'+bit).disabled=!!analog();
+ el('statshead').replaceChildren();const head=document.createElement('tr');
+ for(const label of (analog()?['Input','Minimum','Maximum','Mean','Peak-to-peak']:['Channel','Initial → final','Rising edges','Falling edges','Time HIGH'])){const th=document.createElement('th');th.textContent=label;head.append(th);}el('statshead').append(head);
+ if(analog()){
+  const row=document.createElement('tr');for(const value of ['PA0 / CLK',data.min_v.toFixed(3)+' V',data.max_v.toFixed(3)+' V',data.mean_v.toFixed(3)+' V',(data.max_v-data.min_v).toFixed(3)+' V']){const td=document.createElement('td');td.textContent=value;row.append(td);}el('stats').append(row);return;
+ }
+ for(let bit=0;bit<data.channels.length;bit++){
+  const c=data.channels[bit],row=document.createElement('tr');
+  const values=selected(bit)?[c.name,`${c.initial} → ${c.final}`,c.rises,c.falls,c.high_percent.toFixed(2)+'%']:[c.name,'Hidden','—','—','—'];
+  for(const value of values){const td=document.createElement('td');td.textContent=value;row.append(td);}el('stats').append(row);
+ }
+}
+function display(frame){
+ displayedId=frame.id;data=frame.result.capture;
+ el('identity').textContent=frame.result.identity;el('history').value=String(frame.id);
+ const ms=analog()?data.count/data.sample_hz*1000:data.duration_ticks/data.hz*1000,gap=analog()?0:data.max_poll_gap_ticks/data.hz*1e6;
+ const edge=clockEdge(data,el('trigger').value==='free'?'any':el('trigger').value);
+ el('summary').textContent=analog()?`${(data.sample_hz/1e6).toFixed(3)} MS/s · ${data.bits} bit · ${data.count.toLocaleString()} samples · ${ms.toFixed(3)} ms · ${data.quantization_mv.toFixed(2)} mV/step · ${data.vref_calibrated?'factory-calibrated reference':'ASSUMED 3.3 V reference'}${edge===null?' · no threshold crossing':''}`:`${ms.toFixed(3)} ms captured · CLK: ${data.channels[0].rises} rising / ${data.channels[0].falls} falling edges · largest polling gap ${gap.toFixed(3)} µs${edge===null?' · no CLK edge observed':''}${data.truncated?' · BUFFER FULL: window ended early':''}`;
+ el('download').disabled=false;statistics();
+ if(el('timebase').value==='fit')syncView();else applyTimebase();
+ align();draw();
+}
+function storeFrame(result,requestMs){
+ if(!result.capture)return null;
+ const frame={id:nextId++,result,requestMs,stamp:new Date().toLocaleTimeString()};history.unshift(frame);history.length=Math.min(history.length,32);
+ el('history').replaceChildren();
+ for(const item of history){const c=item.result.capture,option=document.createElement('option');option.value=String(item.id);option.textContent=`#${item.id} · ${item.stamp} · `+(analog(c)?`${c.min_v.toFixed(2)}–${c.max_v.toFixed(2)} V`:`CLK ↑${c.channels[0].rises}`);el('history').append(option);}
+ if(displayedId!==null)el('history').value=String(displayedId);
+ controls();return frame;
+}
+async function capture(){
+ if(busy)return;
+ busy=true;held=false;const startedLive=running,startedEpoch=epoch,start=performance.now();controls();el('error').textContent='';
+ try{
+  const response=await fetch('/api/capture',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ms:Number(el('duration').value),mode:el('mode').value,preset:Number(el('preset').value),count:Number(el('samples').value)})});
+  const result=await response.json();if(!response.ok)throw Error(result.error);
+  const now=performance.now(),requestMs=now-start,frame=storeFrame(result,requestMs);
+  // Pause must freeze the displayed trace even if a request was in flight.
+  if(frame&&(!startedLive||running&&startedEpoch===epoch)){
+   display(frame);
+   const hz=lastFinished===null?1000/requestMs:1000/(now-lastFinished);lastFinished=now;
+   const acquisitionMs=analog()?data.count/data.sample_hz*1000:data.duration_ticks/data.hz*1000;
+   el('rate').textContent=`${hz.toFixed(1)} updates/s · ${(Math.max(0,requestMs-acquisitionMs)).toFixed(1)} ms request overhead`;
+   if(running&&el('holdedge').checked&&clockEdge(data,'any')!==null){setRunning(false);held=true;controls();}
+  }
+ }catch(error){el('error').textContent=error.message;setRunning(false);}
+ finally{busy=false;controls();if(running)timer=setTimeout(capture,0);}
+}
+el('run').onclick=()=>setRunning(!running);el('single').onclick=capture;el('fit').onclick=fit;
+el('mode').onchange=()=>{setRunning(false);controls();};el('vertical').onchange=draw;el('threshold').oninput=()=>{align();draw();};
+el('timebase').onchange=applyTimebase;el('trigger').onchange=()=>{align();draw();};
+el('history').onchange=()=>{const frame=history.find(item=>item.id===Number(el('history').value));if(frame)display(frame);};
+el('zoom').oninput=()=>{el('timebase').value='fit';syncView();};el('position').oninput=syncView;window.onresize=draw;
+for(let bit=0;bit<3;bit++)el('channel'+bit).onchange=()=>{statistics();draw();};
+canvas.addEventListener('wheel',event=>{event.preventDefault();el('timebase').value='fit';el('zoom').value=clamp(Number(el('zoom').value)+(event.deltaY<0?.5:-.5),0,17);syncView();},{passive:false});
+canvas.onpointerdown=event=>{drag={x:event.clientX,left};canvas.setPointerCapture(event.pointerId);};
+canvas.onpointermove=event=>{if(!drag||!data)return;const available=total()-span;if(available<=0)return;left=clamp(drag.left-(event.clientX-drag.x)/Math.max(1,canvas.clientWidth-118)*span,0,available);el('position').value=left/available*1000;draw();};
+canvas.onpointerup=()=>{drag=null;};canvas.onpointercancel=()=>{drag=null;};
+el('download').onclick=()=>{if(!data)return;const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='scales-logic-capture.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+fetch('/api/capture').then(r=>r.json()).then(result=>{el('identity').textContent=result.identity;el('mode').value=analog(result.capture)||!result.capture&&result.identity.includes('analog=1')?'analog':'digital';const frame=storeFrame(result,0);if(frame)display(frame);controls();}).catch(error=>{el('error').textContent=error.message;});controls();draw();
+</script>
+</html>

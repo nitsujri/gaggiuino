@@ -107,6 +107,7 @@ struct eepromValues_t {
     float    shotDose;
     float    shotStopOnCustomWeight;
     uint16_t shotPreset;
+    uint16_t shotRatioX100; // canonical hundredths; zero uses legacy integer preset
   } profiles[MAX_PROFILES];
   // Settings vars section
   uint16_t powerLineFrequency;
@@ -123,6 +124,11 @@ struct eepromValues_t {
   uint8_t  ledR;
   uint8_t  ledG;
   uint8_t  ledB;
+  uint16_t tankFullDistanceMm;
+  uint8_t brightness;
+  bool trayGuardCalibrated;
+  int32_t trayZeroRaw[2];
+  float trayMinWeightG;
 };
 
 void eepromInit(void);

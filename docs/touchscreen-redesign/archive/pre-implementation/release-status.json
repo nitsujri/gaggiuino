@@ -1,0 +1,64 @@
+{
+  "schema": "gaggiuino-indigo-release-status/1",
+  "ready": false,
+  "reason": "Browser reference and audit fixes only; native HMI/TFT + matching extensions/migration not implemented",
+  "displayModel": null,
+  "newTft": null,
+  "newHmi": null,
+  "pairedController": null,
+  "controllerEnvironment": "all-pcb-stlink",
+  "controllerBaseCommit": "18d3e32",
+  "controllerHasUncommittedAuditFixes": true,
+  "newProtocolImplemented": false,
+  "settingsMigrationImplemented": false,
+  "trayBaselinesConfigured": false,
+  "localMainTofEnabled": false,
+  "verified": {
+    "mainBuild": "PASS",
+    "ramBytes": 28856,
+    "flashBytes": 131640,
+    "nativeTests": 23,
+    "sanitizers": [
+      "address",
+      "undefined"
+    ],
+    "prototypeChecks": 557,
+    "auditBehaviorRows": 47,
+    "auditStoredFieldRows": 75,
+    "acceptanceRows": 61,
+    "nativeDisplayCompilation": "NOT RUN",
+    "hardwareAcceptance": "NOT RUN"
+  },
+  "referenceArtifacts": [
+    {
+      "path": "tmp/touchscreen-audit/controller-audit-old-interface.bin",
+      "role": "AUDIT FIXES, OLD INTERFACE, NOT INDIGO",
+      "bytes": 132208,
+      "sha256": "12c31c3933d908fa5ff5b5d13477a86c4748d99cb4f172aeea838a022209160e"
+    },
+    {
+      "path": "tmp/settings-backup/controller-flash.bin",
+      "role": "HISTORICAL BENCH/BACKUP; NOT NORMAL PRODUCTION",
+      "bytes": 524288,
+      "sha256": "5eaf7905ee786803836b3324ac386e57c8fe46137ed8e2ff0fce4dab0f8ce400"
+    },
+    {
+      "path": "tmp/settings-backup/eeprom-page.bin",
+      "role": "HISTORICAL BENCH/BACKUP; NOT NORMAL PRODUCTION",
+      "bytes": 16384,
+      "sha256": "31b9124239d1d08a646e7b767244b40bbdf7ab36d2abb5e9ac7a558bfe85d2d1"
+    },
+    {
+      "path": "tmp/settings-backup/settings.json",
+      "role": "HISTORICAL BENCH/BACKUP; NOT NORMAL PRODUCTION",
+      "bytes": 20312,
+      "sha256": "fbae03a97f2fc83ae4b51709224518c01a67bddcd14c24147dcad082e4f7f739"
+    },
+    {
+      "path": "tmp/blackpill-probe/main-3563377A3534-clock-fix-bench.bin",
+      "role": "HISTORICAL BENCH/BACKUP; NOT NORMAL PRODUCTION",
+      "bytes": 129376,
+      "sha256": "36f744337858f02aae39db0966929091282f42d0e7bb4afe4a3e7de497fd58ba"
+    }
+  ]
+}

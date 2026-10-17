@@ -1,0 +1,206 @@
+GAGGIUINO INDIGO REDESIGN — FUNCTIONALITY AND DEPLOYMENT AUDIT
+Date: 2026-10-17 | Branch: ui/redesign | Controller base: 18d3e32 + uncommitted audit fixes
+Status: NOT RELEASED. The selected UI is a browser prototype, not a TFT image.
+
+READ THIS FIRST
+The browser has controls for all 55 stored profile fields (including name),
+all 19 non-selection global fields, and the requested new features. This is
+field coverage, not proof of machine behavior. The actual controller/HMI
+integration has NOT been implemented. Loading today's firmware.bin would
+load the existing controller interface, with ToF disabled by the current
+local flags. It would not install Indigo. Do not flash it as this redesign.
+
+There are three distinct comparisons:
+1. Frozen upstream release/stm32-blackpill -> current controller HEAD.
+2. Captured controller settings -> proposed trial defaults.
+3. Original HMI + controller behavior -> selected Indigo prototype/spec.
+Conflating these previously made the prototype look more complete than it is.
+
+AUDIT SCOPE AND EVIDENCE
+- Full original HMI export: 19 pages, 413 components, 234 nonempty event
+  handlers after stripping comment-only handlers. Inventory includes every
+  attribute, timer, touch handler, page packet, and event script.
+- All profile/system fields in src/eeprom_data/eeprom_data.h.
+- All display reads/writes/triggers in src/lcd/nextion.cpp and lcd.h.
+- Mode selection, page fetch, save/select/default behavior, sensors, brewing,
+  phase creation, manual flow, startup, health checks in src/gaggiuino.ino.
+- Boiler/steam/hot-water, backflush/descale, pump control, phase engine,
+  predictive weight, dual-HX711/remote scales, ToF, watchdog and EEPROM code.
+- Frozen upstream diff, current local build flags, captured schema-12 settings,
+  and existing compiled TFT files. Current display model remains unconfirmed.
+- inventory.json is machine-readable evidence, including source line locations
+  and hashes. feature-matrix.csv and field-matrix.csv are traceability tables.
+
+CURRENT FIRMWARE VS FROZEN UPSTREAM
+Before this audit, the diff changed the HX711 clock configuration, added the idle pressure-release
+tray guard and calibration printout, and replaces stock slot 4 with Turbo.
+The audit additionally fixes transition hold-limit mapping, weight formatting,
+32-bit phase durations, safe profiler construction/completion, finite temperature
+checks (removing Ofast), and safe profile serialization with payload-size checks.
+These changes do NOT implement the new UI. HMI/TFT files have not changed.
+The selected all-pcb-stlink environment retains SINGLE_BOARD, MAX31855,
+normal shared-clock/two-data HX711 operation, physical switches, pump/boiler
+control, phase engine, predictive fallback, ESP comms, LED and watchdog logic.
+The two HX711 recovery flags are enabled locally. Do not lose those flags.
+
+Material existing changes:
+- Automatic idle pressure release now requires configured gross tray weight.
+  The local baseline offsets are absent, so that action intentionally fails
+  closed. Manual flushing/cleaning do NOT yet have the expanded guard.
+- Existing eepromInit replaces profile slot 4 if its name equals "Filter 2.1".
+  This is a name-based replacement, not a safe one-time versioned migration:
+  a user-customized profile with that name can be lost. Replace that migration
+  when implementing the new profile initialization. Capture before first boot.
+- Internal pull-up + 16 us half-period recovered the clock on this machine.
+  That is retained as a hardware workaround; it is not proof of original
+  electrical root cause or universal repair for a damaged output circuit.
+
+SETTINGS VS TRIAL DEFAULTS
+The verified capture contains IUIUIU Classic, Londinium, Adaptive, Filter 2.1,
+and Blooming espresso, not saved Turbo/SOUP recipes. Captured EEPROM and RAM
+matched, schema 12, 200-byte profiles / 1040-byte config / 1052-byte metadata.
+The trial deliberately replaces slots 1/2 with Turbo/SOUP and starts on Turbo.
+Slots 3/4/5 retain captured Adaptive / Filter 2.1 / Blooming espresso. All five
+captured originals remain in controller-backup.json and the binary backups.
+This is an intentional recipe replacement requested by the user, not a lossless
+reordering of all originals into five slots. No prototype export may be written
+as a raw EEPROM image; its JSON and decimal ratios do not match schema 12.
+System offsets/calibration remain the captured values. Prototype brightness,
+tray calibration and tank-full distance are additional trial preferences, not
+captured controller settings. Its tray weight/baseline are illustrative.
+
+VERIFIED PARITY / INTENTIONAL UI CHANGES
+- Five profile slots and every stored profile setting remain reachable.
+- Profile overview has six step buttons. Each step has a single settings page;
+  pressure/flow mode selects the appropriate retained value bank. Previous/next
+  step controls do not change the edited profile or active selection.
+- Temp/dose supports Stop on weight OFF/ON, fixed grams, editable 1:x ratio.
+- Home retains temperature target/current/readiness and vertical water level.
+  Active profile is visible; quick switching moves to Menu > Profiles.
+- Indigo footer: Tare, quiet centered Flush + adjacent circle, Menu tile.
+  Branding/tray status are removed from Home by request; blocked actions still
+  explain the problem. Diagnostic/calibration access must remain in Menu.
+- Original automatic brew layout/colors, Home and Tare remain. No added bottom
+  action buttons; automatic operation uses the physical switch and controller.
+- Original graph: rect (0,41,320,144), 220 ms/column, 45-pixel vertical grid,
+  approximately 9.9 s/division, 70.4 s nominal window, dir=1, four channels,
+  display scale 130%. Prototype now samples at 220 ms with fixed horizontal
+  scale; exact hardware waveform direction/scroll must be verified on screen.
+  At 320 samples, first-to-last sample separation is 70.18 s (319 intervals).
+- Manual flow remains separate: 0..13 ml/s, 0.1 increments, zero on entry,
+  physical brew switch, live temperature/pressure/flow/weight/timer/target.
+  Temporary manual setpoint never edits a saved profile. Automatic weight stop
+  must not stop manual flow. Actual flow is a pump-model estimate, not a meter.
+
+MATERIAL PROTOTYPE GAPS / RELEASE BLOCKERS
+R01 No edited HMI project or compiled Indigo TFT exists. Native fonts, script
+    memory, image flash budget, touch behavior, waveform direction and speed
+    have not been tested in a vendor compiler or on the display.
+R02 Display model is unconfirmed (Nextion Basic, Discovery, or TJC and full
+    model string). Existing TFTs are model-family-specific stock artifacts.
+R03 No new controller/display protocol exists for separate edit/selection,
+    persistent selection, decimal ratio, ToF full calibration, home flush,
+    comprehensive guard, or guard calibration feedback. Old firmware cannot
+    acquire these features by copying the HTML files onto an SD card.
+R04 Schema 12 has uint16_t shotPreset, no calibrated full-distance field,
+    no versioned initialization of Turbo/SOUP in slots 1/2. No migration tests
+    or new paired controller binary exist. Rename/edit currently saves active
+    profile and explicit quick selection does not persist by itself.
+R05 The browser does not execute the original phase engine, pressure/flow
+    restrictions, pressure/weight exits, ramps or predictive cutoff. Graph
+    preview is illustrative. A settings field's presence is not brew parity.
+R06 Backflush browser timer is a 55 s stand-in. Real logic waits >7 s and >5 bar
+    before an 11-count sequence with 5 s phase transitions. Do not replace
+    that sequence with the browser timer. Pressure behavior must be tested.
+R07 Descale browser timer is a 184 s stand-in. Real code uses 30 s pump-10,
+    60 s off, 10 s pump-30, then three solenoid pulses (1 s closed, 200 ms
+    open twice and final reopen), repeated up to cycle 100. Brew switch stops.
+    It also temporarily mutates active setpoint to 9; replacement must use a
+    temporary heater target and restore recipe temperature on exit.
+R08 Steam/hot water UI buttons are simulations. Physical switch precedence,
+    brew+steam hot-water combo, dream-steam fill, pressure limits and forgotten
+    steam timeout must remain in the real controller. Do not add competing
+    latches in a display script. Real timeout constant is 15 minutes.
+R09 Prototype Home-after-shot is immediate; original HMI waits 10 seconds.
+    Exact timing, finished graph retention, tare-channel clearing, sleep/wake,
+    uptime and conditional warmup/steam indicators need native implementation.
+R10 Predictive fallback and graph-tare force-start are absent from the browser
+    model. Original automatic fallback must remain; estimated values must be
+    distinguished from measured scale values. Neither may satisfy tray guard.
+R11 Local main config currently omits TOF_VL53L0X. Sensor-only bench worktree
+    enabled it separately. New production config must explicitly enable ToF.
+R12 Local gross-tray raw baselines are absent. Guard must stay fail-closed until
+    calibrated. A simulated 170 g tray and 100 g minimum are not calibration.
+R13 Last verified installed image was the sensor-observation bench image, with
+    output/startup/temp-warning behavior changed for bench testing. It is not
+    the normal production binary built in this worktree. Transition back to
+    heating control must be explicit, with real sensors and original interlocks.
+
+INHERITED SOURCE DEFECTS IDENTIFIED (FIX STATUS IS EXPLICIT BELOW)
+D01 FIXED: flow-transition hold-limit fetch previously read tp.tLim rather than tp.hLim. Separate
+    hold and ramp pressure limits can overwrite one another on save.
+D02 FIXED: lcdSetWeight previously used a 6-byte buffer, then strcat("g") after snprintf; checking
+    <= sizeof permits truncation, and valid five-character numbers leave no
+    space for the suffix. Risk of overflow at e.g. 100.0 or -10.0.
+D03 FIXED IN SOURCE; HARDWARE FAULT TEST PENDING: previously temperature validity compared value == NAN, which never detects NaN.
+    The .ino also enabled Ofast. It now uses project O3 and a finite check.
+    Fault-injection tests must still prove all relevant outputs go off.
+D04 FIXED + SANITIZED TESTS: finished branch previously referenced phases[phaseIdx] even when idx
+    equals phaseCount. Potential out-of-bounds access, including recursion
+    through zero-duration phases. Safe idle/last-valid state now covers empty
+    construction/reset, all-zero phases, natural completion and early stop.
+D05 FIXED: transition/main hold/ramp seconds now use uint32_t millisecond
+    locals. Previously times>=66 s overflowed; no stored recipe type changed.
+D06 OPEN: ToF startup loops until begin succeeds, before watchdog initialization.
+    Missing sensor can block startup. Tank reads only occur on Home; level can
+    remain stale while brewing. No validity/age handling for the new calibration.
+D07 OPEN: sysReadinessCheck page predicate uses != Graph OR != Manual, always true.
+    Any correction must define desired water behavior, rather than accidentally
+    exempt a running shot or change the original low-water stop unintentionally.
+D08 OPEN: EEPROM validation is incomplete/asymmetric: scalesF1 checks only lower bound,
+    F2 only upper; zero factors/NaNs and many invalid values can be accepted.
+    Metadata XOR protects version/timestamp, not values integrity.
+D09 OPEN: HX711 read_average has no sample validity result; an individual timeout reads
+    zero. The guard checks initial readiness then averages four reads and tests
+    only finite results. A timeout inside that average can masquerade as load.
+    Real guard freshness must use successful samples/counters, not finiteness.
+D10 OPEN: physical-switch stop in descale is assigned before the remainder of the
+    current phase still issues its pump command; next loop finishes. Solenoid
+    beats use blocking delays. Measure stop latency; make guard interruption
+    effective during pulses before claiming continuous fail-closed protection.
+D11 OPEN: prototype input validation lacks complete type/range checks for many numeric
+    fields and allows unsafe heater dividers; it is not production validation.
+
+D12 FIXED + SANITIZED TESTS: ESP profile serializer used reserve() without
+    resize() before memcpy, leaving vector sizes zero. Original equality helper
+    failed to check phase count, hiding it. ASan caught the overflow. Serialization
+    now sizes buffers, validates payload length/count before deserializing, and
+    rejects incomplete/malformed payloads without modifying the target. Existing
+    wire layout is unchanged. New tests cover empty/truncated/huge-count inputs.
+
+VERIFICATION PERFORMED
+- pio run -e all-pcb-stlink: PASS, existing controller interface plus audit fixes.
+  RAM 28,856 / 131,072; flash 131,640 / 524,288 bytes. No upload.
+- Native pio test initially fails building old ArduinoFake with Apple Clang 21
+  (dependent-template diagnostic), before executing tests. With local override:
+  PLATFORMIO_BUILD_FLAGS='-std=gnu++17 -Wno-error=missing-template-arg-list-after-template-kw' pio test -e test
+  Baseline PASS:16 cases. After fixes,23 cases PASS under AddressSanitizer
+  and UndefinedBehaviorSanitizer (add -fsanitize=address,undefined
+  -fno-omit-frame-pointer to that local override). Dependency sources untouched.
+- node tmp/touchscreen-indigo/test-trials.cjs: PASS, 557 prototype checks.
+  Includes all profile/system fields, both mode banks, step navigation, ratios,
+  selection vs editing, manual flow, fixed graph samples, tray fault paths and
+  bounded touch targets. Canvas-stub tests do not establish font/layout parity.
+- Browser visual inspection: profile overview and full transition page with
+  top arrows and curve controls fit at native 320x240 (viewed at 2x).
+- python3 tools/touchscreen-audit/audit.py: PASS field coverage / inventory.
+- No new TFT compiled, no new protocol tested, no EEPROM migration executed,
+  no new production firmware or touchscreen flashed. Hardware acceptance pending.
+
+RELEASE DECISION
+NO-GO for Indigo deployment. The installed machine has not been changed:
+no upload or EEPROM write was performed. Controller source fixes are unflashed. We can
+prove stored-field coverage and describe every behavior that must survive,
+but cannot truthfully certify full parity or provide a usable Indigo image yet.
+See SPECIFICATION.txt, ACCEPTANCE.csv, and LOADING.txt for the implementation
+contract, required evidence, paired installation and rollback procedure.

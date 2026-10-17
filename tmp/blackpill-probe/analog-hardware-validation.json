@@ -1,0 +1,30 @@
+{
+  "input_state": "floating; values are not a measurement of CLK",
+  "serial": "349C39803133",
+  "presets": [
+    {
+      "preset": 0,
+      "count": 32768,
+      "nominal_samples_per_s": 4000000.0,
+      "measured_average_samples_per_s": 3999518.5583875095,
+      "elapsed_ms": 8.19298611111111,
+      "vref_calibrated": true
+    },
+    {
+      "preset": 1,
+      "count": 32768,
+      "nominal_samples_per_s": 2400000.0,
+      "measured_average_samples_per_s": 2399855.965675888,
+      "elapsed_ms": 13.654152777777778,
+      "vref_calibrated": true
+    },
+    {
+      "preset": 2,
+      "count": 32768,
+      "nominal_samples_per_s": 73170.73170731707,
+      "measured_average_samples_per_s": 73170.59328013506,
+      "elapsed_ms": 447.83018055555556,
+      "vref_calibrated": true
+    }
+  ]
+}

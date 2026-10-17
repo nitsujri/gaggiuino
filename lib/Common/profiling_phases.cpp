@@ -116,7 +116,9 @@ void CurrentPhase::update(int index, Phase& phase, uint32_t timeInPhase) {
 //-------------------------- PhaseProfiler -----------------------------//
 //----------------------------------------------------------------------//
 
-PhaseProfiler::PhaseProfiler(Profile& profile) : profile(profile) {}
+PhaseProfiler::PhaseProfiler(Profile& profile) : profile(profile) {
+  if (!profile.phases.empty()) currentPhase.update(0, profile.phases[0], 0);
+}
 
 void PhaseProfiler::updatePhase(uint32_t timeInShot, SensorState& state) {
   size_t phaseIdx = currentPhaseIdx;
@@ -124,7 +126,16 @@ void PhaseProfiler::updatePhase(uint32_t timeInShot, SensorState& state) {
 
   if (phaseIdx >= profile.phaseCount() || profile.globalStopConditions.isReached(state, timeInShot)) {
     currentPhaseIdx = profile.phaseCount();
-    currentPhase.update(currentPhaseIdx - 1, profile.phases[phaseIdx], timeInPhase);
+    if (profile.phases.empty()) {
+      currentPhase.update(-1, idlePhase, timeInPhase);
+    } else {
+      // On natural completion phaseIdx is one past the last element; on an
+      // early global stop it is still the phase that actually ran.
+      size_t lastPhaseIdx = phaseIdx < profile.phaseCount()
+        ? phaseIdx : static_cast<size_t>(currentPhase.getIndex());
+      if (lastPhaseIdx >= profile.phaseCount()) lastPhaseIdx = profile.phaseCount() - 1;
+      currentPhase.update(lastPhaseIdx, profile.phases[lastPhaseIdx], timeInPhase);
+    }
     return;
   }
 
@@ -151,5 +162,6 @@ bool PhaseProfiler::isFinished() {
 void PhaseProfiler::reset() {
   currentPhaseIdx = 0;
   phaseChangedSnapshot = ShotSnapshot{};
-  currentPhase.update(0, profile.phases[0], 0);
+  if (profile.phases.empty()) currentPhase.update(-1, idlePhase, 0);
+  else currentPhase.update(0, profile.phases[0], 0);
 }

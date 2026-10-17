@@ -1,0 +1,237 @@
+{
+  "schema": "gaggiuino-indigo-release/2",
+  "softwareReadyForFirstLoad": true,
+  "hardwareVerified": false,
+  "uploaded": true,
+  "productionActuatorsEnabled": true,
+  "newTftRequired": false,
+  "displayRequirement": "unchanged stock frozen Nextion/TJC HMI; physical compatibility pending",
+  "controllerEnvironment": "all-pcb-stlink",
+  "baseCommit": "18d3e32d6be72170f3b9c266ee2f4978837d6277",
+  "sourceState": "working-tree snapshot; source hashes included",
+  "settingsSchema": 13,
+  "previousSettingsSchema": 12,
+  "settingsBytes": 1056,
+  "metadataBytes": 1072,
+  "initialRecipes": [
+    "Turbo",
+    "SOUP"
+  ],
+  "defaultProfile": "Turbo",
+  "tofFullInitialMm": 30,
+  "trayBaselineStatus": "UI capture+Save required for automatic boiler fill/pressure release; Home Flush manual bypass",
+  "trayMinimumG": 150,
+  "trayWeightReferenceG": 200,
+  "trayWeightReferenceStatus": "provisional aftermarket reference; not verified OEM weight",
+  "verified": {
+    "mainBuild": "PASS",
+    "calibrationBuild": "PASS",
+    "nativeTests": 49,
+    "sanitizers": [
+      "address",
+      "undefined"
+    ],
+    "backupDecoderTests": 2,
+    "ramBytes": 30000,
+    "flashBytes": 209880,
+    "hardwareAcceptance": "NOT RUN"
+  },
+  "sourceHashes": {
+    "AGENTS.md": "ae1dfde87257cb940b60838fa8d52b7c8084d57384f41f3e74dde4eb6fa52b1a",
+    "extra_defines.ini": "fe8c3b8b640a1a5106db68cf7fb3f832dc27ff7b9ca11d25ad7c0a3865b38bcb",
+    "lib/Common/drip_tray_guard.cpp": "f3f839d195df8b83f4775a20bb8f330eb80a000438a5414949edfccc5472532d",
+    "lib/Common/drip_tray_guard.h": "6e72f1f55491efc8959696d30994a3cdf9f3c8fc003a63c363698ce8f39495db",
+    "lib/Common/indigo/control.h": "96631fdd4d91e8b093ce04fc0748c8f91d5ac6cab306cb3beaab405080956bd6",
+    "lib/Common/indigo/fields.h": "574d4bda0c77332a1e5431c6cb2be3d54d56c43a97ecbd6283cfc6512e083769",
+    "lib/Common/indigo/settings.h": "125f8e5024081939a966463c048e917d637e73bf3cb7630d5977d733a2679866",
+    "lib/Common/indigo/ui.h": "f14266cd89c61508e5e58d8e27c34ec5c404f7316746aff14ef55c860115e09b",
+    "lib/Common/indigo_fields.cpp": "d54ebdcb4ae99d803aa0b46465e39a6efdf9bf2e16113d1f99ecb2bdc8888684",
+    "lib/Common/indigo_settings.cpp": "b92fd30995eabb9e2edc5d9520932643a14be9e4e9fc0666402787125e2f6330",
+    "lib/Common/indigo_ui.cpp": "82ac88771a70d77b0cbcb84f387554cd8e47bed263e4b6162dd4525797f7361a",
+    "lib/Common/mcu_comms.cpp": "05fd70e14c1a53e4fe777ec1c9dbe7177d69fb573d7ee9ebe497c698d3dd44c2",
+    "lib/Common/mcu_comms.h": "e222e58e6be9d6b59ff8c0c1464895a03ee4a1d2c7845b4cf5d7e7c8008b05de",
+    "lib/Common/measurements.cpp": "8a52efa3ccd7fc64e351943629ea7154cf2aa5e4ff290422b6490971bd3cf481",
+    "lib/Common/measurements.h": "1a9fd52b19981b30425aebb30e6af944757a784ca49843780c7984abaa4e301f",
+    "lib/Common/profiling_phases.cpp": "730fb0797240b193895443faf906caaaf3e8165beeebd91c9fddd593f13d26aa",
+    "lib/Common/profiling_phases.h": "b72404efb14d4389bfbabaaf959d3dbcb0659e5f2ee68bbbd408985daae4bbd1",
+    "lib/Common/scales_clock.h": "8f8cd1e377432583f873ee3256dc90a8b85c2ef351d812430a1b750bbe827a7c",
+    "lib/Common/sensors_state.h": "21aad5bc7d0abd69f13729e976c86f2083e0a973774238844fc3dc33737ff299",
+    "lib/Common/system_state.h": "f97817014cf3fafb6ff732d917ee815b7617a03b4f685fe60406dde5d3b8841d",
+    "lib/Common/utils.cpp": "3af92667a4d90fba7332e3488c3ec80ff072d5a1eeb5e8eb79fd86444f423f3c",
+    "lib/Common/utils.h": "d855ba2753a5086cfbd029f3e425535015e861ddff5c3f9c004760cad39eda57",
+    "lib/HX711/LICENSE": "3344398f7d4dc4a3a6540e9f9c8fbddce97c615339fef1e2148520e66f072b9a",
+    "lib/HX711/LOCAL_CHANGES.txt": "49924b9a10ee7d723fc11f0c9f55833f378bcbbc44fd258bed5d7b622c9d8fbd",
+    "lib/HX711/library.properties": "03e1c4851837514e75e12493b6bf6acf4376a0a77726bca19c8861a3e62cff51",
+    "lib/HX711/src/HX711.cpp": "f7c3b6f55ea33571977aaf4cf19d3c13179d1e990b46d119037b79afc584d5a7",
+    "lib/HX711/src/HX711.h": "abcaaed8dbe3963b74c6de90b78847f50a7592cbf04cec3b973a01b768e9d86f",
+    "lib/HX711/src/HX711_2.cpp": "3503568ae87acfb4ce65d385c79f46c6aed2740815268d8a32d65cee91b0081f",
+    "lib/HX711/src/HX711_2.h": "53dfeaa1574da19926f34483bfd343d144ac3adbda74b97c830acab80114355b",
+    "platformio.ini": "545f751662c55604177db5c8329179389660d27000e7e9d70d70a2f47917d209",
+    "scales-calibration/scales-calibrate-basic.tft": "35cf50121ea90386618df8ab06d3bfdd534390cbaaa600ae4d092bea60003784",
+    "scales-calibration/scales-calibrate-discovery.tft": "a4db0753603e70309e8a95c5bb1859d177d3f4080d2b9010d66b3629f1e3f111",
+    "scales-calibration/scales-calibrate-tjc.tft": "78565c42b00aaad0b21b89ccd5af304badd3c20fc8569613c60559bc87e4c015",
+    "scales-calibration/scales-calibration.cpp": "9dbf81b154161c6e239fc16cab3277953e4802fac381aee699e1c1717b258081",
+    "scripts/auto-version.py": "a6f52265f886a80be0712baef2b5ecdbc62a8a960d73e44e9251040fe17e06dd",
+    "scripts/custom-src-dir.py": "3f74aeb979b481babbf979d8ae42489af5c4a31d1cccdda2262c8cc502b60a9f",
+    "scripts/make-sd.sh": "b4857534de78d8ba3183e28af779caa04e0f24d0ea4b30fb8020176d1e8b90b1",
+    "scripts/native-test-compiler.py": "00ef04e3369f69644aba264b0476281c502bb1f7a31a79545b31fb188b870b7c",
+    "src/dbg.h": "baab06fee2930279f2b7f12b6a521db073c15c009ff6b5d1a92d88c455cf8ba0",
+    "src/eeprom_data/default_profiles.h": "6bad7a3f3d597f92a852f36bf197c66be7a61ca072128242cb46a844062f90c6",
+    "src/eeprom_data/eeprom_data.cpp": "a010fc0d10dee5c0c6b0fd6919a3636d4495fed9293be3d9723ad9548b8b291b",
+    "src/eeprom_data/eeprom_data.h": "3f8f7dd1ac67a82491721e691790aa42a727072890054edc4cbc141961978c00",
+    "src/eeprom_data/eeprom_metadata.h": "47bb1eb1e8094e74b37520c25e3c64ba140e9477c05303083feb23419b55a9e2",
+    "src/eeprom_data/legacy/eeprom_data_v10.h": "235646960939a23afb562fca60f31508e7ad8cc1588ebda70d2de22e97105bef",
+    "src/eeprom_data/legacy/eeprom_data_v11.h": "80ffcaa5b488a8e71a6b342240a1f3e2afb5fecff01b386d7e68c0f48f52cdb2",
+    "src/eeprom_data/legacy/eeprom_data_v12.h": "260e6898c4197ea61b0cc8c741b2d03c0df9da521b10a00d238be23adcb4b719",
+    "src/eeprom_data/legacy/eeprom_data_v4.h": "535721883c78a907bc807e6d2f5eba16afb0716da1de1b6569d4820d7d040cf3",
+    "src/eeprom_data/legacy/eeprom_data_v5.h": "f2ea3d6ae4314a6dfacc86138e5c253157b8066db08909df7e97d81b3c0ed18d",
+    "src/eeprom_data/legacy/eeprom_data_v6.h": "ab9f7161a1d9b30ea221ba34db11a3bcd237128735bf56b09e86d8979b11c843",
+    "src/eeprom_data/legacy/eeprom_data_v7.h": "b822c0fe241fb42a630f22a7a43b62bbfd921d1ad40136db8be7ffc5ef0f27e6",
+    "src/eeprom_data/legacy/eeprom_data_v8.h": "4c55dcfdbd909ae868d18ab5e153147009f364f4c047ab9a4930e1348cd8fdfb",
+    "src/eeprom_data/legacy/eeprom_data_v9.h": "4e55d3edd5cf4dc17bcca24df0538289a03cf8d5a5976f91081b6c086b314a69",
+    "src/functional/descale.cpp": "b0e74400eca3cdf9eff66a6f175d532f6031a23e16970a5af49976fbade7ca57",
+    "src/functional/descale.h": "2c44dfd87a5766ea85db0bc0e4a0905aa36998edd8b16eb4167a8ee0cbc81cf0",
+    "src/functional/just_do_coffee.cpp": "43166832207b576d2146e7bbbdb4ae04a356f4e23771e2d4e84cdb080e12fbd1",
+    "src/functional/just_do_coffee.h": "b8839dd319d6bd6ebf403b7174d74eae47f26ac225a014a204d127ecd41ced34",
+    "src/functional/predictive_weight.h": "18c17f2db6377738215ca1fcf859a651db8d6d8715424e90de958f1df365f7f2",
+    "src/gaggiuino.h": "7565258876700cfe86177a2b6ec2bf664024f66093d21bdcf20e4656394e1c68",
+    "src/gaggiuino.ino": "6fb9f5ed5b7518fe4095fdcdcda2af7ea60d401abefbb1d67cdb0c6adc2495ab",
+    "src/lcd/indigo.cpp": "bb928579a0895930791cee6cb1f713bf5a4aea86fd31cbe00855f1c2b76a0c76",
+    "src/lcd/indigo.h": "5dc94473589a799adec01b0494a181c0d157b8239f6ec8f92cbf91fa16ab9628",
+    "src/lcd/lcd.h": "b9d505bdcb30e51cb6dcaddf80504c45baf2851cf6c6f0b58dd677ae3fe396c6",
+    "src/lcd/nextion.cpp": "5f4328ea89696e3b798086b38421dbf5c9d8a84b6fb394253744cce0c4af101b",
+    "src/log.cpp": "9eaf2504e08406dfc9686d67e05fb00c58f1a2928ef544eaa2ed91c0f89d49ea",
+    "src/log.h": "e0a4b939df262b3eb2f07173e5d9238ae337aafd0fd367908503367da399d7c6",
+    "src/peripherals/esp_comms.cpp": "c3be8b03ad5319c76ea521efd3dfd03462e4cadffd45723fd43501196e8d7c1b",
+    "src/peripherals/esp_comms.h": "38ccd95f363daf17629b4eccb7e747897df4e7b994b61c77906ef43146e2104c",
+    "src/peripherals/i2c_bus_reset.h": "fb4ac34d730481d9e2994fa257813ae3d3d379d3c3bb175c8be97c19399be70e",
+    "src/peripherals/internal_watchdog.h": "036ce8576ceecfe88cc899c83001b9a2dbc50f5e088f51f23a5a95fb9648d5f5",
+    "src/peripherals/led.h": "b068e166eb5e65882653acd2c47559a818a66986da291cf21a648081b6834558",
+    "src/peripherals/peripherals.h": "0d2fcc5374806e675b7fd369f626ea741f1b72dd38dfc207da4a5fcf343a8ec5",
+    "src/peripherals/pressure_sensor.cpp": "c2151e99a5b24b3cda0e99d81335fdee3df09e704408115628b67980be44c036",
+    "src/peripherals/pressure_sensor.h": "9d4420129835d7c587ea9b3c38961c8837b10522133508d680ac26f80103f4f0",
+    "src/peripherals/pump.cpp": "df2075ce6d9a27616cbc075795c7ac39d9b441eeedb2cd61a44be4654ffbbc27",
+    "src/peripherals/pump.h": "76baddb56c0ca90bb382baa9a1591dfccff2829134231f4d4a627000feb1a6df",
+    "src/peripherals/remote_scales.cpp": "288053f5f711f611ef1eb0d8cd891601bb9c38a502df4452793ce264efae3cde",
+    "src/peripherals/remote_scales.h": "18032f5ffad7bbae4d3a720289c0e82f8dfeba4a688a55e573b31dc494c80b0d",
+    "src/peripherals/scales.cpp": "d3f523cf4764c24ad400389e127d600787ca6d025a9f5f9ffeb6515f6bc7a8b3",
+    "src/peripherals/scales.h": "7a86f82322f811dae1a82f7945d9c1f1dccc06f6670c3049b3f0aa1004e968d5",
+    "src/peripherals/thermocouple.h": "a94584cbf6687f1dd8f011cb6167977be6b9778b7ce9af2545c8adcdc3df2546",
+    "src/peripherals/tof.h": "4c908c5e7b0ca78198e0c1cd14153a42ab57d4f1c4ed38d23309d83e6a1fc18c",
+    "src/pindef.h": "6bd73320cee9f408e5846015f2bdbbed63da428ef196b3cc1fb6e009bdeed2f9",
+    "test/fixtures/config_v12.h": "5f4e68e251374600dc4948d24a9fa9364d8e29b294c03f737a8b8769a7e23053",
+    "test/test_main.cpp": "4cccb6674906710453a81d2681166290e1b4284aa1c77a5cffa8401b195dc138",
+    "test/tests/test_cleaning.cpp": "9b86b0d300fad1cc8336168cb7a0013dd7273c628868c003670112ed0299da33",
+    "test/tests/test_drip_tray_guard.cpp": "4d4404dbdacffea1e4f561a8d2ebca53b653137e8bb6ecac45faf8f346d6470b",
+    "test/tests/test_indigo.cpp": "0954ebaf43b2f3d939c6eda5ebfc6eb5f048441de05e84aa035d80a3db0fe39b",
+    "test/tests/test_pressure_profiler.cpp": "8c23ee20b9b4ca820ea44153d6bc7a470689b40969a7085abfc5ae46f42b674b",
+    "test/tests/test_profile_serializer.cpp": "a270c361b9a641be49d7945b6cb4e4f1704e1a3c4eb474391d791c866fd7292e",
+    "test/tests/test_pump.cpp": "0f396539623cb53f708aa5f7ef6a725914e235696887eb632d0c102798acbaf4",
+    "test/utils/test-utils.cpp": "2307a89e6fa09f16d3005beeba2452d59216b23da9b3bb95444a8cd93b5272e1",
+    "test/utils/test-utils.h": "9e5b1b2f00e6009b8b121cc1acf138ecc1ae6f14a3f65659363c93c23eb93f5e",
+    "test-lib/mocks/ADS1X15.cpp": "0d4a4aae94688daf9f49593f46d8292435a28a50487af786d898f331b73abf55",
+    "test-lib/mocks/ADS1X15.h": "5bcccbe1451c56a6a1461fc3d2164b40668e050b65e66dcb13c73c0085515f41",
+    "test-lib/mocks/EasyNextionLibrary.cpp": "cb44ba305c7d64fb4534dddae6e731498e475503133de2bd5d4953ff7c7f9582",
+    "test-lib/mocks/EasyNextionLibrary.h": "5ce3a8af0241e0cb6b71990b23dc262f6172c5b067ff5f86d6ebeeced4604f8e",
+    "test-lib/mocks/HX711_2.cpp": "8107daa79431f3d8b1f7ad39075759f8c35dd28da03564d41b3a373fdf18e8ef",
+    "test-lib/mocks/HX711_2.h": "00eef3873d56faa2588c4f8c08b5469e17ece5347f2f21be43fde24e811ca7ba",
+    "test-lib/mocks/IWatchdog.cpp": "9393bcaa61fba4bf60902cd4dda4a0a403fef0d4579cff9711ca3aa6b060acef",
+    "test-lib/mocks/IWatchdog.h": "3886fea4642e3de7145a7766e4fda0f3d102478deb3c00eb2443814a048a7c8c",
+    "test-lib/mocks/NCP5623.cpp": "207268070cddc3e7631022418fe976bab2092811e3960284e3e0c08ba7d52e45",
+    "test-lib/mocks/NCP5623.h": "5926f51cfa9c7ade1ba6894fab5ec0c9814eddc3b1ebf93a540dae4ec782d098",
+    "test-lib/mocks/PSM.cpp": "f5d1715e021187b42ea5ef5bd972bca0f6aac081eae47f6b7e56f357dafdb86c",
+    "test-lib/mocks/PSM.h": "7df7d45d272aa3696091cd60e2901f2aee1319ec7890aaab18d6d118933b0dac",
+    "test-lib/mocks/Wire.h": "9cd2f605b8ad5f43ca3f8ea16e0e24ea61c0c7c82e7e7829a4058146abfe354e",
+    "test-lib/mocks/mock.h": "1a57c18e0b60797e770bc2bca0b4b527b7702ba9a843fed00bb484a7df0b5c7e",
+    "tools/indigo-preview/harness.cpp": "16d2eda562ca59017f02812f6ee0aed3380357cb37e77e23dfd77e5b744c569e",
+    "tools/indigo-preview/render.py": "8ede567c5563d4bc79eb9d508a4b188cb6648a7a69506e208c835a3049c6d013",
+    "tools/indigo-preview/shim/Arduino.h": "d615f1d8cafbacb32adc526d31cab025e9f72e008b4ba112058ebe1831d74b6a",
+    "tools/indigo-release/inspect_settings.py": "589b5a214d360d15743305c61bf00ebb23acb511f1342240429288b6d13dcd94",
+    "tools/indigo-release/package.py": "9454474ff1fc3c0f4ed2a85830c50961ebc5bc1c8ec9da1784a844308d257d35",
+    "tools/indigo-release/test_inspect_settings.py": "7e132608019b794840001774b08ae920efc16cf1f6121beea3e42b7fa0d972ac",
+    "tools/touchscreen-audit/audit.py": "4068f88d450476d6f1fbac1d983e51991d39fce20529ae40d3be5a4c014b2a7e",
+    "tools/touchscreen-audit/original-interface.json": "8a6eba1b02b6d0ae99ecc24679888fb77781291d92e94d2e6e5172a25bd26050"
+  },
+  "artifacts": {
+    "tmp/indigo-release/calibration-build.log": {
+      "bytes": 27978,
+      "sha256": "16a9804e43657b02cd596a1a4152a570b8950435ee5ccd6535773381f6ddf949"
+    },
+    "tmp/indigo-release/extra_defines.ini": {
+      "bytes": 1111,
+      "sha256": "fe8c3b8b640a1a5106db68cf7fb3f832dc27ff7b9ca11d25ad7c0a3865b38bcb"
+    },
+    "tmp/indigo-release/deployment.json": {
+      "bytes": 582,
+      "sha256": "89f017f2bd9a850e96362bcf8a1a17a9a20e41fc125c1fbe3a4677d855003576"
+    },
+    "tmp/indigo-release/firmware.elf": {
+      "bytes": 428272,
+      "sha256": "faa796ae12bd6cd90c43ff56051894e6608f773b50c59372ad7b961e2d10dfcc"
+    },
+    "tmp/indigo-release/upload.log": {
+      "bytes": 3784,
+      "sha256": "3a9c1c46764d47c9c6d97aaad189752e1cadf31e0670d6cf1db5b7b5927c93b9"
+    },
+    "tmp/indigo-release/scales-calibration.bin": {
+      "bytes": 62740,
+      "sha256": "c64d6151fe3f26fe569639054b21d23eeb291bddad03c08ad1ac79f1c3e7784d"
+    },
+    "tmp/indigo-release/read-settings.log": {
+      "bytes": 1257,
+      "sha256": "fb40107c881bb56311bd8925e1515864c574f7361be6d03d5c600683376b69a2"
+    },
+    "tmp/indigo-release/source-snapshot.zip": {
+      "bytes": 1384246,
+      "sha256": "fd31b088897b995c85aa7c58ea1618bd7a8476662667f1cc3eeffe5441f6cc6f"
+    },
+    "tmp/indigo-release/readback.log": {
+      "bytes": 1355,
+      "sha256": "8f3be4977af80edfcf50bce1dc4a93727c893df5aa6776ef1a67f988282dd82f"
+    },
+    "tmp/indigo-release/firmware.bin": {
+      "bytes": 210448,
+      "sha256": "8e371228ec4983198e04cf550b138d8fd05d3ce1599f9f1871cb07a58f3dc77c"
+    },
+    "tmp/indigo-release/LOADING.txt": {
+      "bytes": 6673,
+      "sha256": "4e0a09b5cea21ad5afa8b1b2b4e0092076372adaacce221da2f2768c94c45f80"
+    },
+    "tmp/indigo-release/native-tests.log": {
+      "bytes": 43331,
+      "sha256": "1ae7b3ad3f82ff01ffc75ca0733583dcc557a11c7c04930e233328cc00de1743"
+    },
+    "tmp/indigo-release/settings-after-upload.json": {
+      "bytes": 9999,
+      "sha256": "602a267cd1234b163763a5cd5cba1056862d32ebb521a352bc9274eff1400076"
+    },
+    "tmp/indigo-release/controller-readback.bin": {
+      "bytes": 524288,
+      "sha256": "177615ea1c11b44f5cd13f3389c9129c6c70d6011f81b41ec747b08f72cbfcf9"
+    },
+    "tmp/indigo-release/main-build.log": {
+      "bytes": 3234,
+      "sha256": "f8521ac5b24e8741d123d8d03ceb055beef6215c21f77b739f9e71dff00fda11"
+    },
+    "tmp/indigo-release/settings-page-after.bin": {
+      "bytes": 16384,
+      "sha256": "31b9124239d1d08a646e7b767244b40bbdf7ab36d2abb5e9ac7a558bfe85d2d1"
+    },
+    "tmp/settings-backup/controller-flash.bin": {
+      "bytes": 524288,
+      "sha256": "5eaf7905ee786803836b3324ac386e57c8fe46137ed8e2ff0fce4dab0f8ce400"
+    },
+    "tmp/settings-backup/eeprom-page.bin": {
+      "bytes": 16384,
+      "sha256": "31b9124239d1d08a646e7b767244b40bbdf7ab36d2abb5e9ac7a558bfe85d2d1"
+    },
+    "tmp/settings-backup/running-config.bin": {
+      "bytes": 1040,
+      "sha256": "173d1899d3696ebdb84792d8013c88bb5fdf03e33ac21f24853446d372cab0f8"
+    },
+    "tmp/settings-backup/settings.json": {
+      "bytes": 20312,
+      "sha256": "fbae03a97f2fc83ae4b51709224518c01a67bddcd14c24147dcad082e4f7f739"
+    }
+  }
+}

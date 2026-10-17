@@ -1,0 +1,259 @@
+INDIGO TOUCHSCREEN — IMPLEMENTATION CONTRACT, REVISION 1
+Status: specification and browser reference; native implementation pending.
+Frozen STM32 BlackPill generation only. Normative words MUST / MUST NOT are
+release acceptance requirements, not assertions about the current prototype.
+
+1. TARGET AND RELEASE UNIT
+1.1 CoffeeHat/GCP PCBv3 Low Voltage + STM32F411CE; all-pcb-stlink;
+    SINGLE_BOARD/MAX31855; shared-clock dual HX711/FPC. No SINGLE_HX711_BOARD,
+    FORCE_PREDICTIVE_SCALES or alternate LEGO/forced-predictive environment.
+1.2 Use official PCBv3 wiring source from AGENTS.md. This UI project changes
+    no connector assignments. Preserve installed HX711 pull-up/16 us recovery.
+1.3 Native framebuffer MUST be 320x240, RGB565. Final target MUST name the
+    exact display model and compiler version. Basic/Discovery/TJC TFTs are
+    distinct release artifacts. Browser Arial and HTML are not native assets.
+1.4 Release MUST contain a paired controller .bin/.elf, editable HMI source,
+    exact-model TFT, build flags, source revision, SHA256 manifest, schema
+    version, backup references, and completed acceptance results. No file
+    named as a release may contain a stock TFT or sensor-only bench image.
+1.5 Measure native image/font/script/working-memory budgets in the compiler.
+    A naive 100-frame 148x148 RGB565 wheel alone is 4,380,800 uncompressed
+    bytes; do not assume it fits the installed model. Reuse/remove old wheel
+    resources or use bounded native drawing / a verified frame budget.
+1.6 Layout is usable without alpha/vector/browser support. Wheel progress,
+    font glyphs (degree sign, chevrons, names), touch alignment, and waveform
+    scrolling require verification on the exact display. 320x240 alone does
+    not establish hardware compatibility.
+
+2. HOME AND NAVIGATION
+2.1 Indigo palette/footer, Celadon temperature circle diameter 148, stroke 12,
+    center (102,116). Keep active profile name and vertical tank level.
+2.2 Footer: Tare left; quiet centered single Flush label + adjacent on/off
+    circle; Menu right. No branding or always-visible tray status. Any denial
+    shows a concise actionable reason, e.g. insert tray or calibrate guard.
+2.3 Current and target temperatures, heating/ready/steam/warmup status remain
+    distinguishable. Do not label a machine READY solely because a demo flag
+    is clear. Preserve original conditional warmup timing and steam warning.
+2.4 Menu retains Profiles, Manual flow, temperature/boiler settings, system,
+    scales, water calibration, cleaning, LED, graph preview, diagnostics/uptime,
+    Save/default/reset. Move functions; do not remove access to them.
+2.5 Chevrons and labels share a vertical center. Profile step pages do not
+    paginate fields. Keyboard returns to the exact edited profile, step,
+    mode, and value; Cancel changes nothing. No keyboard success on invalid
+    input or a failed serial read.
+2.6 Preserve screen sleep in minutes, touch wake, physical brew wake, saved
+    brightness semantics, and persistent critical messages. Sleep MUST NOT
+    cause an output or start a shot. Popup return MUST NOT alter operating mode.
+
+3. PROFILE SELECTION, EDITING AND PERSISTENCE
+3.1 Five slots. Name tap SELECTS; Edit opens without selecting. Separate
+    activeProfile (persisted) and editingProfile (runtime) values, both 0..4.
+    Rename/default/edit never implicitly selects. Show active on Home.
+3.2 Explicit selection MUST persist on its own without committing unrelated
+    draft values. Selecting the already-active profile causes no flash write.
+    Reject/defer selection and profile reconfiguration during an active shot.
+3.3 Profile editor overview: Temp & dose, Preinfusion, Soak, Ramp, Transition,
+    Brew profile, plus Rename / Preview / Defaults and Save.
+3.4 Every step has top All, previous, title, next, Save. Previous/next wraps
+    six steps, commits valid runtime draft before loading the next step,
+    never changes activeProfile or editingProfile. No serial read of active
+    profile may overwrite an inactive profile's editor.
+3.5 Pressure and flow setting banks are separate and retained across mode
+    toggles, save/reboot and navigation. An enable switch does not erase
+    inactive settings. Defaults target only the selected editor slot.
+3.6 Name length 1..24 display-supported bytes plus null terminator. Do not
+    silently truncate multibyte browser text into the 25-byte C name buffer.
+3.7 System Save saves that scope; profile Save saves only that profile. Reset
+    requires explicit confirmation and must distinguish recipe defaults from
+    machine calibration. Flash-write failure leaves old persisted data valid.
+3.8 Exact field inventory, types and original source groups are in inventory.json
+    and field-matrix.csv. All 55 fields incl. name, 19 other global fields plus
+    active selection MUST roundtrip. Do not treat omitted fields as zero.
+
+4. RECIPE SEMANTICS (CONTROLLER OWNS EXECUTION)
+4.1 Optional basket fill uses 7 ml/s until pressure >0.1 bar, then optional PI,
+    optional soak, optional PI ramp, transition hold/ramp, indefinite main
+    extraction. Disabled main profiling retains existing default 9 bar mode.
+4.2 PI: enable, pressure/flow mode, mode-specific time, pressure target/limit,
+    flow target/limit, pumped-water exit, pressure exit enable, weight exit.
+    preinfusionFlowVol is a flow target in ml/s despite its legacy name.
+4.3 Soak: enable, separate pressure/flow time bank selected by PI mode, pressure
+    hold, flow hold/restriction, below-pressure, above-pressure, weight exits.
+    Existing priority is pressure hold first; otherwise flow hold; otherwise
+    pump off. Zero disables optional holds/exits; conditions combine as OR.
+4.4 Ramp: duration and curve. Transition: enable, pressure/flow type, separate
+    start/end/hold/hold limit/ramp duration/ramp limit/curve per type. Main:
+    enable/type, separate start/end/ramp duration/restriction/curve per type.
+4.5 Curves EXACT enum: 0 ease-in-out, 1 ease-in, 2 ease-out, 3 linear, 4 instant.
+    Seconds convert to 32-bit milliseconds; no 65.535 s wrap. Hold and ramp
+    limits are distinct. Switching types cannot reload saved stale values
+    over unsaved valid changes to the other type.
+4.6 Preserve physical brew start/stop, start/end tare/reset, negative-weight
+    handling, scale/pump flow smoothing, adaptive/predictive behavior, and
+    global weight stop with existing 0.5 s response compensation and first
+    1 s inhibition. Do not replace this with weight >= target in a UI timer.
+4.7 Stop on weight: OFF or ON with Ratio 1:x / fixed grams. Zero fixed grams
+    means ratio, positive fixed grams means fixed target. Show computed g out.
+    Decimal ratio requirement: canonical integer hundredths (1:2.50 => 250),
+    validated >0; retain legacy integer shotPreset only for compatibility.
+    Proposed UI range 0.01..100.00, dose 0.1..100.0 g, fixed 0.1..1000.0 g.
+    These added ranges require explicit tests against retained recipes.
+4.8 Automatic fallback may use the existing predictive-weight engine if hardware
+    scales are unavailable. Display estimated status; do not imply measured
+    weight. Manual mode has no automatic weight stop. Never force predictive
+    scales with build flags on this machine.
+4.9 Preview MUST derive from the same configured phases/curve definitions and
+    restrictions as execution. Depict sensor-dependent exits as conditional;
+    do not invent exact durations for them. Existing browser preview is not
+    adequate reference evidence for recipe execution.
+
+5. AUTOMATIC BREW AND MANUAL FLOW SCREENS
+5.1 Keep original automatic brewGraph layout, assets and RGB565 colors:
+    pressure label 1055 / trace 893, flow 65504, weight 16051, temp 63488,
+    timer 64171; background 0. Four channels and MM:SS. Original top Home/Tare
+    remain; no added bottom controls. Physical switch always stops dispensing.
+5.2 Fixed graph: (0,41) width320 height144; 220 ms per sample-column; vertical
+    grid45 px => 9.9 s/division; horizontal grid13; dis130%; dir1. No stretching
+    a 5 s shot across 70 s. Preserve scroll direction and finished trace.
+5.3 Distinguish waveform timer220 ms, brew-time display timer50 ms, MCU display
+    update150 ms. Do not use the MCU update interval as the x-axis timebase.
+5.4 Stop timer/plot on completion; show Finished. Home-after-shot option waits
+    original10 s. Tare clears only weight trace as original and retains real
+    hardware tare or predictive force-start behavior according to scale state.
+5.5 Manual flow is a separate menu route, 0..13 ml/s in0.1 steps, zero on entry,
+    live temperature/pressure/timer/flow/weight/target. No silent switching to
+    automatic dosing. Target is temporary, slider remains usable while running,
+    physical brew controls output. Auto/Back transition must explicitly stop or
+    safely reset active dispensing; never reinterpret a live shot mid-flow.
+5.6 Preserve heater control, hot-water/steam physical override precedence and
+    pump-model units. Do not show fabricated measured scale data on faults.
+
+6. WATER TANK
+6.1 Persist fullDistanceMm, initialize30, integer1..124. "Set current tank to
+    100%" requires a fresh valid ToF range with a full tank, then Save.
+6.2 distance<=full =>100%; full<distance<=125 => rounded clamp(10+90*(125-d)/
+    (125-full),10,100); distance>125 =>9%. Existing low warning remains <10%.
+    Intermediate mapping intentionally becomes linear; threshold is unchanged.
+6.3 Report invalid/stale as unavailable, never100%. Invalid readings cannot
+    overwrite calibration. Sensor must refresh independent of visible page.
+    Initialization must be bounded with outputs off; loss cannot hang startup.
+6.4 Release MUST document the chosen missing-ToF dispensing policy and test
+    cold boot, disconnect, stale data and recovery. Suggested behavior: no new
+    automatic flush on unknown tank state, warning plus retained original
+    readiness behavior for physical modes. This policy is not implemented.
+
+7. GROUP-HEAD FLUSH GUARD AND MODE ARBITRATION
+7.1 Ordinary Home Flush is a new explicit group-head command, separate from the
+    old pressure-driven cleaning/backflush sequence. Toggle always permits OFF.
+    Home state is controller-confirmed, not a display-only latch.
+7.2 Before any automatic idle release, Home Flush, group backflush/descale
+    output or steam-cleanup group discharge, require fresh valid LOCAL dual
+    HX711 gross load >= calibrated minimum. Remote/predictive/net/tared weight
+    MUST NOT substitute. Hidden scale display does not disable the guard.
+7.3 Gross = sum((raw_tared + tare_offset - no_tray_raw)/scale_factor) across
+    both channels. Signed factors supported, zero/nonfinite forbidden. A
+    timeout in any required sample is invalid, not a zero-valued load.
+7.4 Missing, stale, offline, invalid or unconfigured guard fails closed. Proposed
+    freshness <=300 ms and stop deadline <=300 ms, measured including HX711 and
+    serial/pulse delays. Sample without blocking the safety loop. Stop must
+    remain effective during descale solenoid pulses. Do not auto-resume on
+    refitting tray; require a new command / physical switch OFF then ON.
+7.5 The sensor detects sufficient load, not geometric tray identity. A container
+    above threshold may satisfy it. Tare must not affect the result. Empty
+    tray removal at every mode must be tested. Minimum chosen from measured
+    tray margin, not copied blindly from the prototype's100 g.
+7.6 Calibrate idle, outputs off, valid settled channels; capture both no-tray raw
+    values with tray removed; refit empty tray and choose minimum. Until saved
+    and verified after reboot, show unconfigured and block group flushes.
+    Current compile-time raw-offset workflow may remain for initial deployment;
+    a UI calibration button requires native persistence/protocol implementation.
+7.7 Do not block ordinary espresso/manual brew or steam-wand-only hot water
+    solely because the scale guard fails. Preserve original scale-failure
+    fallback. Group-head discharge still uses guard. Startup boiler fill and
+    ordinary shot valve opening are distinct actions; do not wrap openValve()
+    globally and accidentally break either. Document startup discharge behavior.
+7.8 No competing brew, flush, clean, steam or hot-water output owners. Any mode
+    transition stops old output first. Display disconnect/reset and physical
+    switch OFF cannot leave a new unattended Home Flush latched on.
+
+8. CLEANING, STEAM, HEAT AND AUXILIARIES
+8.1 Reuse original backflush/descale state machines and switch semantics, with
+    the new guard checks and explicit abort. Preserve their pressure/cycle
+    logic (AUDIT R06/R07), not the browser's illustrative durations.
+8.2 Descale uses a temporary heater override, never overwrites saved/running
+    recipe temperature with9. Restore state on stop, completion, guard fault,
+    popup, page change, or reset. Interruptible pulses replace blocking delays.
+8.3 Keep original boiler startup-fill, MAX31855 temperature checks, pressure
+    health checks, steam pressure limits, forgotten steam15 min timeout,
+    dream-steam supply, brew+steam hot-water combo, warmup indicators,
+    pressure-release countdown, watchdog, mains zero-cross detection, LEDs,
+    ESP/remote scales and USB logs. Remove bench-only output/warning bypasses
+    from production artifacts; the bench image must remain separately named.
+8.4 Calibration factors, temperature offset, pulse power/dividers, pump-zero
+    calibration, mains frequency, lighting and brew preferences remain intact.
+    Input validation must be symmetric, finite, typed and scoped. Dividers>=1,
+    steam/brew temperatures1..165 C, frequency50/60, nonzero scales factors
+    -20000..20000, pump zero0.2100..0.3100, curve0..4. Preserve valid old data.
+8.5 Existing hidden/offline modes are preserved in controller code, not simulated
+    by a web browser. Acceptance needs physical-switch and serial fault tests.
+
+9. DISPLAY-CONTROLLER CONTRACT
+9.1 UART remains115200 with existing terminators/handshake. Preserve original
+    addresses/logical page IDs/triggers in inventory.json, or migrate both ends
+    atomically. Exported .pa filename IDs are not logical page numbers.
+9.2 Existing logical pages0..15: Home, PI, Soak, Profiling, Manual, Flush,
+    Descale, Boiler, System, BrewGraph, BrewMore, Dose, Transition, Preview,
+    NumericKeyboard, LED. Original triggers1/2/3/4/6/7/8/9/10 retain meanings.
+9.3 Versioned extension required before new commands are used. Proposed new
+    triggers:11 enter editor;12 persistent select;13 request Home Flush;
+    14 capture full ToF;15 set ratio hundredths;16 get tray status. These are
+    RESERVED PROPOSALS, not current firmware functions. Native contract tests
+    must verify each packet, variable name, scaling, response and error path.
+9.4 New globals need independent selected/edit IDs, ratio hundredths, tank mm /
+    validity, guard state, flush requested/confirmed, status/error and protocol
+    revision. Controller owns arbitration/validation. Failed reads use no old
+    value and perform no EEPROM write. Incompatible image => outputs remain off
+    for new functions, clear mismatch message; no accidental legacy trigger.
+9.5 Avoid serial polling/flash on every screen timer tick. Preserve numeric
+    precision: most legacy floats use x10; pump-zero x10000; ratio x100;
+    milliseconds are controller-internal, duration UI is seconds.
+
+10. EEPROM MIGRATION AND BACKUP
+10.1 Archive schema12 exactly before changing structures; bump version (proposed
+     13), register loader and initialize all new fields explicitly. Never
+     reinterpret padding as valid configuration. Test actual captured1040 bytes.
+10.2 Add canonical ratio hundredths and fullDistanceMm; compatibility strategy
+     must handle old integer presets without losing values. Initial full30.
+10.3 Once, replace first two slots with documented Turbo/SOUP and active Turbo,
+     as requested. Preserve other three and all machine calibration. Archive
+     all five old profiles outside controller capacity before this change.
+     Thereafter reboot preserves last selected, not forced Turbo every boot.
+10.4 No name-based "Filter 2.1" replacement. Versioned marker makes recipe setup
+     idempotent and protects edited Turbo/SOUP on subsequent boots.
+10.5 Backup full flash + EEPROM + decoded RAM/saved values immediately before
+     installation. Version/timestamp XOR is not values CRC. New storage must
+     validate values, handle corrupt/out-of-range data and interrupted writes,
+     and avoid corrupting old version until a valid replacement is committed.
+10.6 Firmware rollback across schema versions requires restoring the matching
+     backed-up EEPROM too. Never boot an old firmware on migrated data and
+     assume calibration remains. Exact restoration uses the captured pair.
+
+11. PROPOSED STARTING RECIPES
+Turbo: repository definition,92 C,15 g dose, fixed45 g (equivalent1:3), no PI,
+soak or transition, constant6 bar with6 ml/s cap. First, initially selected.
+SOUP: generic adaptation,86 C,17 g,1:3 =>51 g;2 s wetting2.5 ml/s limited1 bar;
+8 s soak holding1 bar with2.5 ml/s cap; main6 ml/s limited1 bar; no transition.
+This combines published low-pressure/10 s soak/ratio/86 C ideas with selected
+moderate flow values. It is not a captured user recipe or canonical import.
+Sources and exact proposed55-field records: profile-provenance.json and
+settings.js in tmp/touchscreen-indigo. No new-generation binary/schema import.
+Primary community recipe context: https://mybrewfolio.com/profiles/soup
+Firsthand variant: https://sprofiler.io/shot/9fd8ea32-2afb-40ef-ac88-6662d59cd2ae
+
+12. RELEASE GATES
+Every acceptance row MUST have evidence; NOT RUN is not PASS. A working HTML
+preview, successful main build, or native unit suite alone is insufficient.
+Compile the correct TFT, verify original events and every settings roundtrip,
+exercise modes and faults with outputs disconnected, verify EEPROM migration
+and rollback on spare hardware, then controlled commissioning with real sensors.
+See ACCEPTANCE.csv. Loading steps are conditional until these gates are met.

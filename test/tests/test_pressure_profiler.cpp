@@ -186,6 +186,74 @@ void test_phases_stay_constant() {
   TEST_ASSERT_EQUAL(2, profile.phases[1].target.end);
 }
 
+void test_empty_profile_can_be_constructed_reset_and_finished() {
+  Profile profile;
+  PhaseProfiler profiler(profile);
+  SensorState sensors{};
+  profiler.reset();
+  profiler.updatePhase(0, sensors);
+  TEST_ASSERT_TRUE(profiler.isFinished());
+  TEST_ASSERT_EQUAL(-1, profiler.getCurrentPhase().getIndex());
+  TEST_ASSERT_EQUAL_FLOAT(0.f, profiler.getCurrentPhase().getPhase().target.end);
+
+  profile.addPhase(pressurePhase(2, 2, 1000));
+  profiler.reset();
+  profiler.updatePhase(0, sensors);
+  TEST_ASSERT_FALSE(profiler.isFinished());
+  TEST_ASSERT_EQUAL(0, profiler.getCurrentPhase().getIndex());
+}
+
+void test_completed_profile_keeps_last_valid_phase() {
+  Profile profile;
+  profile.addPhase(pressurePhase(2, 2, 1000));
+  profile.addPhase(pressurePhase(9, 9, 1000));
+  PhaseProfiler profiler(profile);
+  TEST_ASSERT_EQUAL(0, profiler.getCurrentPhase().getIndex());
+  TEST_ASSERT_EQUAL_FLOAT(2.f, profiler.getCurrentPhase().getPhase().target.end);
+  SensorState sensors{};
+  profiler.reset();
+  profiler.updatePhase(1000, sensors);
+  profiler.updatePhase(2000, sensors);
+  TEST_ASSERT_TRUE(profiler.isFinished());
+  TEST_ASSERT_EQUAL(1, profiler.getCurrentPhase().getIndex());
+  TEST_ASSERT_EQUAL_FLOAT(9.f, profiler.getCurrentPhase().getPhase().target.end);
+  profiler.updatePhase(3000, sensors);
+  TEST_ASSERT_EQUAL_FLOAT(9.f, profiler.getCurrentPhase().getPhase().target.end);
+  profile.clear();
+  profiler.updatePhase(4000, sensors);
+  TEST_ASSERT_EQUAL(-1, profiler.getCurrentPhase().getIndex());
+}
+
+void test_all_zero_duration_phases_finish_without_invalid_phase() {
+  Profile profile;
+  profile.addPhase(pressurePhase(2, 2, 0));
+  profile.addPhase(pressurePhase(5, 5, 0));
+  PhaseProfiler profiler(profile);
+  SensorState sensors{};
+  profiler.updatePhase(0, sensors);
+  TEST_ASSERT_TRUE(profiler.isFinished());
+  TEST_ASSERT_EQUAL(1, profiler.getCurrentPhase().getIndex());
+  TEST_ASSERT_EQUAL_FLOAT(5.f, profiler.getCurrentPhase().getPhase().target.end);
+}
+
+void test_global_stop_keeps_actual_phase_instead_of_last_recipe_phase() {
+  Profile profile;
+  profile.addPhase(pressurePhase(2, 2, 10000));
+  profile.addPhase(pressurePhase(9, 9, 10000));
+  profile.globalStopConditions.weight = 1.f;
+  PhaseProfiler profiler(profile);
+  SensorState sensors{};
+  sensors.shotWeight = 2.f;
+  sensors.smoothedPumpFlow = 1.f;
+  profiler.updatePhase(2000, sensors);
+  TEST_ASSERT_TRUE(profiler.isFinished());
+  TEST_ASSERT_EQUAL(0, profiler.getCurrentPhase().getIndex());
+  TEST_ASSERT_EQUAL_FLOAT(2.f, profiler.getCurrentPhase().getPhase().target.end);
+  profiler.updatePhase(3000, sensors);
+  TEST_ASSERT_EQUAL(0, profiler.getCurrentPhase().getIndex());
+  TEST_ASSERT_EQUAL_FLOAT(2.f, profiler.getCurrentPhase().getPhase().target.end);
+}
+
 void runAllPressureProfilerTests() {
   RUN_TEST(test_current_phase_calculation);
   RUN_TEST(test_get_pressure_for_phase);
@@ -195,4 +263,8 @@ void runAllPressureProfilerTests() {
   RUN_TEST(test_phases_with_weight_stop_condition);
   RUN_TEST(test_phases_with_stop_conditions_and_skipped_phases);
   RUN_TEST(test_phases_stay_constant);
+  RUN_TEST(test_empty_profile_can_be_constructed_reset_and_finished);
+  RUN_TEST(test_completed_profile_keeps_last_valid_phase);
+  RUN_TEST(test_all_zero_duration_phases_finish_without_invalid_phase);
+  RUN_TEST(test_global_stop_keeps_actual_phase_instead_of_last_recipe_phase);
 }

@@ -1,0 +1,301 @@
+{
+  "prototype": true,
+  "round": 4,
+  "display": {
+    "width": 320,
+    "height": 240,
+    "format": "RGB565",
+    "colors": 65536,
+    "source": "Installed generation Nextion/TJC TFT headers and HMI home page dimensions",
+    "rendering": "Canvas raster quantized to RGB565, including antialiasing. Fonts are trial assets; TFT compilation and memory budget still require verification."
+  },
+  "concepts": [
+    {
+      "id": "tidal",
+      "name": "Tidal",
+      "description": "Plain text · centered Flush toggle · Celadon 148 px wheel / 12 px ring.",
+      "diameter": 148,
+      "stroke": 12,
+      "bottomBar": "plain"
+    },
+    {
+      "id": "arctic",
+      "name": "Arctic",
+      "description": "Three segments · centered Flush toggle · Celadon 148 px wheel / 12 px ring.",
+      "diameter": 148,
+      "stroke": 12,
+      "bottomBar": "segments"
+    },
+    {
+      "id": "celadon",
+      "name": "Celadon",
+      "description": "Separate pills · centered Flush toggle · Celadon 148 px wheel / 12 px ring.",
+      "diameter": 148,
+      "stroke": 12,
+      "bottomBar": "pills"
+    },
+    {
+      "id": "petrol",
+      "name": "Petrol",
+      "description": "Outlined keys · centered Flush toggle · Celadon 148 px wheel / 12 px ring.",
+      "diameter": 148,
+      "stroke": 12,
+      "bottomBar": "outline"
+    },
+    {
+      "id": "abyss",
+      "name": "Abyss",
+      "description": "Underlined labels · centered Flush toggle · Celadon 148 px wheel / 12 px ring.",
+      "diameter": 148,
+      "stroke": 12,
+      "bottomBar": "underline"
+    },
+    {
+      "id": "orchid",
+      "name": "Orchid",
+      "description": "Icons and labels · centered Flush toggle · Celadon 148 px wheel / 12 px ring.",
+      "diameter": 148,
+      "stroke": 12,
+      "bottomBar": "icons"
+    },
+    {
+      "id": "porcelain",
+      "name": "Porcelain",
+      "description": "Soft dock · centered Flush toggle · Celadon 148 px wheel / 12 px ring.",
+      "diameter": 148,
+      "stroke": 12,
+      "bottomBar": "dock"
+    },
+    {
+      "id": "indigo",
+      "name": "Indigo",
+      "description": "Menu tile · centered Flush toggle · Celadon 148 px wheel / 12 px ring.",
+      "diameter": 148,
+      "stroke": 12,
+      "bottomBar": "menu-tile"
+    },
+    {
+      "id": "reed",
+      "name": "Reed",
+      "description": "Flat tabs · centered Flush toggle · Celadon 148 px wheel / 12 px ring.",
+      "diameter": 148,
+      "stroke": 12,
+      "bottomBar": "tabs"
+    },
+    {
+      "id": "pearl",
+      "name": "Pearl",
+      "description": "Circle tools · centered Flush toggle · Celadon 148 px wheel / 12 px ring.",
+      "diameter": 148,
+      "stroke": 12,
+      "bottomBar": "circle-tools"
+    }
+  ],
+  "home": {
+    "profileSelection": "Menu > Profiles",
+    "selectedProfileVisible": true,
+    "temperatureWheel": "Celadon: 148 px diameter, 12 px stroke, center (102,116) in every variant",
+    "waterIndicator": "vertical",
+    "flush": "Centered compact label and adjacent circle in one 96 x 38 touch target; Tare left, Menu right",
+    "trayStatusVisible": false,
+    "paletteBase": "Round 2 Lagoon"
+  },
+  "profileFields": {
+    "Temperature & dose": [
+      "setpoint",
+      "stopOnWeightState",
+      "shotDose",
+      "shotStopOnCustomWeight",
+      "shotPreset"
+    ],
+    "Preinfusion": [
+      "preinfusionState",
+      "preinfusionFlowState",
+      "preinfusionSec",
+      "preinfusionBar",
+      "preinfusionFlowVol",
+      "preinfusionFlowTime",
+      "preinfusionFlowPressureTarget",
+      "preinfusionPressureFlowTarget",
+      "preinfusionFilled",
+      "preinfusionPressureAbove",
+      "preinfusionWeightAbove"
+    ],
+    "Soak": [
+      "soakState",
+      "soakTimePressure",
+      "soakTimeFlow",
+      "soakKeepPressure",
+      "soakKeepFlow",
+      "soakBelowPressure",
+      "soakAbovePressure",
+      "soakAboveWeight"
+    ],
+    "Ramp": [
+      "preinfusionRamp",
+      "preinfusionRampSlope"
+    ],
+    "Transition": [
+      "tpState",
+      "tpType",
+      "tpProfilingStart",
+      "tpProfilingFinish",
+      "tpProfilingHold",
+      "tpProfilingHoldLimit",
+      "tpProfilingSlope",
+      "tpProfilingSlopeShape",
+      "tpProfilingFlowRestriction",
+      "tfProfileStart",
+      "tfProfileEnd",
+      "tfProfileHold",
+      "tfProfileHoldLimit",
+      "tfProfileSlope",
+      "tfProfileSlopeShape",
+      "tfProfilingPressureRestriction"
+    ],
+    "Brew profiling": [
+      "profilingState",
+      "mfProfileState",
+      "mpProfilingStart",
+      "mpProfilingFinish",
+      "mpProfilingSlope",
+      "mpProfilingSlopeShape",
+      "mpProfilingFlowRestriction",
+      "mfProfileStart",
+      "mfProfileEnd",
+      "mfProfileSlope",
+      "mfProfileSlopeShape",
+      "mfProfilingPressureRestriction"
+    ]
+  },
+  "systemFields": {
+    "Boiler": [
+      "steamSetPoint",
+      "offsetTemp",
+      "hpwr",
+      "mainDivider",
+      "brewDivider"
+    ],
+    "Scales & pump": [
+      "scalesF1",
+      "scalesF2",
+      "pumpFlowAtZero"
+    ],
+    "Screen & warmup": [
+      "lcdSleep",
+      "warmupState",
+      "brightness"
+    ],
+    "Brew preferences": [
+      "homeOnShotFinish",
+      "brewDeltaState",
+      "basketPrefill"
+    ],
+    "Power & lighting": [
+      "powerLineFrequency",
+      "ledState",
+      "ledDisco",
+      "ledR",
+      "ledG",
+      "ledB"
+    ]
+  },
+  "routes": [
+    "home",
+    "menu",
+    "profiles",
+    "profile",
+    "system",
+    "boiler",
+    "scales",
+    "water",
+    "tray",
+    "cleaning",
+    "backflush",
+    "descale",
+    "steam",
+    "hot-water",
+    "manual",
+    "shot",
+    "graph-preview",
+    "led"
+  ],
+  "tankCalibration": {
+    "action": "Menu > Water tank / set full > capture current distance > Save",
+    "fullPoint": "Software-defined valid ToF distance below 125 mm maps to 100%",
+    "lowWarning": "Existing distance threshold retained: above 125 mm maps to 9%, warning below 10%",
+    "intermediateMapping": "Linear from calibrated full point to 10% at 125 mm; differs from original stepped display"
+  },
+  "flushGuard": {
+    "source": "fresh hardware gross weight, independent of tare and scale display",
+    "blocked": [
+      "load below threshold",
+      "invalid reading",
+      "stale reading",
+      "disconnected scales",
+      "zero/invalid calibration factor",
+      "missing no-tray baseline"
+    ],
+    "whileRunning": "Stop immediately when guard fails",
+    "homeStatus": "Guard runs silently; blocked or stopped actions explain the reason",
+    "prototypeLoadGrams": 170,
+    "prototypeMinimumGrams": 100,
+    "realMachine": "No-tray raw offsets still require calibration. Do not copy the illustrative prototype calibration into firmware."
+  },
+  "retained": [
+    "five profiles and all stored settings",
+    "profile naming, selection and editing",
+    "preinfusion, soak, ramp, transition, profiling and dose",
+    "temperature and boiler settings",
+    "scales, tare and calibration factors",
+    "manual flow and shot graph",
+    "steam and hot-water functions",
+    "flush, backflush and descale",
+    "LED settings",
+    "save and reset"
+  ],
+  "limitations": [
+    "No connection to or control of the machine",
+    "Browser localStorage only; Export settings is a trial artifact",
+    "Cleaning timing and graph curves are illustrative simulations",
+    "New tank calibration and expanded flush guard are prototype requirements, not deployed firmware",
+    "No HMI/TFT compiled, firmware flashed, or settings written to controller"
+  ],
+  "profileMenu": {
+    "nameTap": "Select profile without opening editor; persist active index immediately",
+    "editButton": "Open the chosen profile editor without changing active index",
+    "renameAndSave": "Save edited profile fields without changing the selected profile",
+    "startup": "Restore last explicitly selected profile, irrespective of last edited or renamed profile",
+    "persistence": "Selection alone does not save unrelated pending settings edits",
+    "existingFirmwareIssue": "src/lcd/nextion.cpp lcdFetchCurrentProfile assigns settings.activeProfile from the editor-selected profile. Future integration must use a separate editor index and persist explicit selection separately."
+  },
+  "manualFlow": {
+    "entry": "Menu > Manual flow, separate from saved brew profiles",
+    "source": [
+      "source/current-interface.json: bM page h0 slider range 0..130, mlPerSec display",
+      "src/lcd/nextion.cpp: lcdGetManualFlowVol",
+      "src/gaggiuino.ino: manualFlowControl, lcdRefresh"
+    ],
+    "slider": {
+      "min": 0,
+      "max": 13,
+      "step": 0.1,
+      "unit": "ml/s",
+      "onEntry": 0
+    },
+    "readouts": [
+      "temperature (°C)",
+      "pressure (bar)",
+      "elapsed shot time (s)",
+      "flow (g/s, historical pump-model estimate)",
+      "weight (g; unavailable shown as --)",
+      "requested flow (ml/s)"
+    ],
+    "brewSwitch": "Starts and stops dispensing; screen and slider remain available while brewing",
+    "scaleFailure": "Flow control and timer remain usable. No weight-based automatic stop in manual mode. No invented weight reading.",
+    "profileIsolation": "Temporary manual target never writes profile values",
+    "exit": "Auto returns to automatic shot view; Back/Home leave manual mode",
+    "scope": "Simulated browser behavior; historical firmware logic and dimensions inspected locally"
+  },
+  "navigation": "Per-variation Back and pager styles. Preview navigation opens Menu in all concepts for direct comparison."
+}

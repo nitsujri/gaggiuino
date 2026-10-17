@@ -1,0 +1,111 @@
+INDIGO — LOAD THE CONTROLLER ONLY
+
+Target: CoffeeHat/GCP PCBv3 LV, STM32F411CE BlackPill, frozen stock touchscreen.
+Use all-pcb-stlink. Existing Nextion/TJC TFT stays installed; no microSD update,
+no display compiler, no BOOT/NRST sequence is needed for a normal ST-Link load.
+Keep BOOT released. Use BlackPill SWD, not PCBv3 J27 UART/BOOT header.
+
+1. Before loading
+Unplug the MACHINE FROM MAINS. Let it cool and turn physical switches OFF.
+Confirm the established low-voltage supply/common-ground arrangement. Do not
+add ST-Link power to an already powered rail blindly. Connect the established
+ST-Link SWD wiring. Do not reconnect mains with programmer/wiring exposed.
+
+This package restores normal production actuator behavior and fault handling.
+The previous verified installed backup was sensor-only bench firmware. The
+first powered machine test therefore includes production commissioning.
+
+Preserved backups: tmp/settings-backup/ and duplicate
+.git/local-backups/2026-10-17-touchscreen-settings/.
+If machine settings changed since that capture, take a fresh read-only full
+flash backup with the established ST-Link tool before uploading. Use the
+settings decoder to check the settings area, not an erase/mass-erase command:
+  python3 tools/indigo-release/inspect_settings.py PATH_TO_FULL_FLASH.bin
+No fresh hardware capture has been performed during this implementation.
+
+2. Verify and upload
+From /Users/justin/dev/castlelouie/gaggiuino:
+  python3 tools/indigo-release/package.py --verify
+
+Source/config already match the package when it is created. Standard upload:
+  pio run -e all-pcb-stlink -t upload
+
+This rebuilds if necessary and programs via ST-Link. It does NOT intentionally
+erase the EEPROM settings sector. Keep machine mains unplugged throughout.
+Wait for successful write/verification. Normally touch NEITHER BOOT nor NRST.
+If connection fails, stop and inspect SWD/power/reset before attempting recovery.
+Indigo requests a display restart at controller startup so the serial
+handshake also works after controller-only SWD resets. If the display does
+not restart, power-cycle the low-voltage pair together, keeping mains unplugged.
+
+3. First low-voltage boot (before powered machine operation)
+Confirm Indigo Home, active Turbo, vertical tank bar and all touch targets.
+Do not replace the display TFT if a command/font fails: capture USB logs and
+report any 'Indigo display command error' first. This controller expects the
+stock frozen HMI component names/font IDs already used by this generation.
+Exact installed model/glyph metrics have not yet been physically verified.
+
+Schema12 migrates once to schema13. Calibration and profile slots3..5 are
+preserved; slots1/2 deliberately become Turbo and SOUP, with Turbo selected.
+Captured historical values: offset7, cell factors3920/4210, pump zero0.2225,
+steam155, heater550, dividers5/3, mains50Hz, sleep16min. Verify against a fresh
+backup if settings changed. Originals of all five profiles are archived.
+No actual saved Turbo/SOUP settings were found in the captured old config.
+
+Menu > Water tank: full initially30mm. With a full tank, capture current full
+point (or enter1..124mm), then Save. Low threshold remains beyond125mm.
+A missing/invalid/stale ToF is treated as low water; physical pumping/steam
+are inhibited. After restoring water, turn all physical switches OFF before
+restarting. A ToF absent at boot needs a full power-cycle after repair.
+
+Menu > Tray guard: remove tray and ALL containers; let scales settle; Capture
+NO-TRAY baseline, confirm. Refit empty tray. Choose a positive minimum below
+measured empty-tray gross weight with margin, then Save. Check after powercycle.
+Until calibrated, automatic boiler fill/pressure release fail closed. Tare
+does not change gross load. Initial minimum150g is75% of a200g compatible
+aftermarket tray reference, not a verified OEM tray measurement.
+Ordinary espresso/manual/predictive fallback do not require the tray guard.
+Startup boiler fill now requires the same fresh local gross threshold. Its
+fill timeout starts only after prerequisites are met and resets on tray loss.
+Home Flush is explicitly manual and ignores tray weight, even before initial
+fill is complete. Tank/switch/display fault checks still apply. Automatic
+backflush/descale cycles retain their existing guard.
+
+Verify name selects/persists; Edit/Rename does not select; Save each scope;
+all six profile steps/pressure-flow banks; manual slider zero entry/live flow;
+water/calibration faults; screen sleep/wake. Native controller tests cannot
+establish physical UART, touch, scale polarity or actual valve response.
+
+4. Controlled powered commissioning
+Disconnect ST-Link and auxiliary low-voltage supplies safely before restoring
+normal machine power. Keep the machine assembled normally and tray installed.
+Observe initial boiler fill and temperature readings. Stop if temperature,
+pressure, pump or valve behavior is unexpected. Work through ACCEPTANCE.csv:
+first low-risk UI/settings checks, then physical brew/steam/hot water, stop
+conditions, automatic fill/release guard removal/disconnect,manual Flush and cleaning. Hardware rows remain
+NOT RUN until observed; do not infer success from the software tests.
+
+Turbo:92C,15g dose,fixed45g output,constant6bar,6ml/s cap; no PI/soak/transition.
+SOUP starter:86C,17g dose,1:3 output;2s wetting at2.5ml/s/1bar cap,8s soak
+at1bar,main6ml/s/1bar cap. This is a generic starting recipe to dial in.
+
+5. Rollback
+Old firmware does not understand schema13. Restore a matching OLD FULL FLASH
+backup (including settings at0x0807C000), not only an old firmware.bin. Use the
+established ST-Link full-image restore/readback verification, mains unplugged.
+The available tmp/settings-backup/controller-flash.bin is524288bytes and
+contains the historical SENSOR-ONLY BENCH firmware, not normal production.
+No TFT rollback is needed because this release does not change the display.
+Never mass erase or replace EEPROM using guessed offsets/file sizes.
+
+6. Software reproduction (no hardware writes)
+  pio run -e all-pcb-stlink
+  # Copy main outputs outside .pio before switching environments.
+  pio run -e scales-calibration-stlink
+  PLATFORMIO_BUILD_FLAGS='-std=gnu++17 -fsanitize=address,undefined -fno-omit-frame-pointer' pio test -e test
+  python3 tools/touchscreen-audit/audit.py
+  python3 tools/indigo-release/test_inspect_settings.py
+  python3 tools/indigo-release/package.py --verify
+Calibration build is a separate temporary image; do NOT upload it for Indigo.
+Local flags are copied to tmp/indigo-release/extra_defines.ini. Keep dual HX711,
+ToF, internal CLK pull-up and16us half-period; no forced predictive/LEGO flags.

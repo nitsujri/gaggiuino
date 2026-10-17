@@ -1,9 +1,13 @@
 /* 09:32 15/03/2023 - change triggering comment */
-#pragma GCC optimize ("Ofast")
+// Keep project O3 semantics: Ofast may optimize away non-finite sensor checks.
+#include <cmath>
 #if defined(DEBUG_ENABLED)
   #include "dbg.h"
 #endif
 #include "gaggiuino.h"
+#include "lcd/indigo.h"
+#include "indigo/settings.h"
+#include "indigo/control.h"
 
 SimpleKalmanFilter smoothPressure(0.6f, 0.6f, 0.1f);
 SimpleKalmanFilter smoothPumpFlow(0.1f, 0.1f, 0.01f);
@@ -26,6 +30,12 @@ SystemState systemState;
 
 LED led;
 TOF tof;
+static bool homeFlush=false,manualMode=false;
+static int cleaningMode=0;
+static bool indigoCommand(Indigo::Command,int);
+static void indigoUpdate();
+static void updateProfilerPhases();
+static bool dripTrayAllowsPressureRelease();
 
 void setup(void) {
   LOG_INIT();
@@ -85,6 +95,7 @@ void setup(void) {
 
   // Scales handling
   scalesInit(runningCfg.scalesF1, runningCfg.scalesF2);
+  scalesConfigure(runningCfg);
   LOG_INFO("Scales init");
 
   // Pump init
@@ -98,6 +109,7 @@ void setup(void) {
   led.setColor(9u, 0u, 9u); // 64171
 
   iwdcInit();
+  indigoBegin(runningCfg,currentState,indigoCommand);
 }
 
 //##############################################################################################################################
@@ -107,15 +119,17 @@ void setup(void) {
 
 //Main loop where all the logic is continuously run
 void loop(void) {
-  fillBoiler();
   if (lcdCurrentPageId != lcdLastCurrentPageId) pageValuesRefresh();
   lcdListen();
   sensorsRead();
+  if(!std::isfinite(currentState.temperature)||currentState.temperature<=0.f||currentState.temperature>=170.f){sysHealthCheck(SYS_PRESSURE_IDLE);return;}
+  fillBoiler();
   brewDetect();
   modeSelect();
   lcdRefresh();
   espCommsSendSensorData(currentState);
   sysHealthCheck(SYS_PRESSURE_IDLE);
+  if(indigoActive())indigoUpdate();
 }
 
 //##############################################################################################################################
@@ -149,6 +163,7 @@ static void sensorsReadTemperature(void) {
 }
 
 static void sensorsReadWeight(void) {
+  scalesPoll();
   uint32_t elapsedTime = millis() - scalesTimer;
 
   if (elapsedTime > GET_SCALES_READ_EVERY) {
@@ -243,19 +258,19 @@ static void calculateWeightAndFlow(void) {
 
 // return the reading in mm of the tank water level.
 static void readTankWaterLevel(void) {
-  if (lcdCurrentPageId == NextionPage::Home) {
-    // static uint32_t tof_timeout = millis();
-    // if (millis() >= tof_timeout) {
-    currentState.waterLvl = tof.readLvl();
-      // tof_timeout = millis() + 500;
-    // }
-  }
+  tof.poll();
+#ifdef TOF_VL53L0X
+  currentState.waterLvl=tof.readLvl(runningCfg.tankFullDistanceMm);
+#else
+  currentState.waterLvl=30;
+#endif
 }
 
 //##############################################################################################################################
 //############################################______PAGE_CHANGE_VALUES_REFRESH_____#############################################
 //##############################################################################################################################
 static void pageValuesRefresh() {
+  if(indigoActive()){lcdLastCurrentPageId=lcdCurrentPageId;return;}
   // Read the page we're landing in: leaving keyboard page means a value could've changed in it
   if (lcdLastCurrentPageId == NextionPage::KeyboardNumeric) lcdFetchPage(runningCfg, lcdCurrentPageId, runningCfg.activeProfile);
   // Or maybe it's a page that needs constant polling
@@ -276,7 +291,26 @@ static void pageValuesRefresh() {
 //############################____OPERATIONAL_MODE_CONTROL____#################################
 //#############################################################################################
 static void modeSelect(void) {
+    if(homeFlush){
+      const bool allowed=homeFlushAllowed(currentState,millis()-indigoUi()->lastContact());
+      if(allowed){nonBrewModeActive=true;flushActivated();setBoilerOff();setSteamValveRelayOff();setSteamBoilerRelayOff();return;}
+      homeFlush=false;flushDeactivated();lcdShowPopup("Flush stopped: check tank / switches / display");
+    }
   if (!systemState.startupInitFinished) return;
+  static bool waterFaultLatch=false;
+  const bool switchOn=currentState.brewSwitchState||currentState.steamSwitchState||currentState.hotWaterSwitchState;
+  if(currentState.waterLvl<MIN_WATER_LVL){
+    waterFaultLatch=waterFaultLatch||switchOn;homeFlush=false;
+    setPumpOff();closeValve();setBoilerOff();setSteamValveRelayOff();setSteamBoilerRelayOff();return;
+  }
+  if(waterFaultLatch){
+    if(switchOn){setPumpOff();closeValve();setBoilerOff();setSteamValveRelayOff();setSteamBoilerRelayOff();return;}
+    waterFaultLatch=false;
+  }
+  if(indigoActive()){
+    selectedOperationalMode=cleaningMode==1?OPERATION_MODES::OPMODE_flush:cleaningMode==2?OPERATION_MODES::OPMODE_descale:manualMode?OPERATION_MODES::OPMODE_manual:OPERATION_MODES::OPMODE_straight9Bar;
+
+  }
 
   switch (selectedOperationalMode) {
     //REPLACE ALL THE BELOW WITH OPMODE_auto_profiling
@@ -300,7 +334,9 @@ static void modeSelect(void) {
     case OPERATION_MODES::OPMODE_manual:
       nonBrewModeActive = false;
       if (!currentState.steamSwitchState) steamTime = millis();
-      manualFlowControl();
+      if(currentState.hotWaterSwitchState)hotWaterMode(currentState);
+      else if(currentState.steamSwitchState)steamCtrl(runningCfg,currentState);
+      else manualFlowControl();
       break;
     case OPERATION_MODES::OPMODE_flush:
       nonBrewModeActive = true;
@@ -313,7 +349,7 @@ static void modeSelect(void) {
       steamCtrl(runningCfg, currentState);
 
       if (!currentState.steamSwitchState) {
-        brewActive ? flushActivated() : flushDeactivated();
+        (brewActive && dripTrayAllowsPressureRelease()) ? flushActivated() : flushDeactivated();
         steamCtrl(runningCfg, currentState);
         pageValuesRefresh();
       }
@@ -503,9 +539,7 @@ static void updateProfilerPhases(void) {
   float shotTarget = -1.f;
 
   if (ACTIVE_PROFILE(runningCfg).stopOnWeightState) {
-    shotTarget = (ACTIVE_PROFILE(runningCfg).shotStopOnCustomWeight < 1.f)
-      ? ACTIVE_PROFILE(runningCfg).shotDose * ACTIVE_PROFILE(runningCfg).shotPreset
-      : ACTIVE_PROFILE(runningCfg).shotStopOnCustomWeight;
+    shotTarget = profileStopTarget(ACTIVE_PROFILE(runningCfg));
   }
 
   //update global stop conditions (currently only stopOnWeight is configured in nextion)
@@ -577,10 +611,10 @@ void addMainExtractionPhasesAndRamp() {
         /* ------------------------------------------ */
         float fpStart = ACTIVE_PROFILE(runningCfg).tfProfileStart;
         float fpEnd = ACTIVE_PROFILE(runningCfg).tfProfileEnd;
-        uint16_t fpHold = ACTIVE_PROFILE(runningCfg).tfProfileHold * 1000;
+        uint32_t fpHold = ACTIVE_PROFILE(runningCfg).tfProfileHold * 1000UL;
         float holdLimit = ACTIVE_PROFILE(runningCfg).tfProfileHoldLimit > 0.f ? ACTIVE_PROFILE(runningCfg).tfProfileHoldLimit : -1;
         TransitionCurve curve = (TransitionCurve)ACTIVE_PROFILE(runningCfg).tfProfileSlopeShape;
-        uint16_t curveTime = ACTIVE_PROFILE(runningCfg).tfProfileSlope * 1000;
+        uint32_t curveTime = ACTIVE_PROFILE(runningCfg).tfProfileSlope * 1000UL;
         /* ------------------------------------------ */
 
         if (fpStart > 0.f && fpHold > 0) {
@@ -595,10 +629,10 @@ void addMainExtractionPhasesAndRamp() {
         /* ------------------------------------------ */
         float ppStart = ACTIVE_PROFILE(runningCfg).tpProfilingStart;
         float ppEnd = ACTIVE_PROFILE(runningCfg).tpProfilingFinish;
-        uint16_t ppHold = ACTIVE_PROFILE(runningCfg).tpProfilingHold * 1000;
+        uint32_t ppHold = ACTIVE_PROFILE(runningCfg).tpProfilingHold * 1000UL;
         float holdLimit = ACTIVE_PROFILE(runningCfg).tpProfilingHoldLimit > 0.f ? ACTIVE_PROFILE(runningCfg).tpProfilingHoldLimit : -1;
         TransitionCurve curve = (TransitionCurve)ACTIVE_PROFILE(runningCfg).tpProfilingSlopeShape;
-        uint16_t curveTime = ACTIVE_PROFILE(runningCfg).tpProfilingSlope * 1000;
+        uint32_t curveTime = ACTIVE_PROFILE(runningCfg).tpProfilingSlope * 1000UL;
         /* ------------------------------------------ */
 
         if (ppStart > 0.f && ppHold > 0) {
@@ -617,7 +651,7 @@ void addMainExtractionPhasesAndRamp() {
       float fpStart = ACTIVE_PROFILE(runningCfg).mfProfileStart;
       float fpEnd = ACTIVE_PROFILE(runningCfg).mfProfileEnd;
       TransitionCurve curve = (TransitionCurve)ACTIVE_PROFILE(runningCfg).mfProfileSlopeShape;
-      uint16_t curveTime = ACTIVE_PROFILE(runningCfg).mfProfileSlope * 1000;
+      uint32_t curveTime = ACTIVE_PROFILE(runningCfg).mfProfileSlope * 1000UL;
 
       /* ------------------------------------------ */
       addFlowPhase(Transition(fpStart, fpEnd, curve, curveTime), ACTIVE_PROFILE(runningCfg).mfProfilingPressureRestriction, -1, -1, -1, -1, -1);
@@ -628,7 +662,7 @@ void addMainExtractionPhasesAndRamp() {
       float ppStart = ACTIVE_PROFILE(runningCfg).mpProfilingStart;
       float ppEnd = ACTIVE_PROFILE(runningCfg).mpProfilingFinish;
       TransitionCurve curve = (TransitionCurve)ACTIVE_PROFILE(runningCfg).mpProfilingSlopeShape;
-      uint16_t curveTime = ACTIVE_PROFILE(runningCfg).mpProfilingSlope * 1000;
+      uint32_t curveTime = ACTIVE_PROFILE(runningCfg).mpProfilingSlope * 1000UL;
       /* ------------------------------------------ */
       addPressurePhase(Transition(ppStart, ppEnd, curve, curveTime), ACTIVE_PROFILE(runningCfg).mpProfilingFlowRestriction, -1, -1, -1, -1, -1);
     }
@@ -737,12 +771,15 @@ static void manualFlowControl(void) {
 //#############################################################################################
 
 static void brewDetect(void) {
+  static bool paramsReset = true;
   // Do not allow brew detection while system reports not ready.
   if (!sysReadinessCheck()) {
+    brewActive=false;paramsReset=true;
+    // During a valid startup fill, fillBoiler owns the pump/valve. Do not
+    // cancel that fill merely because normal brew readiness is still false.
+    if(systemState.startupInitFinished||currentState.waterLvl<MIN_WATER_LVL){setPumpOff();closeValve();}
     return;
   }
-
-  static bool paramsReset = true;
   if (currentState.brewSwitchState) {
     if (!paramsReset) {
       lcdWakeUp();
@@ -784,8 +821,7 @@ static bool sysReadinessCheck(void) {
     return false;
   }
   // If there's not enough water in the tank
-  if ((lcdCurrentPageId != NextionPage::BrewGraph || lcdCurrentPageId != NextionPage::BrewManual)
-  && currentState.waterLvl < MIN_WATER_LVL)
+  if (currentState.waterLvl < MIN_WATER_LVL)
   {
     lcdShowPopup("Fill the water tank!");
     return false;
@@ -827,7 +863,7 @@ static inline void sysHealthCheck(float pressureThreshold) {
 
   /* This *while* is here to prevent situations where the system failed to get a temp reading and temp reads as 0 or -7(cause of the offset)
   If we would use a non blocking function then the system would keep the SSR in HIGH mode which would most definitely cause boiler overheating */
-  while (currentState.temperature <= 0.0f || currentState.temperature == NAN || currentState.temperature >= 170.0f) {
+  while (!std::isfinite(currentState.temperature) || currentState.temperature <= 0.0f || currentState.temperature >= 170.0f) {
     //Reloading the watchdog timer, if this function fails to run MCU is rebooted
     watchdogReload();
     /* In the event of the temp failing to read while the SSR is HIGH
@@ -835,6 +871,10 @@ static inline void sysHealthCheck(float pressureThreshold) {
     setPumpOff();
     setBoilerOff();
     setSteamBoilerRelayOff();
+    brewActive=false;homeFlush=false;abortCleaning();
+    sensorReadSwitches();
+    lcdListen();
+    if(indigoActive())indigoUpdate();
     if (millis() > thermoTimer) {
       LOG_ERROR("Cannot read temp from thermocouple (last read: %.1lf)!", static_cast<double>(currentState.temperature));
       currentState.steamSwitchState ? lcdShowPopup("COOLDOWN") : lcdShowPopup("TEMP READ ERROR"); // writing a LCD message
@@ -851,20 +891,24 @@ static inline void sysHealthCheck(float pressureThreshold) {
     setPumpOff();
     setBoilerOff();
     setSteamBoilerRelayOff();
+    sensorReadSwitches();
+    lcdListen();
     currentState.isSteamForgottenON = currentState.steamSwitchState;
+    if(indigoActive())indigoUpdate();
   }
 
   //Releasing the excess pressure after steaming or brewing if necessary
   #if defined LEGO_VALVE_RELAY || defined SINGLE_BOARD
 
   // No point going through the whole thing if this first condition isn't met.
-  if (currentState.brewSwitchState || currentState.steamSwitchState || currentState.hotWaterSwitchState) {
+  if (homeFlush || currentState.brewSwitchState || currentState.steamSwitchState || currentState.hotWaterSwitchState) {
     systemHealthTimer = millis() + HEALTHCHECK_EVERY;
     return;
   }
   // Should enter the block every "systemHealthTimer" seconds
   if (millis() >= systemHealthTimer) {
-    while (currentState.smoothedPressure >= pressureThreshold && currentState.temperature < 100.f)
+    while (currentState.smoothedPressure >= pressureThreshold && currentState.temperature < 100.f
+           && !currentState.brewSwitchState && !currentState.steamSwitchState && !currentState.hotWaterSwitchState)
     {
       //Reloading the watchdog timer, if this function fails to run MCU is rebooted
       watchdogReload();
@@ -890,6 +934,7 @@ static inline void sysHealthCheck(float pressureThreshold) {
             return;
           }
           lcdShowPopup("Releasing pressure!");
+          if(indigoActive())indigoUpdate();
           openValve();
           break;
       }
@@ -921,30 +966,40 @@ static unsigned long getTimeSinceInit(void) {
 }
 
 static void fillBoiler(void) {
-  #if defined LEGO_VALVE_RELAY || defined SINGLE_BOARD
-
-  if (systemState.startupInitFinished) {
+#if defined LEGO_VALVE_RELAY || defined SINGLE_BOARD
+  static StartupFillClock fillClock;
+  static DripTrayStatus notified = DripTrayStatus::Present;
+  if (systemState.startupInitFinished) return;
+  // A user-controlled flush owns outputs independently of automatic fill.
+  if (homeFlush) {fillClock.reset();return;}
+  if(currentState.waterLvl<MIN_WATER_LVL||isSwitchOn()){
+    fillClock.reset();setPumpOff();closeValve();setBoilerOff();
     return;
   }
-
   if (currentState.temperature > BOILER_FILL_SKIP_TEMP) {
-    systemState.startupInitFinished = true;
+    setPumpOff();closeValve();systemState.startupInitFinished = true;return;
+  }
+  const auto tray = scalesGetDripTrayStatus();
+  if (tray != DripTrayStatus::Present) {
+    fillClock.reset();setPumpOff();closeValve();setBoilerOff();
+    if (tray != notified) {
+      notified = tray;
+      lcdShowPopup(tray == DripTrayStatus::Unconfigured ? "Set up Tray guard in Menu before boiler fill" :
+                   tray == DripTrayStatus::Missing ? "Place drip tray before boiler fill" :
+                   "Need fresh hardware scales before boiler fill");
+    }
     return;
   }
-
-  if (isBoilerFillPhase(getTimeSinceInit()) && !isSwitchOn()) {
-    fillBoilerUntilThreshod(getTimeSinceInit());
-  }
-  else if (isSwitchOn()) {
-    lcdShowPopup("Brew Switch ON!");
-  }
+  notified = DripTrayStatus::Present;
+  const uint32_t elapsed = fillClock.elapsed(millis());
+  if (isBoilerFillPhase(elapsed)) fillBoilerUntilThreshod(elapsed);
 #else
   systemState.startupInitFinished = true;
 #endif
 }
 
 static bool isBoilerFillPhase(unsigned long elapsedTime) {
-  return lcdCurrentPageId == NextionPage::Home && elapsedTime >= BOILER_FILL_START_TIME;
+  return (indigoActive() || lcdCurrentPageId == NextionPage::Home) && elapsedTime >= BOILER_FILL_START_TIME;
 }
 
 static bool isBoilerFull(unsigned long elapsedTime) {
@@ -960,11 +1015,13 @@ static bool isBoilerFull(unsigned long elapsedTime) {
 
 // Checks if Brew switch is ON
 static bool isSwitchOn(void) {
-  return currentState.brewSwitchState && lcdCurrentPageId == NextionPage::Home;
+  return indigoActive() ? (currentState.brewSwitchState || currentState.steamSwitchState || currentState.hotWaterSwitchState)
+                        : currentState.brewSwitchState && lcdCurrentPageId == NextionPage::Home;
 }
 
 static void fillBoilerUntilThreshod(unsigned long elapsedTime) {
   if (elapsedTime >= BOILER_FILL_TIMEOUT) {
+    setPumpOff();closeValve();
     systemState.startupInitFinished = true;
     return;
   }
@@ -982,7 +1039,9 @@ static void fillBoilerUntilThreshod(unsigned long elapsedTime) {
 }
 
 static void updateStartupTimer(void) {
-  lcdSetUpTime(getTimeSinceInit() / 1000);
+  static uint32_t last=0xffffffffu;
+  const auto seconds=getTimeSinceInit()/1000;
+  if(seconds!=last){lcdSetUpTime(seconds);last=seconds;}
 }
 
 static void cpsInit(eepromValues_t &eepromValues) {
@@ -999,6 +1058,7 @@ static void cpsInit(eepromValues_t &eepromValues) {
 }
 
 static void doLed(void) {
+  if (!runningCfg.ledState) {led.setColor(0,0,0);return;}
   if (runningCfg.ledDisco && brewActive) {
     switch(lcdCurrentPageId) {
       case NextionPage::BrewGraph:
@@ -1027,4 +1087,73 @@ static void doLed(void) {
         led.setColor(runningCfg.ledR, runningCfg.ledG, runningCfg.ledB);
     }
   }
+}
+
+
+static bool indigoCommand(Indigo::Command command,int index){
+  using Indigo::Command;
+  const bool busy=currentState.brewSwitchState||brewActive||currentState.steamSwitchState||currentState.hotWaterSwitchState||homeFlush;
+  auto deny=[](const char* why){lcdShowPopup(why);return false;};
+  switch(command){
+   case Command::Tare: if(index==1)lcdBrewGraphScalesTareTrigger();else lcdScalesTareTrigger();return true;
+   case Command::Flush:
+    if(homeFlush){homeFlush=false;flushDeactivated();return true;}
+    if(busy||cleaningMode)return deny("Stop other modes before flushing");
+    if(currentState.waterLvl<10)return deny("Fill the water tank");
+    if(static_cast<uint32_t>(millis()-indigoUi()->lastContact())>=1500)return deny("Waiting for display connection");
+    homeFlush=true;return true;
+   case Command::SelectProfile:{
+    if(busy||index<0||index>=5)return deny("Stop active mode before selecting");
+    if(runningCfg.activeProfile==index)return true;
+    auto saved=eepromGetCurrentValues();saved.activeProfile=index;
+    if(!eepromWrite(saved))return deny("Profile selection not saved");
+    runningCfg.activeProfile=index;updateProfilerPhases();lcdUploadProfile(runningCfg);return true;
+   }
+   case Command::SaveProfile:{
+    if(busy||index<0||index>=5)return deny("Stop active mode before saving");
+    auto saved=profileSaveValues(eepromGetCurrentValues(),runningCfg,index);
+    if(!eepromWrite(saved))return deny("Profile values out of range");
+    watchdogReload();lcdShowPopup("Profile saved");return true;
+   }
+   case Command::SaveSystem:{
+    if(busy)return deny("Stop active mode before saving");
+    auto merged=systemSaveValues(eepromGetCurrentValues(),runningCfg);
+    if(!eepromWrite(merged))return deny("Settings out of range");
+    watchdogReload();lcdShowPopup("System settings saved");return true;
+   }
+   case Command::CaptureFull:
+    if(busy||!tof.valid()||tof.distance()<1||tof.distance()>=125)return deny("Need a fresh valid full-tank range");
+    runningCfg.tankFullDistanceMm=tof.distance();lcdShowPopup("Full point captured - Save to retain");return true;
+   case Command::CaptureTray:
+    if(busy||!scalesCaptureTrayZero(runningCfg))return deny("Need idle, fresh and settled hardware scales");
+    lcdShowPopup("No-tray zero captured. Refit tray, then Save");return true;
+   case Command::SettingsChanged:
+    if(busy)return false;
+    scalesConfigure(runningCfg);pumpInit(runningCfg.powerLineFrequency,runningCfg.pumpFlowAtZero);
+    if(index<0||index==runningCfg.activeProfile)updateProfilerPhases();return true;
+   case Command::DefaultProfile:
+    if(busy||index<0||index>=5)return deny("Stop active mode before loading defaults");
+    runningCfg.profiles[index]=eepromGetDefaultValues().profiles[index];if(index==runningCfg.activeProfile)updateProfilerPhases();return true;
+   case Command::ResetAll:
+    if(busy)return deny("Stop active mode before resetting");
+    runningCfg=eepromGetDefaultValues();scalesConfigure(runningCfg);pumpInit(runningCfg.powerLineFrequency,runningCfg.pumpFlowAtZero);updateProfilerPhases();if(!eepromWrite(runningCfg))return deny("Reset failed");watchdogReload();lcdShowPopup("Settings reset");return true;
+   case Command::EnterManual:
+    if(busy||cleaningMode)return deny("Stop active mode before Manual");manualMode=true;return true;
+   case Command::ExitManual:
+    if(currentState.brewSwitchState||brewActive)return deny("Turn brew switch OFF before leaving Manual");manualMode=false;return true;
+   case Command::EnterBackflush:case Command::EnterDescale:
+    if(busy)return deny("Turn physical switches OFF first");manualMode=false;cleaningMode=command==Command::EnterBackflush?1:2;return true;
+   case Command::ExitCleaning:
+    if(currentState.brewSwitchState)return deny("Turn brew switch OFF to leave cleaning");cleaningMode=0;flushDeactivated();return true;
+   case Command::Preview:{if(busy)return deny("Stop active mode before preview");auto copy=runningCfg;copy.activeProfile=index;lcdUploadProfile(copy);return true;}
+   case Command::Graph:return true;
+  }
+  return false;
+}
+static void indigoUpdate(){
+  Indigo::Telemetry t;
+  t.physicalBrew=currentState.brewSwitchState;t.brewing=brewActive&&!cleaningMode;t.steam=currentState.steamSwitchState;t.hotWater=currentState.hotWaterSwitchState;t.flushing=homeFlush;t.startup=systemState.startupInitFinished;
+  t.waterValid=tof.valid();t.distance=tof.distance();static float lastElapsed=0;if(brewActive)lastElapsed=(millis()-brewingTimer)/1000.f;t.elapsed=lastElapsed;
+  t.trayStatus=static_cast<uint8_t>(scalesGetDripTrayStatus(&t.gross));t.cleaningCycle=lcdGetDescaleCycle();t.uptime=getTimeSinceInit()/1000;
+  indigoTick(t);
 }

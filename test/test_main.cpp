@@ -3,6 +3,8 @@
 #include "./tests/test_pump.cpp"
 #include "./tests/test_profile_serializer.cpp"
 #include "./tests/test_drip_tray_guard.cpp"
+#include "./tests/test_indigo.cpp"
+#include "./tests/test_cleaning.cpp"
 
 int main(int argc, char **argv) {
     UNITY_BEGIN();
@@ -10,5 +12,7 @@ int main(int argc, char **argv) {
     runAllPumpTests();
     runAllProfileSerializerTests();
     runAllDripTrayGuardTests();
+    IndigoTest::run();
+    CleaningTest::run();
     UNITY_END();
 }

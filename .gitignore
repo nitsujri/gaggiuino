@@ -10,3 +10,12 @@ webserver/data
 gaggiuino.ino.cpp
 extra_defines.ini
 *.code-workspace
+
+# Local editor/browser caches and downloaded TJC compiler runtimes
+.DS_Store
+__pycache__/
+.playwright-mcp/
+/tmp/tjc-editor/
+/tmp/tjc-toolchain/
+/tmp/tjc-docker-config/
+/tmp/indigo-native-preview/harness

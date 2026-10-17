@@ -1,0 +1,76 @@
+scope,field,c_type,original_schema_line,new_location,prototype,native_redesign,persistence
+profile,name,char,50,Rename,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,preinfusionState,bool,52,Preinfusion,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,preinfusionFlowState,bool,53,Preinfusion,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,preinfusionSec,uint16_t,54,Preinfusion,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,preinfusionBar,float,55,Preinfusion,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,preinfusionFlowVol,float,56,Preinfusion,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,preinfusionFlowTime,uint16_t,57,Preinfusion,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,preinfusionFlowPressureTarget,float,58,Preinfusion,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,preinfusionPressureFlowTarget,float,59,Preinfusion,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,preinfusionFilled,float,60,Preinfusion,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,preinfusionPressureAbove,bool,61,Preinfusion,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,preinfusionWeightAbove,float,62,Preinfusion,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,soakState,bool,64,Soak,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,soakTimePressure,uint16_t,65,Soak,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,soakTimeFlow,uint16_t,66,Soak,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,soakKeepPressure,float,67,Soak,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,soakKeepFlow,float,68,Soak,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,soakBelowPressure,float,69,Soak,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,soakAbovePressure,float,70,Soak,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,soakAboveWeight,float,71,Soak,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,preinfusionRamp,uint16_t,73,Ramp,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,preinfusionRampSlope,uint16_t,74,Ramp,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,tpState,bool,76,Transition,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,tpType,bool,77,Transition,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,tpProfilingStart,float,78,Transition,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,tpProfilingFinish,float,79,Transition,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,tpProfilingHold,uint16_t,80,Transition,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,tpProfilingHoldLimit,float,81,Transition,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,tpProfilingSlope,uint16_t,82,Transition,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,tpProfilingSlopeShape,uint16_t,83,Transition,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,tpProfilingFlowRestriction,float,84,Transition,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,tfProfileStart,float,85,Transition,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,tfProfileEnd,float,86,Transition,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,tfProfileHold,uint16_t,87,Transition,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,tfProfileHoldLimit,float,88,Transition,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,tfProfileSlope,uint16_t,89,Transition,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,tfProfileSlopeShape,uint16_t,90,Transition,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,tfProfilingPressureRestriction,float,91,Transition,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,profilingState,bool,92,Brew profiling,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,mfProfileState,bool,93,Brew profiling,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,mpProfilingStart,float,94,Brew profiling,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,mpProfilingFinish,float,95,Brew profiling,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,mpProfilingSlope,uint16_t,96,Brew profiling,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,mpProfilingSlopeShape,uint16_t,97,Brew profiling,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,mpProfilingFlowRestriction,float,98,Brew profiling,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,mfProfileStart,float,99,Brew profiling,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,mfProfileEnd,float,100,Brew profiling,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,mfProfileSlope,uint16_t,101,Brew profiling,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,mfProfileSlopeShape,uint16_t,102,Brew profiling,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,mfProfilingPressureRestriction,float,103,Brew profiling,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,setpoint,uint16_t,105,Temperature & dose,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,stopOnWeightState,bool,106,Temperature & dose,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,shotDose,float,107,Temperature & dose,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,shotStopOnCustomWeight,float,108,Temperature & dose,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+profile,shotPreset,uint16_t,109,Temperature & dose,reachable,NOT IMPLEMENTED,Browser only; schema12 uint16 integer
+system,steamSetPoint,uint16_t,43,Machine settings,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+system,offsetTemp,uint16_t,44,Machine settings,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+system,hpwr,uint16_t,45,Machine settings,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+system,mainDivider,uint16_t,46,Machine settings,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+system,brewDivider,uint16_t,47,Machine settings,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+system,activeProfile,uint8_t,48,Profiles,reachable,NOT IMPLEMENTED,Browser separate selected/edit index; controller coupled
+system,powerLineFrequency,uint16_t,112,Machine settings,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+system,lcdSleep,uint16_t,113,Machine settings,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+system,warmupState,bool,114,Machine settings,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+system,homeOnShotFinish,bool,115,Machine settings,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+system,brewDeltaState,bool,116,Machine settings,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+system,basketPrefill,bool,117,Machine settings,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+system,scalesF1,int,118,Machine settings,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+system,scalesF2,int,119,Machine settings,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+system,pumpFlowAtZero,float,120,Machine settings,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+system,ledState,bool,121,Machine settings,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+system,ledDisco,bool,122,Machine settings,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+system,ledR,uint8_t,123,Machine settings,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+system,ledG,uint8_t,124,Machine settings,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained
+system,ledB,uint8_t,125,Machine settings,reachable,NOT IMPLEMENTED,Captured schema12; native existing interface retained

@@ -1,0 +1,24 @@
+TRAY POLICY — USER REVISION, 2026-10-17
+
+Automatic initial boiler fill and automatic idle pressure release require
+fresh local gross weight >=150g; uncalibrated/missing/stale/offline fail closed.
+Home Flush is manual: bypass tray weight,including while startup fill waits.
+Tank,physical switch,temperature and display-contact checks remain. Automated
+backflush/descale cycles retain their existing guard. Ordinary espresso/manual
+brewing and physical steam/hotwater do not require tray weight.
+
+The complete original Gaggia Classic Pro OEM tray assembly weight could not
+be verified from manufacturer/parts sources. Primary aftermarket vendor
+Coffee Sensor lists a compatible stainless low-profile tray at200g:
+https://coffee-sensor.com/product/gaggia-classic-2019-pro-or-evo-stainless-steel-short-and-low-profile-drip-tray/
+75% of that reference is150g. This is a PROVISIONAL USER-REQUESTED ESTIMATE,
+not a measured OEM assembly specification; do not label it as the stock mass.
+Minimum is editable in Menu > Tray guard. A no-tray raw baseline still needs
+to be captured and saved; boot tare is not a valid substitute. Confirm actual
+empty installed tray exceeds minimum,then remove it and verify gross drops
+below minimum. Cups/containers of sufficient mass also satisfy load detection.
+
+Startup fill's timer begins only after prerequisites are met; losing tray
+stops pump/valve and resets the fill budget. It cannot use up its timeout
+while waiting for calibration and then enable heat without having filled.
+Deduplicated setup notice permits entering the calibration menu.

@@ -1,0 +1,82 @@
+scope,field,c_type,original_schema_line,new_location,prototype,native_redesign,persistence
+profile,name,char,50,Rename,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,preinfusionState,bool,52,Preinfusion,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,preinfusionFlowState,bool,53,Preinfusion,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,preinfusionSec,uint16_t,54,Preinfusion,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,preinfusionBar,float,55,Preinfusion,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,preinfusionFlowVol,float,56,Preinfusion,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,preinfusionFlowTime,uint16_t,57,Preinfusion,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,preinfusionFlowPressureTarget,float,58,Preinfusion,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,preinfusionPressureFlowTarget,float,59,Preinfusion,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,preinfusionFilled,float,60,Preinfusion,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,preinfusionPressureAbove,bool,61,Preinfusion,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,preinfusionWeightAbove,float,62,Preinfusion,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,soakState,bool,64,Soak,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,soakTimePressure,uint16_t,65,Soak,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,soakTimeFlow,uint16_t,66,Soak,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,soakKeepPressure,float,67,Soak,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,soakKeepFlow,float,68,Soak,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,soakBelowPressure,float,69,Soak,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,soakAbovePressure,float,70,Soak,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,soakAboveWeight,float,71,Soak,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,preinfusionRamp,uint16_t,73,Ramp,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,preinfusionRampSlope,uint16_t,74,Ramp,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,tpState,bool,76,Transition,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,tpType,bool,77,Transition,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,tpProfilingStart,float,78,Transition,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,tpProfilingFinish,float,79,Transition,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,tpProfilingHold,uint16_t,80,Transition,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,tpProfilingHoldLimit,float,81,Transition,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,tpProfilingSlope,uint16_t,82,Transition,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,tpProfilingSlopeShape,uint16_t,83,Transition,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,tpProfilingFlowRestriction,float,84,Transition,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,tfProfileStart,float,85,Transition,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,tfProfileEnd,float,86,Transition,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,tfProfileHold,uint16_t,87,Transition,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,tfProfileHoldLimit,float,88,Transition,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,tfProfileSlope,uint16_t,89,Transition,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,tfProfileSlopeShape,uint16_t,90,Transition,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,tfProfilingPressureRestriction,float,91,Transition,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,profilingState,bool,92,Brew profiling,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,mfProfileState,bool,93,Brew profiling,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,mpProfilingStart,float,94,Brew profiling,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,mpProfilingFinish,float,95,Brew profiling,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,mpProfilingSlope,uint16_t,96,Brew profiling,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,mpProfilingSlopeShape,uint16_t,97,Brew profiling,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,mpProfilingFlowRestriction,float,98,Brew profiling,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,mfProfileStart,float,99,Brew profiling,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,mfProfileEnd,float,100,Brew profiling,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,mfProfileSlope,uint16_t,101,Brew profiling,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,mfProfileSlopeShape,uint16_t,102,Brew profiling,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,mfProfilingPressureRestriction,float,103,Brew profiling,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,setpoint,uint16_t,105,Temperature & dose,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,stopOnWeightState,bool,106,Temperature & dose,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,shotDose,float,107,Temperature & dose,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,shotStopOnCustomWeight,float,108,Temperature & dose,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,shotPreset,uint16_t,109,Temperature & dose,reachable,IMPLEMENTED,legacy integer retained; canonical editable shotRatioX100 used for execution
+system,steamSetPoint,uint16_t,43,Machine settings,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+system,offsetTemp,uint16_t,44,Machine settings,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+system,hpwr,uint16_t,45,Machine settings,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+system,mainDivider,uint16_t,46,Machine settings,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+system,brewDivider,uint16_t,47,Machine settings,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+system,activeProfile,uint8_t,48,Profiles,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+system,powerLineFrequency,uint16_t,112,Machine settings,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+system,lcdSleep,uint16_t,113,Machine settings,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+system,warmupState,bool,114,Machine settings,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+system,homeOnShotFinish,bool,115,Machine settings,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+system,brewDeltaState,bool,116,Machine settings,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+system,basketPrefill,bool,117,Machine settings,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+system,scalesF1,int,118,Machine settings,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+system,scalesF2,int,119,Machine settings,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+system,pumpFlowAtZero,float,120,Machine settings,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+system,ledState,bool,121,Machine settings,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+system,ledDisco,bool,122,Machine settings,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+system,ledR,uint8_t,123,Machine settings,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+system,ledG,uint8_t,124,Machine settings,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+system,ledB,uint8_t,125,Machine settings,reachable,IMPLEMENTED,schema12 field migration; schema13 scoped Save + CRC
+profile,shotRatioX100,uint16_t,NEW schema13,Native descriptor or special action; inventory.json,reference only,IMPLEMENTED,schema13 scoped Save + CRC
+system,tankFullDistanceMm,uint16_t,NEW schema13,Native descriptor or special action; inventory.json,reference only,IMPLEMENTED,schema13 scoped Save + CRC
+system,brightness,uint8_t,NEW schema13,Native descriptor or special action; inventory.json,reference only,IMPLEMENTED,schema13 scoped Save + CRC
+system,trayGuardCalibrated,bool,NEW schema13,Native descriptor or special action; inventory.json,reference only,IMPLEMENTED,schema13 scoped Save + CRC
+system,trayZeroRaw,int32_t,NEW schema13,Native descriptor or special action; inventory.json,reference only,IMPLEMENTED,schema13 scoped Save + CRC
+system,trayMinWeightG,float,NEW schema13,Native descriptor or special action; inventory.json,reference only,IMPLEMENTED,schema13 scoped Save + CRC

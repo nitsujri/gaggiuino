@@ -1,0 +1,344 @@
+Processing scales-calibration-stlink (framework: arduino; platform: ststm32@15.6.0; board: blackpill_f411ce)
+--------------------------------------------------------------------------------
+Verbose mode can be enabled via `-v, --verbose` option
+
+FIRMWARE VERSION: 18d3e32-dirty
+
+PROJECT SOURCE DIR: //$PROJECT_DIR/scales-calibration
+
+PROJECT DATA DIR: //$PROJECT_DIR/scales-calibration/data
+CONFIGURATION: https://docs.platformio.org/page/boards/ststm32/blackpill_f411ce.html
+PLATFORM: ST STM32 (15.6.0) > WeAct Studio BlackPill V2.0 (STM32F411CE)
+HARDWARE: STM32F411CEU6 100MHz, 128KB RAM, 512KB Flash
+DEBUG: Current (stlink) External (blackmagic, cmsis-dap, jlink, stlink)
+PACKAGES: 
+ - framework-arduinoststm32 @ 4.20400.0 (2.4.0) 
+ - framework-cmsis @ 2.50700.210515 (5.7.0) 
+ - tool-cppcheck @ 1.260.0 (2.60) 
+ - toolchain-gccarmnoneeabi @ 1.90201.191206 (9.2.1)
+LDF: Library Dependency Finder -> https://bit.ly/configure-pio-ldf
+LDF Modes: Finder ~ chain, Compatibility ~ strict
+Found 27 compatible libraries
+Scanning dependencies...
+Dependency Graph
+|-- ADS1X15 @ 0.3.7
+|-- FlashStorage_STM32 @ 1.2.0
+|-- SerialTransfer @ 3.1.5
+|-- SimpleKalmanFilter @ 0.2.0+sha.fc29b51
+|-- Easy Nextion Library @ 1.0.6+sha.1272a6d
+|-- PSM @ 0.0.1+sha.8a920d6
+|-- NCP5623 @ 0.0.0+20260829074706.sha.962798c
+|-- Adafruit_VL53L0X @ 1.2.2+sha.0aff489
+|-- movingAvg @ 2.3.2+sha.63dfeb5
+|-- PCA9632 @ 1.1.1+sha.8cc2bc7
+|-- Common
+|-- HX711 Arduino Library @ 0.7.5
+Building in release mode
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduinoVariant/PeripheralPins.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduinoVariant/PeripheralPins_BLACKPILL_F411CE.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduinoVariant/PeripheralPins_THUNDERPACK_F411.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduinoVariant/generic_clock.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduinoVariant/variant_BLACKPILL_F411CE.cpp.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduinoVariant/variant_THUNDERPACK_F411.cpp.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduinoVariant/variant_generic.cpp.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_adc.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_adc_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_can.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_cec.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_comp.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_comp_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_cordic.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_cortex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_crc.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_crc_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_cryp.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_cryp_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dac.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dac_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dcache.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dcmi.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dcmi_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dfsdm.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dfsdm_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dma.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dma2d.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dma_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dsi.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_dts.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_eth.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_eth_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_exti.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_fdcan.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_firewall.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_flash.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_flash_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_flash_ramfunc.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_fmac.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_fmpi2c.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_fmpi2c_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_fmpsmbus.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_fmpsmbus_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_gfxmmu.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_gpio.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_gpio_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_gpu2d.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_gtzc.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_hash.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_hash_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_hcd.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_hrtim.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_hsem.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_i2c.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_i2c_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_i2s.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_i2s_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_icache.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_ipcc.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_irda.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_iwdg.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_jpeg.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_lcd.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_lptim.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_ltdc.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_ltdc_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_mdf.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_mdios.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_mdma.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_mmc.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_mmc_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_nand.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_nor.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_opamp.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_opamp_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_ospi.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_otfdec.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_pccard.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_pcd.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_pcd_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_pka.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_pssi.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_pwr.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_pwr_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_qspi.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_ramcfg.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_ramecc.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_rcc.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_rcc_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_rng.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_rng_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_rtc.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_rtc_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_sai.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_sai_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_sd.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_sd_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_sdadc.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_sdram.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_smartcard.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_smartcard_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_smbus.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_smbus_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_spdifrx.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_spi.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_spi_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_sram.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_subghz.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_swpmi.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_tim.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_tim_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_tsc.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_uart.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_uart_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_usart.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_usart_ex.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_wwdg.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HAL/stm32yyxx_hal_xspi.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/HardwareTimer.cpp.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_adc.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_bdma.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_comp.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_cordic.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_crc.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_crs.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_dac.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_delayblock.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_dlyb.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_dma.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_dma2d.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_exti.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_fmac.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_fmc.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_fmpi2c.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_fsmc.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_gpio.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_hrtim.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_i2c.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_icache.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_lpgpio.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_lptim.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_lpuart.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_mdma.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_opamp.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_pka.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_pwr.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_rcc.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_rng.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_rtc.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_sdmmc.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_spi.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_swpmi.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_tim.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_ucpd.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_usart.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_usb.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/LL/stm32yyxx_ll_utils.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/new.cpp.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/stm32/PortNames.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/stm32/analog.cpp.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/stm32/bootloader.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/stm32/clock.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/stm32/core_callback.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/stm32/dwt.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/stm32/hw_config.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/stm32/interrupt.cpp.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/stm32/otp.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/stm32/pinmap.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/stm32/stm32_def.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/stm32/system_stm32yyxx.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/stm32/timer.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/stm32/uart.c.o
+Compiling .pio/build/scales-calibration-stlink/SrcWrapper/src/syscalls.c.o
+Compiling .pio/build/scales-calibration-stlink/src/scales-calibration.cpp.o
+Compiling .pio/build/scales-calibration-stlink/liba1f/Wire/Wire.cpp.o
+Compiling .pio/build/scales-calibration-stlink/liba1f/Wire/utility/twi.c.o
+Compiling .pio/build/scales-calibration-stlink/lib8db/ADS1X15/ADS1X15.cpp.o
+Compiling .pio/build/scales-calibration-stlink/libbe9/SerialTransfer/I2CTransfer.cpp.o
+Compiling .pio/build/scales-calibration-stlink/libbe9/SerialTransfer/Packet.cpp.o
+Compiling .pio/build/scales-calibration-stlink/libbe9/SerialTransfer/SPITransfer.cpp.o
+Compiling .pio/build/scales-calibration-stlink/libbe9/SerialTransfer/SerialTransfer.cpp.o
+Compiling .pio/build/scales-calibration-stlink/lib79b/SimpleKalmanFilter/SimpleKalmanFilter.cpp.o
+Compiling .pio/build/scales-calibration-stlink/lib7e8/Easy Nextion Library/EasyNextionLibrary.cpp.o
+Compiling .pio/build/scales-calibration-stlink/lib7e8/Easy Nextion Library/callTriggers.cpp.o
+Compiling .pio/build/scales-calibration-stlink/lib7e8/Easy Nextion Library/readCustomCommands.cpp.o
+Archiving .pio/build/scales-calibration-stlink/liba1f/libWire.a
+Archiving .pio/build/scales-calibration-stlink/lib8db/libADS1X15.a
+Compiling .pio/build/scales-calibration-stlink/libc81/PSM/PSM.cpp.o
+Indexing .pio/build/scales-calibration-stlink/liba1f/libWire.a
+Archiving .pio/build/scales-calibration-stlink/libbe9/libSerialTransfer.a
+Indexing .pio/build/scales-calibration-stlink/lib8db/libADS1X15.a
+Compiling .pio/build/scales-calibration-stlink/lib20c/NCP5623/NCP5623.cpp.o
+Archiving .pio/build/scales-calibration-stlink/lib79b/libSimpleKalmanFilter.a
+Indexing .pio/build/scales-calibration-stlink/libbe9/libSerialTransfer.a
+Compiling .pio/build/scales-calibration-stlink/libc78/Adafruit_VL53L0X/Adafruit_VL53L0X.cpp.o
+Indexing .pio/build/scales-calibration-stlink/lib79b/libSimpleKalmanFilter.a
+Compiling .pio/build/scales-calibration-stlink/libc78/Adafruit_VL53L0X/core/src/vl53l0x_api.cpp.o
+Compiling .pio/build/scales-calibration-stlink/libc78/Adafruit_VL53L0X/core/src/vl53l0x_api_calibration.cpp.o
+Compiling .pio/build/scales-calibration-stlink/libc78/Adafruit_VL53L0X/core/src/vl53l0x_api_core.cpp.o
+Compiling .pio/build/scales-calibration-stlink/libc78/Adafruit_VL53L0X/core/src/vl53l0x_api_ranging.cpp.o
+Archiving .pio/build/scales-calibration-stlink/lib7e8/libEasy Nextion Library.a
+Indexing .pio/build/scales-calibration-stlink/lib7e8/libEasy Nextion Library.a
+Archiving .pio/build/scales-calibration-stlink/libc81/libPSM.a
+Archiving .pio/build/scales-calibration-stlink/lib20c/libNCP5623.a
+Indexing .pio/build/scales-calibration-stlink/libc81/libPSM.a
+Compiling .pio/build/scales-calibration-stlink/libc78/Adafruit_VL53L0X/core/src/vl53l0x_api_strings.cpp.o
+Indexing .pio/build/scales-calibration-stlink/lib20c/libNCP5623.a
+Compiling .pio/build/scales-calibration-stlink/libc78/Adafruit_VL53L0X/platform/src/vl53l0x_i2c_comms.cpp.o
+Compiling .pio/build/scales-calibration-stlink/libc78/Adafruit_VL53L0X/platform/src/vl53l0x_platform.cpp.o
+Compiling .pio/build/scales-calibration-stlink/lib331/movingAvg/movingAvg.cpp.o
+Compiling .pio/build/scales-calibration-stlink/lib103/PCA9632/PCA9632.cpp.o
+Archiving .pio/build/scales-calibration-stlink/lib331/libmovingAvg.a
+Compiling .pio/build/scales-calibration-stlink/lib3c7/Common/drip_tray_guard.cpp.o
+Compiling .pio/build/scales-calibration-stlink/lib3c7/Common/indigo_fields.cpp.o
+Indexing .pio/build/scales-calibration-stlink/lib331/libmovingAvg.a
+Compiling .pio/build/scales-calibration-stlink/lib3c7/Common/indigo_settings.cpp.o
+Compiling .pio/build/scales-calibration-stlink/lib3c7/Common/indigo_ui.cpp.o
+Compiling .pio/build/scales-calibration-stlink/lib3c7/Common/mcu_comms.cpp.o
+Compiling .pio/build/scales-calibration-stlink/lib3c7/Common/measurements.cpp.o
+Archiving .pio/build/scales-calibration-stlink/libc78/libAdafruit_VL53L0X.a
+Compiling .pio/build/scales-calibration-stlink/lib3c7/Common/profiling_phases.cpp.o
+Archiving .pio/build/scales-calibration-stlink/lib103/libPCA9632.a
+Indexing .pio/build/scales-calibration-stlink/libc78/libAdafruit_VL53L0X.a
+Indexing .pio/build/scales-calibration-stlink/lib103/libPCA9632.a
+Compiling .pio/build/scales-calibration-stlink/lib3c7/Common/utils.cpp.o
+Compiling .pio/build/scales-calibration-stlink/libf38/HX711/HX711.cpp.o
+Compiling .pio/build/scales-calibration-stlink/libf38/HX711/HX711_2.cpp.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/HardwareSerial.cpp.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/IPAddress.cpp.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/Print.cpp.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/RingBuffer.cpp.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/Stream.cpp.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/Tone.cpp.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/USBSerial.cpp.o
+Archiving .pio/build/scales-calibration-stlink/libf38/libHX711.a
+Indexing .pio/build/scales-calibration-stlink/libf38/libHX711.a
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/VirtIOSerial.cpp.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/WInterrupts.cpp.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/WMath.cpp.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/WSerial.cpp.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/WString.cpp.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/abi.cpp.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/avr/dtostrf.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/board.c.o
+Archiving .pio/build/scales-calibration-stlink/lib3c7/libCommon.a
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/core_debug.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/hooks.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/itoa.c.o
+Indexing .pio/build/scales-calibration-stlink/lib3c7/libCommon.a
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/main.cpp.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/pins_arduino.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/device.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/generic/condition.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/generic/cortexm/sys.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/generic/generic_device.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/generic/generic_init.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/generic/generic_io.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/generic/generic_shmem.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/generic/time.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/init.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/io.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/log.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/OpenAMP/libmetal/shmem.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/OpenAMP/mbox_ipcc.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/OpenAMP/open-amp/remoteproc/remoteproc_virtio.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/OpenAMP/open-amp/rpmsg/rpmsg.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/OpenAMP/open-amp/rpmsg/rpmsg_virtio.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/OpenAMP/openamp.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/OpenAMP/rsc_table.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/OpenAMP/virt_uart.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/OpenAMP/virtio/virtio.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/OpenAMP/virtio/virtqueue.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/OpenAMP/virtio_buffer.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/OpenAMP/virtio_log.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/startup_stm32yyxx.S.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/usb/cdc/cdc_queue.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/usb/cdc/usbd_cdc.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/usb/cdc/usbd_cdc_if.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/usb/hid/usbd_hid_composite.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/usb/hid/usbd_hid_composite_if.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/usb/usb_device_core.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/usb/usb_device_ctlreq.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/usb/usb_device_ioreq.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/usb/usbd_conf.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/usb/usbd_desc.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/usb/usbd_ep_conf.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/stm32/usb/usbd_if.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/wiring_analog.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/wiring_digital.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/wiring_pulse.cpp.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/wiring_shift.c.o
+Compiling .pio/build/scales-calibration-stlink/FrameworkArduino/wiring_time.c.o
+Archiving .pio/build/scales-calibration-stlink/libFrameworkArduino.a
+Indexing .pio/build/scales-calibration-stlink/libFrameworkArduino.a
+Linking .pio/build/scales-calibration-stlink/firmware.elf
+Checking size .pio/build/scales-calibration-stlink/firmware.elf
+Advanced Memory Usage is available via "PlatformIO Home > Project Inspect"
+RAM:   [=         ]   6.1% (used 7960 bytes from 131072 bytes)
+Flash: [=         ]  11.9% (used 62240 bytes from 524288 bytes)
+Building .pio/build/scales-calibration-stlink/firmware.bin
+========================= [SUCCESS] Took 17.07 seconds =========================
+
+Environment                Status    Duration
+-------------------------  --------  ------------
+scales-calibration-stlink  SUCCESS   00:00:17.070
+========================= 1 succeeded in 00:00:17.070 =========================

@@ -1,0 +1,50 @@
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.004s
+
+OK
+Verified 114 source/config files and 20 artifacts. Hardware acceptance remains pending.
+{
+  "schema": "gaggiuino-indigo-release/2",
+  "softwareReadyForFirstLoad": true,
+  "hardwareVerified": false,
+  "uploaded": true,
+  "productionActuatorsEnabled": true,
+  "newTftRequired": false,
+  "displayRequirement": "unchanged stock frozen Nextion/TJC HMI; physical compatibility pending",
+  "controllerEnvironment": "all-pcb-stlink",
+  "baseCommit": "18d3e32d6be72170f3b9c266ee2f4978837d6277",
+  "sourceState": "working-tree snapshot; source hashes included",
+  "settingsSchema": 13,
+  "previousSettingsSchema": 12,
+  "settingsBytes": 1056,
+  "metadataBytes": 1072,
+  "initialRecipes": [
+    "Turbo",
+    "SOUP"
+  ],
+  "defaultProfile": "Turbo",
+  "tofFullInitialMm": 30,
+  "trayBaselineStatus": "UI capture+Save required for automatic boiler fill/pressure release; Home Flush manual bypass",
+  "trayMinimumG": 150,
+  "trayWeightReferenceG": 200,
+  "trayWeightReferenceStatus": "provisional aftermarket reference; not verified OEM weight",
+  "verified": {
+    "mainBuild": "PASS",
+    "calibrationBuild": "PASS",
+    "nativeTests": 49,
+    "sanitizers": [
+      "address",
+      "undefined"
+    ],
+    "backupDecoderTests": 2,
+    "ramBytes": 30000,
+    "flashBytes": 209880,
+    "hardwareAcceptance": "NOT RUN"
+  },
+  "manifest": "tmp/indigo-release/manifest.json",
+  "firmware": {
+    "bytes": 210448,
+    "sha256": "8e371228ec4983198e04cf550b138d8fd05d3ce1599f9f1871cb07a58f3dc77c"
+  }
+}
