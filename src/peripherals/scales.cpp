@@ -2,6 +2,7 @@
 #include "scales.h"
 #include "pindef.h"
 #include "remote_scales.h"
+#include "scales_clock.h"
 
 #include <HX711_2.h>
 #include <cmath>
@@ -44,6 +45,9 @@ void scalesInit(float scalesF1, float scalesF2) {
 #ifndef DISABLE_HW_SCALES
   auto& loadCells = LoadCellSingleton::getInstance();
   loadCells.begin(HX711_dout_1, HX711_dout_2, HX711_sck_1, 128U, scale_clk);
+#if defined(ARDUINO_ARCH_STM32)
+  configureScalesClock(HX711_sck_1, TIM3);
+#endif
   loadCells.set_scale(scalesF1, scalesF2);
   loadCells.power_up();
 

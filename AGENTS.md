@@ -8,6 +8,7 @@
 - Use the `all-pcb-stlink` PlatformIO environment for the main firmware. It selects the PCB layout (`SINGLE_BOARD`) and MAX31855 thermocouple support.
 - Physical scales are installed using the Gaggiuino compact dual-HX711 scales board with an FPC load-cell connector. The dual-HX711 board connects to CoffeeHat PCBv3 J8, whose pins are `D2`, `5V`, `GND`, `CLK`, and `D1`.
 - The installed dual-HX711/FPC board uses the normal shared-clock, two-data-channel configuration. Leave `SINGLE_HX711_BOARD` undefined; despite its name, that flag is only for one ordinary HX711 module. Do not change this unless the scale electronics are physically replaced.
+- This installed board needs `HX711_CLOCK_PULLUP` and `HX711_CLOCK_HALF_PERIOD_US=16` in `extra_defines.ini`: the default unpulled open-drain CLK did not reach a valid high level. Keep the same clock setup in main and calibration firmware using `scales_clock.h`.
 - Do not use either `*-forced-predictive-stlink` environment and do not define `FORCE_PREDICTIVE_SCALES`.
 - Automatic idle pressure release uses a fail-closed gross-weight drip-tray guard. Its machine-specific `DRIP_TRAY_ZERO_RAW_1`, `DRIP_TRAY_ZERO_RAW_2`, and `DRIP_TRAY_MIN_WEIGHT_G` values live in `extra_defines.ini`.
 - The programmer is an ST-Link. Use SWD through the BlackPill's SWD connection; the PCBv3 J27 connector shown in the schematic is the programming/UART header (`BOOT`, `RESET`, `GND`, `TX`, `RX`, `3V3`), not a substitute for SWDIO/SWCLK.

@@ -2,6 +2,7 @@
 #include <HX711_2.h>
 #include <EasyNextionLibrary.h>
 #include <ADS1X15.h>
+#include "scales_clock.h"
 
 #define relayPin PA15  // PB0
 #define LOADCELL_1_DOUT_PIN  PB8
@@ -35,6 +36,9 @@ void setup() {
     delay(600);
   }
   loadcell.begin(LOADCELL_1_DOUT_PIN, LOADCELL_2_DOUT_PIN, LOADCELL_1_SCK_PIN, 128U, scale_clk);
+#if defined(ARDUINO_ARCH_STM32)
+  configureScalesClock(LOADCELL_1_SCK_PIN, TIM3);
+#endif
   loadcell.set_scale();
   loadcell.power_up();
   loadcell.tare();
