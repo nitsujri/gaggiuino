@@ -1,0 +1,13 @@
+; Copy this file to extra_defines.ini before building.
+; CoffeeHat/GCP PCBv3.0 with an STM32F411CE BlackPill and VL53L0X ToF sensor.
+; The compact dual-HX711/FPC scales use the default two-data-channel setup.
+; Leave SINGLE_HX711_BOARD and FORCE_PREDICTIVE_SCALES undefined.
+; Build: pio run -e all-pcb-stlink
+; This legacy firmware waits for the ToF sensor during startup.
+
+[platformio]
+default_envs = all-pcb-stlink
+
+[extra]
+build_flags =
+	-DTOF_VL53L0X
