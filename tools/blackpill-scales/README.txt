@@ -49,6 +49,15 @@ PlatformIO native test dependency cache. Define STANDALONE_DRIP_TRAY_TEST when
 compiling test/tests/test_drip_tray_guard.cpp with lib/Common/drip_tray_guard.cpp
 and Unity. The regular test runner also includes these tests.
 
+Starter recipes are in starter-recipes.json and firmware factory defaults:
+  Slot1 Turbo:15g ->45g,92C,constant6bar,6ml/s flow ceiling,no PI/soak.
+  Slot2 SOUP:17g ->51g(1:3),86C,2s wetting2.5ml/s capped1bar,
+             8s soak holding1bar(max2.5ml/s),6ml/s extraction capped1bar.
+The chosen SOUP parameters adapt the cited gentle wetting/fast-flow method to
+this frozen engine; they are not a canonical recipe. Slots3..5 and machine
+calibrations are preserved when provisioning the current machine. Merely
+changing factory defaults does not overwrite profiles already stored in EEPROM.
+
 Calibration2026-10-17: factors1966 and-1986 saved in machine EEPROM. Centered
 10/20/30/50g weights plus50g over left and right supports determined both gains;
 the99.94g independent check predicted99.80g. Final no-tray offsets are-140084
