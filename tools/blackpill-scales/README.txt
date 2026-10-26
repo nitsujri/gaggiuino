@@ -71,3 +71,11 @@ Production sampler startup regression checks with mocked ADC hardware:
   python3 tools/blackpill-scales/tests/run_startup.py
 This runs configured and unconfigured cases under ASan+UBSan, exercising the
 actual src/peripherals/scales.cpp sampler as well as the pure guard helper.
+
+Startup build label (prepared2026-10-19): LCD initialization resets retained UI
+modes, opens the stock splash with its countdown paused, writes AUTO_VERSION,
+and verifies the text by reading it back before restarting the countdown. Slow
+display startup or a lost first write is retried while machine outputs remain
+off. The old wait for a one-shot boot banner is removed. The existing TFT and
+short commit identifier are retained; no display reflash is needed. Four host
+regressions cover delayed boot, MCU-only reset, lost writes and wrong readback.
