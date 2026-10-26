@@ -1,0 +1,239 @@
+{
+  "date": "2026-10-17",
+  "hardware": "CoffeeHat/GCP PCBv3 LV, STM32F411CE, shared-clock dual HX711",
+  "settingsSchema": 12,
+  "factors": {
+    "scalesF1": 1966,
+    "scalesF2": -1986
+  },
+  "trayMassG": 273.45,
+  "guardMinimumG": 205,
+  "noTrayRaw": [
+    -140084,
+    191846
+  ],
+  "calibratedEmptyTrayGrossG": 276.8594399094783,
+  "incrementalFit": [
+    {
+      "stage": "empty",
+      "expectedG": 0,
+      "calibratedG": 0.0,
+      "errorG": 0.0
+    },
+    {
+      "stage": "10g",
+      "expectedG": 10.0,
+      "calibratedG": 10.013015483475154,
+      "errorG": 0.013015483475154355
+    },
+    {
+      "stage": "20g",
+      "expectedG": 20.0,
+      "calibratedG": 19.992349714240053,
+      "errorG": -0.007650285759947195
+    },
+    {
+      "stage": "30g",
+      "expectedG": 30.0,
+      "calibratedG": 29.999275995769253,
+      "errorG": -0.000724004230747255
+    },
+    {
+      "stage": "50g",
+      "expectedG": 50.0,
+      "calibratedG": 49.93064988563309,
+      "errorG": -0.06935011436691241
+    },
+    {
+      "stage": "50g-left",
+      "expectedG": 50.0,
+      "calibratedG": 50.05116208752651,
+      "errorG": 0.05116208752650664
+    },
+    {
+      "stage": "50g-right",
+      "expectedG": 50.0,
+      "calibratedG": 50.040395213815415,
+      "errorG": 0.04039521381541533
+    }
+  ],
+  "independentCheck": {
+    "expectedG": 99.94,
+    "measuredG": 99.80258391724195,
+    "errorG": -0.13741608275805106,
+    "rawMean": [
+      232712.75,
+      -179045.5
+    ]
+  },
+  "capturedStages": {
+    "empty": {
+      "addedMassG": 0,
+      "seqRange": [
+        0,
+        6
+      ],
+      "rawMean": [
+        131902.2857142857,
+        -82673.57142857143
+      ],
+      "oldCalibrationGrossG": 134.43098689085406
+    },
+    "10g": {
+      "addedMassG": 10.0,
+      "seqRange": [
+        31,
+        34
+      ],
+      "rawMean": [
+        142072,
+        -92286.25
+      ],
+      "oldCalibrationGrossG": 139.3085983324446,
+      "observedAddedOldG": 4.877611441590545
+    },
+    "20g": {
+      "addedMassG": 20.0,
+      "seqRange": [
+        49,
+        52
+      ],
+      "rawMean": [
+        151701.25,
+        -102378
+      ],
+      "oldCalibrationGrossG": 144.16212992025788,
+      "observedAddedOldG": 9.731143029403825
+    },
+    "30g": {
+      "addedMassG": 30.0,
+      "seqRange": [
+        80,
+        83
+      ],
+      "rawMean": [
+        161187.75,
+        -112668.75
+      ],
+      "oldCalibrationGrossG": 149.0265141002957,
+      "observedAddedOldG": 14.595527209441656
+    },
+    "50g": {
+      "addedMassG": 50.0,
+      "seqRange": [
+        101,
+        104
+      ],
+      "rawMean": [
+        180868.25,
+        -132371.75
+      ],
+      "oldCalibrationGrossG": 158.72709732051965,
+      "observedAddedOldG": 24.29611042966559
+    },
+    "50g-left": {
+      "addedMassG": 50.0,
+      "seqRange": [
+        189,
+        192
+      ],
+      "rawMean": [
+        223121.25,
+        -89928.25
+      ],
+      "oldCalibrationGrossG": 159.42433240220078,
+      "observedAddedOldG": 24.993345511346718
+    },
+    "50g-right": {
+      "addedMassG": 50.0,
+      "seqRange": [
+        230,
+        233
+      ],
+      "rawMean": [
+        136628.75,
+        -177279.25
+      ],
+      "oldCalibrationGrossG": 158.1083751939018,
+      "observedAddedOldG": 23.677388303047735
+    },
+    "99.94g-check": {
+      "addedMassG": 99.94,
+      "seqRange": [
+        467,
+        470
+      ],
+      "rawMean": [
+        232712.75,
+        -179045.5
+      ],
+      "oldCalibrationGrossG": 183.03913650079983,
+      "observedAddedOldG": 48.60814960994577
+    },
+    "empty-return": {
+      "addedMassG": 0.0,
+      "seqRange": [
+        500,
+        503
+      ],
+      "rawMean": [
+        132265.75,
+        -82876.5
+      ],
+      "oldCalibrationGrossG": 134.57190893281302,
+      "observedAddedOldG": 0.14092204195895874
+    },
+    "no-tray-final": {
+      "addedMassG": -273.45,
+      "seqRange": [
+        542,
+        545
+      ],
+      "rawMean": [
+        -140084.25,
+        191845.75
+      ],
+      "oldCalibrationGrossG": -0.15982309491492558,
+      "observedAddedOldG": -134.59080998576897
+    }
+  },
+  "notes": [
+    "Both factors fitted from added weights at center and over left/right supports.",
+    "99.94g independent check excluded from fitting.",
+    "The gross empty-tray reading differs from its separate-scale mass; guard uses the measured no-tray baseline and a conservative205g threshold.",
+    "Machine-powered actuator acceptance has not been performed."
+  ],
+  "deployment": {
+    "status": "CALIBRATED_FIRMWARE_AND_SETTINGS_VERIFIED",
+    "utc": "2026-10-17T14:00:14.366860+00:00",
+    "factors": [
+      1966,
+      -1986
+    ],
+    "noTrayRaw": [
+      -140084,
+      191846
+    ],
+    "trayMinimumG": 205,
+    "knownTrayMassG": 273.45,
+    "allProfilesPreserved": true,
+    "otherSettingsPreserved": true,
+    "settingsSectorByteForByteMatch": true,
+    "firmwareSegmentsVerified": 2,
+    "fullReadbackSha256": "35a5dd7981cb825d34e123ba3f707e09cdb3ee32be03d124235d4f1e80907b8e",
+    "mainBuild": "PASS",
+    "calibrationBuild": "PASS",
+    "sanitizedGuardTests": 8,
+    "independentWeightCheck": {
+      "expectedG": 99.94,
+      "measuredG": 99.80258391724195,
+      "errorG": -0.13741608275805106,
+      "rawMean": [
+        232712.75,
+        -179045.5
+      ]
+    },
+    "hardwareGuardVerification": "Pending controller/display power-cycle and tray presence checks",
+    "displayFlashed": false
+  }
+}

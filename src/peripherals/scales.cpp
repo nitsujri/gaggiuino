@@ -1,97 +1,140 @@
-/* 09:32 15/03/2023 - change triggering comment */
 #include "scales.h"
 #include "pindef.h"
 #include "remote_scales.h"
-
+#include "scales_clock.h"
+#include "../log.h"
 #include <HX711_2.h>
+#include <algorithm>
+#include <cmath>
+
+volatile ScalesDiagnostics scalesDiagnostics = {};
 namespace {
-  class LoadCellSingleton {
-  public:
-    static HX711_2& getInstance() {
-      static HX711_2 instance(TIM3);
-      return instance;
-    }
-  private:
-    LoadCellSingleton() = default;
-    ~LoadCellSingleton() = default;
-  };
+HX711_2 &cells() {
+  static HX711_2 value(TIM3);
+  return value;
+}
+bool hardwarePresent = false, haveSample = false;
+long absoluteRaw[2] = {}, recent[4][2] = {};
+unsigned count = 0, head = 0;
+uint32_t lastSample = 0;
+uint32_t initializedAt = 0;
+float factors[2] = {};
+bool fresh() { return dripTraySampleFresh(haveSample, lastSample, millis()); }
 }
 
-bool hwScalesPresent = false;
-
-#if defined SINGLE_HX711_BOARD
-unsigned char scale_clk = OUTPUT;
-#else
-unsigned char scale_clk = OUTPUT_OPEN_DRAIN;
-#endif
-
-void scalesInit(float scalesF1, float scalesF2) {
-  hwScalesPresent = false;
-  // Forced predicitve scales in case someone with actual hardware scales wants to use them.
-  if (FORCE_PREDICTIVE_SCALES) {
+void scalesPoll() {
+  scalesDiagnostics.now = millis();
+  if (!hardwarePresent) return;
+  long raw[2], offset[2];
+  if (!cells().try_read(raw)) return;
+  cells().get_offset(offset);
+  const long next[2] = {raw[0] + offset[0], raw[1] + offset[1]};
+  if (!dripTrayRawPairValid(next)) {
+    haveSample = false;
+    count = 0;
+    scalesDiagnostics.samples = 0;
     return;
   }
-
-#ifndef DISABLE_HW_SCALES
-  auto& loadCells = LoadCellSingleton::getInstance();
-  loadCells.begin(HX711_dout_1, HX711_dout_2, HX711_sck_1, 128U, scale_clk);
-  loadCells.set_scale(scalesF1, scalesF2);
-  loadCells.power_up();
-
-  if (loadCells.wait_ready_timeout(1000, 10)) {
-    loadCells.tare(4);
-    hwScalesPresent = true;
+  if (!fresh()) count = head = 0;
+  for (unsigned j = 0; j < 2; ++j) {
+    absoluteRaw[j] = next[j];
+    recent[head][j] = next[j];
   }
-  else {
-    loadCells.power_down();
+  head = (head + 1) % 4;
+  count = std::min(count + 1, 4U);
+  haveSample = true;
+  lastSample = millis();
+  float spread = 0;
+  for (unsigned j = 0; j < 2; ++j) {
+    int64_t sum = 0;
+    long lo = recent[0][j], hi = lo;
+    for (unsigned i = 0; i < count; ++i) {
+      sum += recent[i][j];
+      lo = std::min(lo, recent[i][j]);
+      hi = std::max(hi, recent[i][j]);
+    }
+    scalesDiagnostics.meanRaw[j] = sum / count;
+    if (!std::isfinite(factors[j]) || factors[j] == 0) spread = INFINITY;
+    else spread += std::fabs((hi - lo) / factors[j]);
+  }
+  scalesDiagnostics.spreadG = spread;
+  scalesDiagnostics.samples = count;
+  scalesDiagnostics.sampleMillis = lastSample;
+  float gross;
+  scalesDiagnostics.trayStatus = static_cast<uint32_t>(scalesGetDripTrayStatus(&gross));
+  scalesDiagnostics.grossWeight = gross;
+}
+
+void scalesInit(float f1, float f2) {
+  hardwarePresent = haveSample = false;
+  count = head = 0;
+  if (FORCE_PREDICTIVE_SCALES) return;
+#ifndef DISABLE_HW_SCALES
+  auto &c = cells();
+#ifdef SINGLE_HX711_BOARD
+  const auto clockMode = OUTPUT;
+#else
+  const auto clockMode = OUTPUT_OPEN_DRAIN;
+#endif
+  c.begin(HX711_dout_1, HX711_dout_2, HX711_sck_1, 128U, clockMode);
+  configureScalesClock(HX711_sck_1, TIM3);
+  factors[0] = f1;
+  factors[1] = f2;
+  c.set_scale(f1, f2);
+  c.power_up();
+  if (c.wait_ready_timeout(1000, 10)) {
+    c.tare(4);
+    hardwarePresent = true;
+    LOG_INFO("HX711 detected; tare complete; waiting for settled samples");
+  } else {
+    c.power_down();
+    LOG_ERROR("HX711 initialization timed out after 1000 ms");
   }
 #endif
-
-  if (!hwScalesPresent && remoteScalesIsPresent()) {
-    remoteScalesTare();
-  }
+  initializedAt = millis();
+  if (!hardwarePresent && remoteScalesIsPresent()) remoteScalesTare();
 }
 
-void scalesTare(void) {
-  if (hwScalesPresent) {
-    auto& loadCells = LoadCellSingleton::getInstance();
-    if (loadCells.wait_ready_timeout(150, 10)) {
-      loadCells.tare(4);
-    }
-  }
-  else if (remoteScalesIsPresent()) {
-    remoteScalesTare();
-  }
+void scalesTare() {
+  if (hardwarePresent && fresh() && count) {
+    int64_t sum[2] = {};
+    for (unsigned i = 0; i < count; ++i)
+      for (unsigned j = 0; j < 2; ++j) sum[j] += recent[i][j];
+    cells().set_offset(sum[0] / count, sum[1] / count);
+  } else if (!hardwarePresent && remoteScalesIsPresent()) remoteScalesTare();
 }
 
-Measurement scalesGetWeight(void) {
-  Measurement currentWeight = Measurement{ .value = 0.f, .millis = 0 };
-  if (hwScalesPresent) {
-    auto& loadCells = LoadCellSingleton::getInstance();
-    if (loadCells.wait_ready_timeout(150, 10)) {
-      float values[2];
-      loadCells.get_units(values);
-      currentWeight = Measurement{ .value=values[0] + values[1], .millis=millis() };
-    }
+Measurement scalesGetWeight() {
+  if (hardwarePresent && fresh()) {
+    long offset[2];
+    cells().get_offset(offset);
+    const long zeros[2] = {};
+    const float weight = calculateDripTrayGrossWeight(absoluteRaw, zeros, offset, factors);
+    if (std::isfinite(weight)) return {weight, lastSample};
   }
-  else if (remoteScalesIsPresent()) {
-    currentWeight = remoteScalesGetWeight();
-  }
-  return currentWeight;
+  if (remoteScalesIsPresent()) return remoteScalesGetWeight();
+  return {0.f, 0};
 }
 
-bool scalesIsPresent(void) {
-  // Forced predicitve scales in case someone with actual hardware scales wants to use them.
-  if (FORCE_PREDICTIVE_SCALES) {
-    return false;
-  }
-  return hwScalesPresent || remoteScalesIsPresent();
+bool scalesIsPresent() {
+  return !FORCE_PREDICTIVE_SCALES &&
+         ((hardwarePresent && fresh()) || remoteScalesIsPresent());
 }
 
-float scalesDripTrayWeight() {
-  long value[2] = {};
-  if (hwScalesPresent) {
-    LoadCellSingleton::getInstance().read_average(value, 4);
-  }
-  return ((float)value[0] + (float)value[1]);
+DripTrayStatus scalesGetDripTrayStatus(float *gross) {
+  if (gross) *gross = NAN;
+#if defined(DRIP_TRAY_ZERO_RAW_1) && defined(DRIP_TRAY_ZERO_RAW_2)
+  const bool ready = hardwarePresent && fresh() &&
+                     dripTrayReadingsSettled(count, scalesDiagnostics.spreadG);
+  if (dripTrayStartupPending(hardwarePresent, ready, initializedAt, millis()))
+    return DripTrayStatus::Settling;
+  if (!ready) return DripTrayStatus::Unavailable;
+  const long baseline[2] = {DRIP_TRAY_ZERO_RAW_1, DRIP_TRAY_ZERO_RAW_2};
+  const long zeroOffset[2] = {};
+  const float weight = calculateDripTrayGrossWeight(absoluteRaw, zeroOffset, baseline, factors);
+  if (gross) *gross = weight;
+  return classifyDripTray(true, hardwarePresent, std::isfinite(weight), weight, DRIP_TRAY_MIN_WEIGHT_G);
+#else
+  return DripTrayStatus::Unconfigured;
+#endif
 }

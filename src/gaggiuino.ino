@@ -1,9 +1,10 @@
 /* 09:32 15/03/2023 - change triggering comment */
-#pragma GCC optimize ("Ofast")
+#pragma GCC optimize ("O3")
 #if defined(DEBUG_ENABLED)
   #include "dbg.h"
 #endif
 #include "gaggiuino.h"
+#include <cmath>
 
 SimpleKalmanFilter smoothPressure(0.6f, 0.6f, 0.1f);
 SimpleKalmanFilter smoothPumpFlow(0.1f, 0.1f, 0.01f);
@@ -107,6 +108,7 @@ void setup(void) {
 
 //Main loop where all the logic is continuously run
 void loop(void) {
+  scalesPoll();
   fillBoiler();
   if (lcdCurrentPageId != lcdLastCurrentPageId) pageValuesRefresh();
   lcdListen();
@@ -124,6 +126,7 @@ void loop(void) {
 
 
 static void sensorsRead(void) {
+  scalesPoll();
   sensorReadSwitches();
   espCommsReadData();
   sensorsReadTemperature();
@@ -276,7 +279,17 @@ static void pageValuesRefresh() {
 //############################____OPERATIONAL_MODE_CONTROL____#################################
 //#############################################################################################
 static void modeSelect(void) {
-  if (!systemState.startupInitFinished) return;
+  if (!systemState.startupInitFinished) {
+    // Stock steam-page manual flushing remains available while waiting for a tray.
+    if (isManualFlushMode()) {
+      setBoilerOff();
+      setSteamValveRelayOff();
+      setSteamBoilerRelayOff();
+      (brewActive && currentState.waterLvl >= MIN_WATER_LVL)
+        ? flushActivated() : flushDeactivated();
+    }
+    return;
+  }
 
   switch (selectedOperationalMode) {
     //REPLACE ALL THE BELOW WITH OPMODE_auto_profiling
@@ -778,9 +791,13 @@ static void brewParamsReset(void) {
   phaseProfiler.reset();
 }
 
+static bool isManualFlushMode(void) {
+  return selectedOperationalMode == OPERATION_MODES::OPMODE_steam && !currentState.steamSwitchState;
+}
+
 static bool sysReadinessCheck(void) {
   // Startup procedures not finished
-  if (!systemState.startupInitFinished) {
+  if (!systemState.startupInitFinished && !isManualFlushMode()) {
     return false;
   }
   // If there's not enough water in the tank
@@ -794,18 +811,53 @@ static bool sysReadinessCheck(void) {
   return true;
 }
 
+static bool trayAllowsAutomaticDischarge(void) {
+#if DRIP_TRAY_GUARD_ENABLED
+  float gross = NAN;
+  const auto status = scalesGetDripTrayStatus(&gross);
+  static int lastStatus = -1;
+  if (status == DripTrayStatus::Present) {
+    lastStatus = -1;
+    return true;
+  }
+  if (status == DripTrayStatus::Missing || status == DripTrayStatus::Settling) {
+    // Quietly block automatic discharge without interrupting access to menus.
+    // Neither an absent tray nor normal ADC warm-up is a scale fault.
+    lastStatus = -1;
+    return false;
+  }
+  // The tray interlock must never interrupt the interface, including when a
+  // moving tray makes samples unsettled or stale. Keep fault details in logs.
+  if (lastStatus != static_cast<int>(status)) {
+    lastStatus = static_cast<int>(status);
+    LOG_ERROR("Automatic discharge blocked: tray status %d, gross %.1lf g", lastStatus, static_cast<double>(gross));
+    if (status == DripTrayStatus::Unavailable) {
+      LOG_ERROR("HX711 samples %lu, age %lu ms, spread %.2lf g",
+        static_cast<unsigned long>(scalesDiagnostics.samples),
+        static_cast<unsigned long>(millis() - scalesDiagnostics.sampleMillis),
+        static_cast<double>(scalesDiagnostics.spreadG));
+    }
+  }
+  return false;
+#else
+  return true;
+#endif
+}
+
 static inline void sysHealthCheck(float pressureThreshold) {
   //Reloading the watchdog timer, if this function fails to run MCU is rebooted
   watchdogReload();
 
   /* This *while* is here to prevent situations where the system failed to get a temp reading and temp reads as 0 or -7(cause of the offset)
   If we would use a non blocking function then the system would keep the SSR in HIGH mode which would most definitely cause boiler overheating */
-  while (currentState.temperature <= 0.0f || currentState.temperature == NAN || currentState.temperature >= 170.0f) {
+  while (!std::isfinite(currentState.temperature) || currentState.temperature <= 0.0f || currentState.temperature >= 170.0f) {
+    scalesPoll();
     //Reloading the watchdog timer, if this function fails to run MCU is rebooted
     watchdogReload();
     /* In the event of the temp failing to read while the SSR is HIGH
     we force set it to LOW while trying to get a temp reading - IMPORTANT safety feature */
     setPumpOff();
+    closeValve();
     setBoilerOff();
     setSteamBoilerRelayOff();
     if (millis() > thermoTimer) {
@@ -853,11 +905,16 @@ static inline void sysHealthCheck(float pressureThreshold) {
           break;
         default:
           sensorsRead();
-          lcdShowPopup("Releasing pressure!");
           setPumpOff();
           setBoilerOff();
           setSteamValveRelayOff();
           setSteamBoilerRelayOff();
+          if (currentState.brewSwitchState || currentState.steamSwitchState || currentState.hotWaterSwitchState || !trayAllowsAutomaticDischarge()) {
+            closeValve();
+            systemHealthTimer = millis() + DRIP_TRAY_RETRY_MS;
+            return;
+          }
+          lcdShowPopup("Releasing pressure!");
           openValve();
           break;
       }
@@ -890,22 +947,41 @@ static unsigned long getTimeSinceInit(void) {
 
 static void fillBoiler(void) {
   #if defined LEGO_VALVE_RELAY || defined SINGLE_BOARD
+  static BoilerFillClock clock;
 
   if (systemState.startupInitFinished) {
     return;
   }
 
   if (currentState.temperature > BOILER_FILL_SKIP_TEMP) {
+    setPumpOff();
+    closeValve();
     systemState.startupInitFinished = true;
     return;
   }
 
-  if (isBoilerFillPhase(getTimeSinceInit()) && !isSwitchOn()) {
-    fillBoilerUntilThreshod(getTimeSinceInit());
+  if (isManualFlushMode()) {
+    clock.reset();
+    return;
   }
-  else if (isSwitchOn()) {
-    lcdShowPopup("Brew Switch ON!");
+
+  // Recheck every loop; a removed tray or lost conversion immediately stops filling.
+  if (currentState.brewSwitchState || currentState.steamSwitchState || currentState.hotWaterSwitchState ||
+      currentState.waterLvl < MIN_WATER_LVL || lcdCurrentPageId != NextionPage::Home ||
+      !std::isfinite(currentState.temperature) || currentState.temperature <= 0.f) {
+    setPumpOff();
+    closeValve();
+    clock.reset();
+    return;
   }
+  if (!trayAllowsAutomaticDischarge()) {
+    setPumpOff();
+    closeValve();
+    clock.reset();
+    return;
+  }
+  const auto elapsed = clock.elapsed(millis());
+  if (isBoilerFillPhase(elapsed)) fillBoilerUntilThreshod(elapsed);
 #else
   systemState.startupInitFinished = true;
 #endif
@@ -933,6 +1009,8 @@ static bool isSwitchOn(void) {
 
 static void fillBoilerUntilThreshod(unsigned long elapsedTime) {
   if (elapsedTime >= BOILER_FILL_TIMEOUT) {
+    closeValve();
+    setPumpOff();
     systemState.startupInitFinished = true;
     return;
   }
