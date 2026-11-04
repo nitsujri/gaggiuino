@@ -960,13 +960,6 @@ static void fillBoiler(void) {
     return;
   }
 
-  if (!fillFailed && currentState.temperature > BOILER_FILL_SKIP_TEMP) {
-    setPumpOff();
-    closeValve();
-    systemState.startupInitFinished = true;
-    return;
-  }
-
   if (isManualFlushMode()) {
     fill.reset();
     return;

@@ -32,8 +32,9 @@ conversions and stale/invalid readings cannot complete the confirmation.
 The pressure plateau cutoff and old8s overall timeout are removed. The new
 limit is30s of pumping; reaching it stops the pump and closes the valve, shows
 "Boiler fill timed out!", and leaves startup/heating disabled until reboot.
-Manual steam-page flushing remains available after a timeout. The existing
-warm-start skip above85C remains. Tray/switch/water/page interlocks still stop
+Manual steam-page flushing remains available after a timeout. Warm starts also
+require water confirmation; temperature cannot establish boiler fullness after
+steaming. Tray/switch/water/page interlocks still stop
 the pump and reset the fill baseline; idle pressure release waits for startup
 to finish so it cannot interrupt the longer fill.
 
