@@ -882,6 +882,12 @@ static inline void sysHealthCheck(float pressureThreshold) {
   //Releasing the excess pressure after steaming or brewing if necessary
   #if defined LEGO_VALVE_RELAY || defined SINGLE_BOARD
 
+  // Startup filling owns the pump/valve and can now take longer than a health interval.
+  if (!systemState.startupInitFinished) {
+    systemHealthTimer = millis() + HEALTHCHECK_EVERY;
+    return;
+  }
+
   // No point going through the whole thing if this first condition isn't met.
   if (currentState.brewSwitchState || currentState.steamSwitchState || currentState.hotWaterSwitchState) {
     systemHealthTimer = millis() + HEALTHCHECK_EVERY;
@@ -947,13 +953,14 @@ static unsigned long getTimeSinceInit(void) {
 
 static void fillBoiler(void) {
   #if defined LEGO_VALVE_RELAY || defined SINGLE_BOARD
-  static BoilerFillClock clock;
+  static BoilerFill fill;
+  static bool fillFailed = false;
 
   if (systemState.startupInitFinished) {
     return;
   }
 
-  if (currentState.temperature > BOILER_FILL_SKIP_TEMP) {
+  if (!fillFailed && currentState.temperature > BOILER_FILL_SKIP_TEMP) {
     setPumpOff();
     closeValve();
     systemState.startupInitFinished = true;
@@ -961,7 +968,14 @@ static void fillBoiler(void) {
   }
 
   if (isManualFlushMode()) {
-    clock.reset();
+    fill.reset();
+    return;
+  }
+
+  // A timeout stops startup without enabling the heater or retrying unattended.
+  if (fillFailed) {
+    setPumpOff();
+    closeValve();
     return;
   }
 
@@ -971,60 +985,48 @@ static void fillBoiler(void) {
       !std::isfinite(currentState.temperature) || currentState.temperature <= 0.f) {
     setPumpOff();
     closeValve();
-    clock.reset();
+    fill.reset();
     return;
   }
   if (!trayAllowsAutomaticDischarge()) {
     setPumpOff();
     closeValve();
-    clock.reset();
+    fill.reset();
     return;
   }
-  const auto elapsed = clock.elapsed(millis());
-  if (isBoilerFillPhase(elapsed)) fillBoilerUntilThreshod(elapsed);
+
+  const auto weight = scalesGetSettledAbsoluteWeight();
+  switch (fill.update(weight.value, weight.millis, millis())) {
+    case BoilerFillState::Waiting:
+      setPumpOff();
+      closeValve();
+      break;
+    case BoilerFillState::Filling:
+      lcdShowPopup("Filling boiler!");
+      openValve();
+      setPumpToRawValue(35);
+      break;
+    case BoilerFillState::Complete:
+      closeValve();
+      setPumpOff();
+      systemState.startupInitFinished = true;
+      break;
+    case BoilerFillState::TimedOut:
+      closeValve();
+      setPumpOff();
+      fillFailed = true;
+      LOG_ERROR("Boiler fill timed out without sustained tray water weight");
+      lcdShowPopup("Boiler fill timed out!");
+      break;
+  }
 #else
   systemState.startupInitFinished = true;
 #endif
 }
 
-static bool isBoilerFillPhase(unsigned long elapsedTime) {
-  return lcdCurrentPageId == NextionPage::Home && elapsedTime >= BOILER_FILL_START_TIME;
-}
-
-static bool isBoilerFull(unsigned long elapsedTime) {
-  bool boilerFull = false;
-  if (elapsedTime > BOILER_FILL_START_TIME + 1000UL) {
-    boilerFull =  (previousSmoothedPressure - currentState.smoothedPressure > -0.02f)
-                &&
-                  (previousSmoothedPressure - currentState.smoothedPressure < 0.001f);
-  }
-
-  return elapsedTime >= BOILER_FILL_TIMEOUT || boilerFull;
-}
-
 // Checks if Brew switch is ON
 static bool isSwitchOn(void) {
   return currentState.brewSwitchState && lcdCurrentPageId == NextionPage::Home;
-}
-
-static void fillBoilerUntilThreshod(unsigned long elapsedTime) {
-  if (elapsedTime >= BOILER_FILL_TIMEOUT) {
-    closeValve();
-    setPumpOff();
-    systemState.startupInitFinished = true;
-    return;
-  }
-
-  if (isBoilerFull(elapsedTime)) {
-    closeValve();
-    setPumpOff();
-    systemState.startupInitFinished = true;
-    return;
-  }
-
-  lcdShowPopup("Filling boiler!");
-  openValve();
-  setPumpToRawValue(35);
 }
 
 static void updateStartupTimer(void) {

@@ -9,6 +9,7 @@ with tempfile.TemporaryDirectory(prefix='blackpill-startup-tests-') as tmp:
     command=['clang++','-std=c++17','-fsanitize=address,undefined','-g',
              '-I'+str(HERE/'shim'),'-I'+str(ROOT),'-I'+str(ROOT/'lib/Common'),'-I'+str(ROOT/'src'),
              str(ROOT/'src/peripherals/scales.cpp'),str(ROOT/'lib/Common/drip_tray_guard.cpp'),
+             str(ROOT/'lib/Common/boiler_fill.cpp'),
              str(HERE/'test_scales_startup.cpp')]
     for configured in (True,False):
         target=Path(tmp)/('configured' if configured else 'unconfigured')

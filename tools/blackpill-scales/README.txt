@@ -22,6 +22,21 @@ faulty or unconfigured readings, so menus remain accessible. Missing trays and
 normal startup settling are silent; other guard faults are recorded in logs.
 Existing backflush/descale programs are unchanged.
 
+Startup boiler fill now confirms water arrival using the local four-conversion
+mean, independent of display tare and remote/predictive scales. Before pumping,
+it waits at least3s and requires a baseline with <=0.5g spread for1s. It then
+pumps at the existing35 setting until the tray gains at least3g continuously
+for1s, with at least2s of pumping. Existing water in the tray is part of the
+baseline and cannot complete filling. Brief spikes, dips below3g, cached
+conversions and stale/invalid readings cannot complete the confirmation.
+The pressure plateau cutoff and old8s overall timeout are removed. The new
+limit is30s of pumping; reaching it stops the pump and closes the valve, shows
+"Boiler fill timed out!", and leaves startup/heating disabled until reboot.
+Manual steam-page flushing remains available after a timeout. The existing
+warm-start skip above85C remains. Tray/switch/water/page interlocks still stop
+the pump and reset the fill baseline; idle pressure release waits for startup
+to finish so it cannot interrupt the longer fill.
+
 Low-voltage checks require mains disconnected and the established SWD/power
 arrangement. Read diagnostics without changing the display or flashing temporary
 calibration firmware:
@@ -44,10 +59,11 @@ Build sequentially:
   pio run -e scales-calibration-stlink
 Copy the main artifacts before changing environments if needed.
 
-Ten isolated guard/clock tests can be run with ASan+UBSan using Unity from the
-PlatformIO native test dependency cache. Define STANDALONE_DRIP_TRAY_TEST when
-compiling test/tests/test_drip_tray_guard.cpp with lib/Common/drip_tray_guard.cpp
-and Unity. The regular test runner also includes these tests.
+Boiler-fill and guard/clock regressions run with ASan+UBSan using Unity from
+the PlatformIO native test dependency cache:
+  python3 tools/blackpill-scales/tests/run_boiler_fill.py
+The regular test runner also includes these tests. The production sampler
+startup checks below also simulate delayed water arrival and tare during fill.
 
 Starter recipes are in starter-recipes.json and firmware factory defaults:
   Slot1 Turbo:15g ->45g,92C,constant6bar,6ml/s flow ceiling,no PI/soak.

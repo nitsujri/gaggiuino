@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <HX711_2.h>
 #include "src/peripherals/scales.h"
+#include "boiler_fill.h"
 void remoteScalesTare() {}
 bool remoteScalesIsPresent() { return false; }
 Measurement remoteScalesGetWeight() { return {0,0}; }
@@ -11,7 +12,50 @@ void sample(uint32_t time,long a=250000,long b=50000) {
   testScale::now=time; testScale::raw[0]=a; testScale::raw[1]=b;
   testScale::newSample=true; scalesPoll();
 }
+
+void testSettledAbsoluteWeightAndFill() {
+  testScale::now=100; scalesInit(1000,-1000);
+  assert(std::isnan(scalesGetSettledAbsoluteWeight().value));
+  for (unsigned n=1;n<=3;n++) {
+    sample(100+n*100);
+    assert(std::isnan(scalesGetSettledAbsoluteWeight().value));
+  }
+  sample(500);
+  const auto original=scalesGetSettledAbsoluteWeight();
+  assert(std::fabs(original.value-200.f)<0.01 && original.millis==500);
+  scalesTare();
+  assert(std::fabs(scalesGetSettledAbsoluteWeight().value-original.value)<0.01);
+  assert(std::fabs(scalesGetWeight().value)<0.01);
+
+  BoilerFill fill;
+  for (uint32_t t=500;t<=12000;t+=100) {
+    sample(t);
+    const auto w=scalesGetSettledAbsoluteWeight();
+    const auto state=fill.update(w.value,w.millis,t);
+    assert(state==(t<3500 ? BoilerFillState::Waiting : BoilerFillState::Filling));
+  }
+  // Simulated water starts late, after the old fill program would have stopped.
+  BoilerFillState state=BoilerFillState::Filling;
+  for (uint32_t t=12100;t<=14000;t+=100) {
+    sample(t,250000+static_cast<long>(t-12000)*10,50000);
+    if(t==12800) scalesTare(); // A UI tare during filling cannot affect completion.
+    const auto w=scalesGetSettledAbsoluteWeight();
+    state=fill.update(w.value,w.millis,t);
+    if(t<13500) assert(state==BoilerFillState::Filling);
+  }
+  assert(state==BoilerFillState::Complete);
+  testScale::now=14301;
+  assert(std::isnan(scalesGetSettledAbsoluteWeight().value));
+  for(unsigned n=0;n<4;n++) sample(15000+n*100);
+  sample(15400,260000,50000);
+  assert(std::isnan(scalesGetSettledAbsoluteWeight().value));
+  sample(15500,0,50000);
+  assert(std::isnan(scalesGetSettledAbsoluteWeight().value));
+  std::puts("PASS: local settled absolute weight survives tare; delayed water completes fill; stale/noisy/invalid data rejected");
+}
+
 int main() {
+  testSettledAbsoluteWeightAndFill();
   testScale::now=100; scalesInit(1000,-1000);
 #ifndef DRIP_TRAY_ZERO_RAW_1
   assert(scalesGetDripTrayStatus()==DripTrayStatus::Unconfigured);

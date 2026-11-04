@@ -121,6 +121,15 @@ bool scalesIsPresent() {
          ((hardwarePresent && fresh()) || remoteScalesIsPresent());
 }
 
+Measurement scalesGetSettledAbsoluteWeight() {
+  if (hardwarePresent && fresh() && dripTrayReadingsSettled(count, scalesDiagnostics.spreadG)) {
+    const long mean[2] = {scalesDiagnostics.meanRaw[0], scalesDiagnostics.meanRaw[1]};
+    const long zeros[2] = {};
+    return {calculateDripTrayGrossWeight(mean, zeros, zeros, factors), lastSample};
+  }
+  return {NAN, 0};
+}
+
 DripTrayStatus scalesGetDripTrayStatus(float *gross) {
   if (gross) *gross = NAN;
 #if defined(DRIP_TRAY_ZERO_RAW_1) && defined(DRIP_TRAY_ZERO_RAW_2)

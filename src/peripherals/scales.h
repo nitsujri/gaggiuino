@@ -33,6 +33,9 @@ void scalesInit(float scalesF1, float scalesF2);
 void scalesPoll(void);
 void scalesTare(void);
 Measurement scalesGetWeight(void);
+// Settled local mean, independent of display tare and remote/predictive scales.
+// Returns NaN when local conversions are unavailable, stale or unsettled.
+Measurement scalesGetSettledAbsoluteWeight(void);
 bool scalesIsPresent(void);
 DripTrayStatus scalesGetDripTrayStatus(float *grossWeight = nullptr);
 
