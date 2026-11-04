@@ -12,6 +12,7 @@ with tempfile.TemporaryDirectory(prefix='blackpill-fill-tests-') as tmp:
     for name, define, sources in (
         ('boiler_fill', 'STANDALONE_BOILER_FILL_TEST', ['boiler_fill', 'drip_tray_guard']),
         ('drip_tray_guard', 'STANDALONE_DRIP_TRAY_TEST', ['drip_tray_guard']),
+        ('lcd_boiler_fill', 'STANDALONE_LCD_BOILER_FILL_TEST', []),
     ):
         target = Path(tmp) / name
         subprocess.run([

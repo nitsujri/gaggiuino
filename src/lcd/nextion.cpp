@@ -3,11 +3,13 @@
 #include "pindef.h"
 #include "log.h"
 #include "lcd_startup.h"
+#include "lcd_boiler_fill.h"
 #include <Arduino.h>
 
 EasyNex myNex(USART_LCD);
 volatile NextionPage lcdCurrentPageId;
 volatile NextionPage lcdLastCurrentPageId;
+static BoilerFillPopup boilerFillPopup;
 
 // decode/encode bit packing.
 // format is 000000sd rrrrrrrr gggggggg bbbbbbbb, where s = state, d = disco, r/g/b = colors
@@ -520,10 +522,16 @@ void lcdShowDebug(int val1, int val2) {
 void lcdShowPopup(const char *msg) {
   static unsigned int timer;
   if(millis() > timer + 1150) {
+    // An ordinary fault/status popup keeps its normal timed lifetime.
+    lcdSetBoilerFilling(false);
     myNex.writeStr("popupMSG.t0.txt", msg);
     myNex.writeStr("page popupMSG");
     timer = millis();
   }
+}
+
+void lcdSetBoilerFilling(bool pumping) {
+  boilerFillPopup.update(myNex, pumping, lcdCurrentPageId == NextionPage::Home);
 }
 
 void lcdSetTankWaterLvl(uint16_t val) {

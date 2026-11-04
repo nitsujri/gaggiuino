@@ -852,6 +852,7 @@ static inline void sysHealthCheck(float pressureThreshold) {
   If we would use a non blocking function then the system would keep the SSR in HIGH mode which would most definitely cause boiler overheating */
   while (!std::isfinite(currentState.temperature) || currentState.temperature <= 0.0f || currentState.temperature >= 170.0f) {
     scalesPoll();
+    if (!systemState.startupInitFinished) setBoilerFillPumping(false, "temperature fault");
     //Reloading the watchdog timer, if this function fails to run MCU is rebooted
     watchdogReload();
     /* In the event of the temp failing to read while the SSR is HIGH
@@ -951,6 +952,25 @@ static unsigned long getTimeSinceInit(void) {
   return millis() - startTime;
 }
 
+static bool boilerFillPumping = false;
+
+static void setBoilerFillPumping(bool pumping, const char *reason) {
+  if (pumping) {
+    openValve();
+    setPumpToRawValue(35);
+  } else {
+    setPumpOff();
+    closeValve();
+  }
+  if (pumping != boilerFillPumping) {
+    LOG_INFO("Boiler fill %s at %lu ms: %s", pumping ? "pump on" : "pump off",
+      millis(), reason);
+    boilerFillPumping = pumping;
+  }
+  // Set outputs before updating the message, and show it for the entire run.
+  lcdSetBoilerFilling(pumping);
+}
+
 static void fillBoiler(void) {
   #if defined LEGO_VALVE_RELAY || defined SINGLE_BOARD
   static BoilerFill fill;
@@ -961,14 +981,15 @@ static void fillBoiler(void) {
   }
 
   if (isManualFlushMode()) {
+    if (boilerFillPumping) setBoilerFillPumping(false, "manual flush selected");
     fill.reset();
+    lcdSetBoilerFilling(false);
     return;
   }
 
   // A timeout stops startup without enabling the heater or retrying unattended.
   if (fillFailed) {
-    setPumpOff();
-    closeValve();
+    setBoilerFillPumping(false, "timed out");
     return;
   }
 
@@ -976,14 +997,12 @@ static void fillBoiler(void) {
   if (currentState.brewSwitchState || currentState.steamSwitchState || currentState.hotWaterSwitchState ||
       currentState.waterLvl < MIN_WATER_LVL || lcdCurrentPageId != NextionPage::Home ||
       !std::isfinite(currentState.temperature) || currentState.temperature <= 0.f) {
-    setPumpOff();
-    closeValve();
+    setBoilerFillPumping(false, "machine interlock");
     fill.reset();
     return;
   }
   if (!trayAllowsAutomaticDischarge()) {
-    setPumpOff();
-    closeValve();
+    setBoilerFillPumping(false, "tray interlock");
     fill.reset();
     return;
   }
@@ -991,22 +1010,17 @@ static void fillBoiler(void) {
   const auto weight = scalesGetSettledAbsoluteWeight();
   switch (fill.update(weight.value, weight.millis, millis())) {
     case BoilerFillState::Waiting:
-      setPumpOff();
-      closeValve();
+      setBoilerFillPumping(false, "settling scales");
       break;
     case BoilerFillState::Filling:
-      lcdShowPopup("Filling boiler!");
-      openValve();
-      setPumpToRawValue(35);
+      setBoilerFillPumping(true, "confirming water");
       break;
     case BoilerFillState::Complete:
-      closeValve();
-      setPumpOff();
+      setBoilerFillPumping(false, "water confirmed");
       systemState.startupInitFinished = true;
       break;
     case BoilerFillState::TimedOut:
-      closeValve();
-      setPumpOff();
+      setBoilerFillPumping(false, "timed out");
       fillFailed = true;
       LOG_ERROR("Boiler fill timed out without sustained tray water weight");
       lcdShowPopup("Boiler fill timed out!");

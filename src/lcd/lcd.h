@@ -60,6 +60,7 @@ void lcdSetTankWaterLvl(uint16_t val);
 
 void lcdShowDebug(int val1, int val2);
 void lcdShowPopup(const char *msg);
+void lcdSetBoilerFilling(bool pumping);
 
 void lcdBrewTimerStart(void);
 void lcdBrewTimerStop(void);

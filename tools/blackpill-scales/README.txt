@@ -38,6 +38,15 @@ steaming. Tray/switch/water/page interlocks still stop
 the pump and reset the fill baseline; idle pressure release waits for startup
 to finish so it cannot interrupt the longer fill.
 
+The filling message now follows the pump command for the entire fill. The stock
+popup's local one-second return timer is disabled only while filling, then
+restored when filling completes, pauses or fails. A tray/sensor interruption
+clears the message immediately; a retry shows it again when pumping resumes.
+Pump transitions log their timestamp and reason (tray/machine interlock,
+settling scales, water confirmation or timeout). The host display regression
+models the stock timer, text clearing and a pause followed by a delayed retry.
+No display TFT update is required.
+
 Low-voltage checks require mains disconnected and the established SWD/power
 arrangement. Read diagnostics without changing the display or flashing temporary
 calibration firmware:
