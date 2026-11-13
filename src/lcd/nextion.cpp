@@ -46,6 +46,15 @@ void lcdWakeUp(void) {
   myNex.writeNum("sleep", 0);
 }
 
+static void lcdDisableSleep(void) {
+  // The stock Home page sets thsp from sP.n1.val on every visit. Keep that
+  // source at zero too, so returning Home cannot re-enable the idle timeout.
+  myNex.writeNum("sP.n1.val", 0);
+  lcdWakeUp();
+  myNex.writeNum("thsp", 0);
+  myNex.writeNum("ussp", 0);
+}
+
 void lcdUploadProfile(eepromValues_t &eepromCurrentValues) {
   // Highlight the active profile
   myNex.writeNum("pId", eepromCurrentValues.activeProfile + 1  /* 1-offset in nextion */);
@@ -153,7 +162,9 @@ void lcdUploadCfg(eepromValues_t &eepromCurrentValues) {
   myNex.writeNum("sT.mDiv.val", eepromCurrentValues.mainDivider);
   myNex.writeNum("sT.bDiv.val", eepromCurrentValues.brewDivider);
 
-  myNex.writeNum("sP.n1.val", eepromCurrentValues.lcdSleep);
+  // Ignore previously saved timeouts without changing the EEPROM layout.
+  eepromCurrentValues.lcdSleep = 0;
+  lcdDisableSleep();
   myNex.writeNum("sP.lc1.val", eepromCurrentValues.scalesF1);
   myNex.writeNum("sP.lc2.val", eepromCurrentValues.scalesF2);
   myNex.writeNum("sP.pump_zero.val", eepromCurrentValues.pumpFlowAtZero * 10000.f);
@@ -392,7 +403,8 @@ void lcdFetchBoiler(eepromValues_t &settings) {
 
 void lcdFetchSystem(eepromValues_t &settings) {
   // System settings
-  settings.lcdSleep                       = myNex.readNumber("sP.n1.val"); // nextion sleep var
+  settings.lcdSleep                       = 0; // display stays on, including after settings edits
+  lcdDisableSleep();
   settings.warmupState                    = myNex.readNumber("warmupState");
   settings.scalesF1                       = myNex.readNumber("sP.lc1.val");
   settings.scalesF2                       = myNex.readNumber("sP.lc2.val");

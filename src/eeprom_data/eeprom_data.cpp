@@ -99,7 +99,7 @@ namespace {
     defaultData.mainDivider = 5;
     defaultData.brewDivider = 3;
     defaultData.powerLineFrequency = 50;
-    defaultData.lcdSleep = 16;
+    defaultData.lcdSleep = 0; // keep the display on
     defaultData.warmupState = false;
     defaultData.scalesF1 = 3920;
     defaultData.scalesF2 = 4210;
