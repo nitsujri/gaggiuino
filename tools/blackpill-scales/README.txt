@@ -24,7 +24,9 @@ Existing backflush/descale programs are unchanged.
 
 Startup boiler fill now confirms water arrival using the local four-conversion
 mean, independent of display tare and remote/predictive scales. Before pumping,
-it waits at least3s and requires a baseline with <=0.5g spread for1s. It then
+it waits at least3s and requires a baseline within +/-0.5g (<=1g total spread)
+for1s. This tolerance applies only to startup tray settling/boiler filling;
+normal scale readings and the idle discharge guard are unchanged. It then
 pumps at the existing35 setting until the tray gains at least3g continuously
 for1s, with at least2s of pumping. Existing water in the tray is part of the
 baseline and cannot complete filling. Brief spikes, dips below3g, cached

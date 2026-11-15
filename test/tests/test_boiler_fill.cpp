@@ -48,16 +48,23 @@ void test_boiler_fill_runs_pump_for_at_least_two_seconds(void) {
 void test_boiler_fill_waits_for_a_settled_baseline(void) {
   BoilerFill fill;
   for (uint32_t t = 100; t <= 3500; t += 100)
-    expectFillState(BoilerFillState::Waiting, fill.update(t % 200 ? 500.f : 501.f, t, t));
+    expectFillState(BoilerFillState::Waiting, fill.update(t % 200 ? 499.5f : 500.51f, t, t));
   for (uint32_t t = 3600; t < 4500; t += 100)
-    expectFillState(BoilerFillState::Waiting, fill.update(500.f, t, t));
-  expectFillState(BoilerFillState::Filling, fill.update(500.f, 4500, 4500));
+    expectFillState(BoilerFillState::Waiting, fill.update(499.5f, t, t));
+  expectFillState(BoilerFillState::Filling, fill.update(499.5f, 4500, 4500));
+}
+
+void test_boiler_fill_accepts_half_gram_fluctuation_either_side(void) {
+  BoilerFill fill;
+  for (uint32_t t = 100; t < 3100; t += 100)
+    expectFillState(BoilerFillState::Waiting, fill.update(t % 200 ? 499.5f : 500.5f, t, t));
+  expectFillState(BoilerFillState::Filling, fill.update(499.5f, 3100, 3100));
 }
 
 void test_boiler_fill_uses_high_end_of_baseline(void) {
   BoilerFill fill;
   for (uint32_t t = 100; t <= 3100; t += 100)
-    fill.update(t % 200 ? 500.f : 500.5f, t, t);
+    fill.update(t % 200 ? 499.5f : 500.5f, t, t);
   for (uint32_t t = 3200; t <= 5500; t += 100)
     expectFillState(BoilerFillState::Filling, fill.update(503.f, t, t));
   for (uint32_t t = 5600; t < 6600; t += 100)
@@ -123,6 +130,7 @@ void runAllBoilerFillTests(void) {
   RUN_TEST(test_boiler_fill_dips_and_spikes_restart_confirmation);
   RUN_TEST(test_boiler_fill_runs_pump_for_at_least_two_seconds);
   RUN_TEST(test_boiler_fill_waits_for_a_settled_baseline);
+  RUN_TEST(test_boiler_fill_accepts_half_gram_fluctuation_either_side);
   RUN_TEST(test_boiler_fill_uses_high_end_of_baseline);
   RUN_TEST(test_boiler_fill_cached_or_missing_conversions_cannot_complete);
   RUN_TEST(test_boiler_fill_rejects_invalid_weights);

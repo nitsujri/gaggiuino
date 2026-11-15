@@ -10,7 +10,9 @@ class BoilerFill {
 public:
   static constexpr uint32_t START_DELAY_MS = 3000;
   static constexpr uint32_t BASELINE_SETTLE_MS = 1000;
-  static constexpr float BASELINE_SPREAD_G = 0.5f;
+  // Startup tray baseline only: allow +/-0.5 g (1 g peak-to-peak) for one second.
+  static constexpr float BASELINE_TOLERANCE_G = 0.5f;
+  static constexpr float BASELINE_SPREAD_G = 2.f * BASELINE_TOLERANCE_G;
   static constexpr float WATER_WEIGHT_G = 3.f;
   static constexpr uint32_t WATER_CONFIRM_MS = 1000;
   static constexpr uint32_t MIN_PUMP_MS = 2000;

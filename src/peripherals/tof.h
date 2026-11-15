@@ -1,10 +1,18 @@
 #ifndef TOF_H
 #define TOF_H
 
+#include <array>
 #include <stdint.h> // for uint8_t
 #include <Adafruit_VL53L0X.h>
 #include <movingAvg.h>
 #include "../../lib/Common/sensors_state.h"
+
+// Sensor-to-water distance at 100%; override for the installed tank in extra_defines.ini.
+#ifndef WATER_TANK_FULL_DISTANCE_MM
+#define WATER_TANK_FULL_DISTANCE_MM 15u
+#endif
+static_assert(WATER_TANK_FULL_DISTANCE_MM >= 0 && WATER_TANK_FULL_DISTANCE_MM < 125u,
+  "Full tank distance must be nonnegative and below the 125 mm low-water boundary");
 
 Adafruit_VL53L0X tof_sensor;
 movingAvg mvAvg(4);
@@ -60,7 +68,11 @@ uint16_t TOF::readRangeToPct(uint16_t val) {
   static const std::array<uint16_t, 10> water_lvl = { 100u, 90u, 80u, 70u, 60u, 50u, 40u, 30u, 20u, 10u };
   static const std::array<uint16_t, 9> ranges = { 15u, 30u, 45u, 60u, 75u, 90u, 105u, 115u, 125u };
   for (size_t i = 0; i < ranges.size(); i++) {
-    if (val <= ranges[i]) {
+    // Rescale between the calibrated full level and the original low-water boundary.
+    const uint32_t threshold = WATER_TANK_FULL_DISTANCE_MM
+      + (ranges[i] - ranges.front()) * (ranges.back() - WATER_TANK_FULL_DISTANCE_MM)
+        / (ranges.back() - ranges.front());
+    if (val <= threshold) {
       return water_lvl[i];
     }
   }
