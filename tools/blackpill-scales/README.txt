@@ -1,5 +1,12 @@
 BlackPill scale recovery and drip-tray guard
 
+Water gauge calibration: at the preferred full water level,40 live samples over
+34s measured26-28mm (median27mm). WATER_TANK_FULL_DISTANCE_MM=28 includes the
+observed noise. The gauge uses evenly spaced5% steps from100% at28mm to10% at
+125mm; distances beyond125mm report5% and retain the existing low-water cutoff.
+No display TFT update is needed. These are calibrated level marks, not a
+measurement of water volume.
+
 This branch retains the frozen stock display and schema12 settings. The scale
 clock remains shared/open-drain; the installed board requires the internal
 pull-up and 16us half-period. The same setup is used by main and calibration.
