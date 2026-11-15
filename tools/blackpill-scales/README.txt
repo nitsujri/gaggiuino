@@ -6,6 +6,10 @@ observed noise. The gauge uses evenly spaced5% steps from100% at28mm to10% at
 125mm; distances beyond125mm report5% and retain the existing low-water cutoff.
 No display TFT update is needed. These are calibrated level marks, not a
 measurement of water volume.
+The gauge averages distance samples from the last5s before converting to5%
+steps, using available samples immediately at startup. Samples expire by age,
+and polling continues on all display pages. A current distance beyond125mm
+still reports5% immediately, so averaging never delays the low-water interlock.
 
 This branch retains the frozen stock display and schema12 settings. The scale
 clock remains shared/open-drain; the installed board requires the internal

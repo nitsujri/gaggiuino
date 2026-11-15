@@ -244,15 +244,9 @@ static void calculateWeightAndFlow(void) {
   }
 }
 
-// return the reading in mm of the tank water level.
+// Keep the rolling water-level history current on every display page.
 static void readTankWaterLevel(void) {
-  if (lcdCurrentPageId == NextionPage::Home) {
-    // static uint32_t tof_timeout = millis();
-    // if (millis() >= tof_timeout) {
-    currentState.waterLvl = tof.readLvl();
-      // tof_timeout = millis() + 500;
-    // }
-  }
+  currentState.waterLvl = tof.readLvl();
 }
 
 //##############################################################################################################################

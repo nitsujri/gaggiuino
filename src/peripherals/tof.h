@@ -3,7 +3,6 @@
 
 #include <stdint.h> // for uint8_t
 #include <Adafruit_VL53L0X.h>
-#include <movingAvg.h>
 #include "../../lib/Common/sensors_state.h"
 #include "../../lib/Common/water_level.h"
 
@@ -15,7 +14,6 @@ static_assert(WATER_TANK_FULL_DISTANCE_MM >= 0 && WATER_TANK_FULL_DISTANCE_MM < 
   "Full tank distance must be nonnegative and below the 125 mm low-water boundary");
 
 Adafruit_VL53L0X tof_sensor;
-movingAvg mvAvg(4);
 
 class TOF {
   public:
@@ -27,7 +25,9 @@ class TOF {
   private:
     // HardwareTimer* hw_timer;
     // static void TimerHandler10(void);
-    uint32_t tofReading;
+    uint32_t tofReading = 0;
+    uint16_t latestReading = 0;
+    WaterLevelAverage average;
 };
 
 TOF::TOF() {}
@@ -44,7 +44,6 @@ void TOF::init(SensorState& sensor) {
     sensor.tofReady = tof_sensor.begin(0x29, false, &Wire, Adafruit_VL53L0X::VL53L0X_SENSE_HIGH_ACCURACY);
   }
   tof_sensor.startRangeContinuous();
-  mvAvg.begin();
   // Configure the hardware timer
   // hw_timer = new HardwareTimer(TIM10);
   // hw_timer->setCount(100000, MICROSEC_FORMAT);
@@ -58,8 +57,12 @@ void TOF::init(SensorState& sensor) {
 uint16_t TOF::readLvl() {
   #ifdef TOF_VL53L0X
   if(tof_sensor.isRangeComplete()) {
-    TOF::tofReading = mvAvg.reading(tof_sensor.readRangeResult());
+    latestReading = tof_sensor.readRangeResult();
+    average.add(latestReading, millis());
   }
+  TOF::tofReading = average.reading(millis());
+  // A newly empty tank must stop operation without waiting for the average.
+  if (latestReading > 125u) return 5u;
   #endif
   return  TOF::tofReading != 0 ? readRangeToPct(TOF::tofReading) : 30u;
 }
