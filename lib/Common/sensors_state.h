@@ -2,6 +2,8 @@
 #ifndef SENSORS_STATE_H
 #define SENSORS_STATE_H
 
+#include "shot_stop.h"
+
 struct SensorState {
   bool brewSwitchState;
   bool steamSwitchState;
@@ -28,6 +30,7 @@ struct SensorState {
   long pumpClicks;
   uint16_t waterLvl;
   bool tofReady;
+  ShotStopPrediction shotStop;
 };
 
 struct SensorStateSnapshot {

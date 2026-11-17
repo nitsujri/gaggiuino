@@ -3,6 +3,7 @@
 #include "remote_scales.h"
 #include "scales_clock.h"
 #include "../log.h"
+#include "scales_filter.h"
 #include <HX711_2.h>
 #include <algorithm>
 #include <cmath>
@@ -15,8 +16,12 @@ HX711_2 &cells() {
 }
 bool hardwarePresent = false, haveSample = false;
 long absoluteRaw[2] = {}, recent[4][2] = {};
+long displayedRaw[2] = {};
+bool smoothingReady = false;
+ScalesFilter filter;
 unsigned count = 0, head = 0;
 uint32_t lastSample = 0;
+uint32_t smoothingDelayMs = 0;
 uint32_t initializedAt = 0;
 float factors[2] = {};
 bool fresh() { return dripTraySampleFresh(haveSample, lastSample, millis()); }
@@ -29,17 +34,36 @@ void scalesPoll() {
   if (!cells().try_read(raw)) return;
   cells().get_offset(offset);
   const long next[2] = {raw[0] + offset[0], raw[1] + offset[1]};
-  if (!dripTrayRawPairValid(next)) {
-    haveSample = false;
-    count = 0;
+  scalesDiagnostics.observedRaw[0] = next[0];
+  scalesDiagnostics.observedRaw[1] = next[1];
+  scalesDiagnostics.observedMillis = millis();
+  const auto result = filter.update(next, factors, millis());
+  scalesDiagnostics.filterStatus = static_cast<uint32_t>(result);
+  if (result == ScaleSampleResult::Outlier || result == ScaleSampleResult::Invalid) {
+    ++scalesDiagnostics.rejectedSamples;
+    // Preserve the previous display value and its original timestamp, but
+    // require four consecutive good conversions again before any safety use.
+    count = head = 0;
     scalesDiagnostics.samples = 0;
+    scalesDiagnostics.spreadG = INFINITY;
+    scalesDiagnostics.grossWeight = NAN;
+    scalesDiagnostics.trayStatus = static_cast<uint32_t>(scalesGetDripTrayStatus());
     return;
   }
-  if (!fresh()) count = head = 0;
+  if (!fresh() || result == ScaleSampleResult::LoadChanged) {
+    count = head = 0;
+    smoothingReady = false;
+  }
+  if (result == ScaleSampleResult::LoadChanged) ++scalesDiagnostics.confirmedLoadChanges;
+  smoothingDelayMs = smoothingReady ? (millis() - lastSample) / 2 : 0;
   for (unsigned j = 0; j < 2; ++j) {
+    // Two accepted conversions: roughly 50 ms of smoothing delay at 10 Hz.
+    displayedRaw[j] = smoothingReady ? (static_cast<int64_t>(absoluteRaw[j]) + next[j]) / 2 : next[j];
+    scalesDiagnostics.displayedRaw[j] = displayedRaw[j];
     absoluteRaw[j] = next[j];
     recent[head][j] = next[j];
   }
+  smoothingReady = true;
   head = (head + 1) % 4;
   count = std::min(count + 1, 4U);
   haveSample = true;
@@ -68,6 +92,24 @@ void scalesPoll() {
 void scalesInit(float f1, float f2) {
   hardwarePresent = haveSample = false;
   count = head = 0;
+  smoothingReady = false;
+  smoothingDelayMs = 0;
+  filter.reset();
+  for (unsigned j = 0; j < 2; ++j) {
+    scalesDiagnostics.meanRaw[j] = 0;
+    scalesDiagnostics.observedRaw[j] = 0;
+    scalesDiagnostics.displayedRaw[j] = 0;
+  }
+  scalesDiagnostics.samples = 0;
+  scalesDiagnostics.sampleMillis = 0;
+  scalesDiagnostics.now = millis();
+  scalesDiagnostics.spreadG = INFINITY;
+  scalesDiagnostics.grossWeight = NAN;
+  scalesDiagnostics.trayStatus = static_cast<uint32_t>(DripTrayStatus::Unavailable);
+  scalesDiagnostics.observedMillis = 0;
+  scalesDiagnostics.rejectedSamples = 0;
+  scalesDiagnostics.confirmedLoadChanges = 0;
+  scalesDiagnostics.filterStatus = 0;
   if (FORCE_PREDICTIVE_SCALES) return;
 #ifndef DISABLE_HW_SCALES
   auto &c = cells();
@@ -95,13 +137,31 @@ void scalesInit(float f1, float f2) {
   if (!hardwarePresent && remoteScalesIsPresent()) remoteScalesTare();
 }
 
-void scalesTare() {
+bool scalesTare() {
   if (hardwarePresent && fresh() && count) {
-    int64_t sum[2] = {};
-    for (unsigned i = 0; i < count; ++i)
-      for (unsigned j = 0; j < 2; ++j) sum[j] += recent[i][j];
-    cells().set_offset(sum[0] / count, sum[1] / count);
-  } else if (!hardwarePresent && remoteScalesIsPresent()) remoteScalesTare();
+    // Zero the same accepted, lightly smoothed value shown to the user.
+    cells().set_offset(displayedRaw[0], displayedRaw[1]);
+    return true;
+  } else if (!hardwarePresent && remoteScalesIsPresent()) {
+    remoteScalesTare();
+    return true;
+  }
+  return false;
+}
+
+bool scalesHasLocalHardware() { return hardwarePresent; }
+
+ScaleControlSample scalesGetControlWeight() {
+  ScaleControlSample sample;
+  if (!hardwarePresent || !haveSample) return sample;
+  long offset[2];
+  cells().get_offset(offset);
+  const long zeros[2] = {};
+  sample.weightG = calculateDripTrayGrossWeight(displayedRaw, zeros, offset, factors);
+  sample.valid = std::isfinite(sample.weightG);
+  sample.sampledMillis = lastSample;
+  sample.smoothingDelayMs = smoothingDelayMs;
+  return sample;
 }
 
 Measurement scalesGetWeight() {
@@ -109,7 +169,7 @@ Measurement scalesGetWeight() {
     long offset[2];
     cells().get_offset(offset);
     const long zeros[2] = {};
-    const float weight = calculateDripTrayGrossWeight(absoluteRaw, zeros, offset, factors);
+    const float weight = calculateDripTrayGrossWeight(displayedRaw, zeros, offset, factors);
     if (std::isfinite(weight)) return {weight, lastSample};
   }
   if (remoteScalesIsPresent()) return remoteScalesGetWeight();

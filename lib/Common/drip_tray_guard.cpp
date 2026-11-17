@@ -8,6 +8,9 @@ bool dripTraySampleFresh(bool haveSample, uint32_t sampleTime, uint32_t now) {
 }
 
 bool dripTrayRawPairValid(const long raw[2]) {
+  // Observed fault: both data lines returned an all-ones frame together.
+  // A single negative reading (including -1) remains a valid signed value.
+  if (raw[0] == -1L && raw[1] == -1L) return false;
   for (unsigned i = 0; i < 2; ++i)
     if (raw[i] == 0 || raw[i] <= -8388608L || raw[i] >= 8388607L) return false;
   return true;

@@ -1,5 +1,6 @@
 /* 09:32 15/03/2023 - change triggering comment */
 #include "profiling_phases.h"
+#include <cmath>
 
 //----------------------------------------------------------------------//
 //------------------------- ShotSnapshot -------------------------------//
@@ -83,7 +84,13 @@ bool GlobalStopConditions::isReached(const SensorState& state, uint32_t timeInSh
   auto stopOn = this;
   float flow = state.weight > 0.4f ? state.smoothedWeightFlow : state.smoothedPumpFlow;
 
-  return (stopOn->weight > 0.f && predictTargerAchieved(stopOn->weight, state.shotWeight, flow, 0.5f)) ||
+  // Local physical scales use measured mass/time with explicit age and filter
+  // delay compensation. Do not apply the legacy look-ahead a second time.
+  const bool weightReached = state.shotStop.active
+    ? state.shotStop.shouldStop(stopOn->weight)
+    : stopOn->weight > 0.f && (state.shotWeight >= stopOn->weight ||
+        predictTargerAchieved(stopOn->weight, state.shotWeight, flow, 0.5f));
+  return weightReached ||
     (stopOn->waterPumped > 0.f && state.waterPumped > stopOn->waterPumped) ||
     (stopOn->time > 0L && timeInShot >= stopOn->time);
 }

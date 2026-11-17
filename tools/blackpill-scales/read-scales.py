@@ -23,13 +23,15 @@ def read(elf, output):
     with tempfile.TemporaryDirectory(prefix='blackpill-scale-read-') as temp:
         snapshot, tick = Path(temp)/'scales.bin', Path(temp)/'tick.bin'
         result = subprocess.run([CLI, '-c', 'port=SWD', 'mode=HOTPLUG', 'freq=1000',
-            '-u', hex(symbols['scalesDiagnostics']), '32', str(snapshot),
+            '-u', hex(symbols['scalesDiagnostics']), '64', str(snapshot),
             '-u', hex(symbols['uwTick']), '4', str(tick)],
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
         Path(str(output)+'.log').write_text(result.stdout)
         if result.returncode or not snapshot.exists() or not tick.exists():
             raise RuntimeError('SWD read failed; see '+str(output)+'.log')
-        raw1, raw2, spread, samples, sampled, loop_time, gross, status = struct.unpack('<iifIIIfI', snapshot.read_bytes())
+        data = snapshot.read_bytes()
+        raw1, raw2, spread, samples, sampled, loop_time, gross, status = struct.unpack_from('<iifIIIfI', data)
+        observed1, observed2, observed_ms, rejected, load_changes, filter_status, displayed1, displayed2 = struct.unpack_from('<iiIIIIii', data, 32)
         now = struct.unpack('<I', tick.read_bytes())[0]
     age = (now - sampled) & 0xffffffff
     report = dict(rawMean=[raw1, raw2], spreadG=spread if math.isfinite(spread) else None,
@@ -37,7 +39,11 @@ def read(elf, output):
                   grossWeightG=gross if math.isfinite(gross) else None,
                   trayStatus=('Not initialized' if loop_time == 0 and samples == 0 else
                               ['Present','Missing','Unavailable','Unconfigured','Settling'][status] if status < 5 else 'Unknown'),
-                  settledFresh=samples == 4 and age <= 300 and math.isfinite(spread) and spread <= 1)
+                  settledFresh=samples == 4 and age <= 300 and math.isfinite(spread) and spread <= 5,
+                  observedRaw=[observed1, observed2], observedMillis=observed_ms,
+                  rejectedSamples=rejected, confirmedLoadChanges=load_changes,
+                  filterStatus=['Accepted','Outlier','Invalid','LoadChanged'][filter_status] if filter_status < 4 else 'Unknown',
+                  displayedRaw=[displayed1, displayed2])
     output.write_text(json.dumps(report, indent=2)+'\n')
     print(json.dumps(report, indent=2))
 

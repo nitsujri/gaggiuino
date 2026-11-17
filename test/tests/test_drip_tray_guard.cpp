@@ -109,6 +109,9 @@ void test_boiler_fill_timeout_restarts_after_waiting_for_tray(void) {
 }
 
 void test_drip_tray_transient_cannot_enable_automatic_discharge(void) {
+  const long bothHigh[2] = {-1, -1}, signedValue[2] = {-1, 100000};
+  TEST_ASSERT_FALSE(dripTrayRawPairValid(bothHigh));
+  TEST_ASSERT_TRUE(dripTrayRawPairValid(signedValue));
   TEST_ASSERT_FALSE(dripTrayReadingsSettled(3, 0.f));
   TEST_ASSERT_TRUE(dripTrayReadingsSettled(4, 5.f));
   TEST_ASSERT_FALSE(dripTrayReadingsSettled(4, 5.01f));

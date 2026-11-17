@@ -16,6 +16,7 @@ Profile profile;
 PhaseProfiler phaseProfiler{profile};
 
 PredictiveWeight predictiveWeight;
+ShotStopPredictor shotStopPredictor;
 
 SensorState currentState;
 
@@ -158,10 +159,12 @@ static void sensorsReadWeight(void) {
     currentState.scalesPresent = scalesIsPresent();
     if (currentState.scalesPresent) {
       if (currentState.tarePending) {
-        scalesTare();
-        weightMeasurements.clear();
+        if (scalesTare()) {
+          weightMeasurements.clear();
+          currentState.tarePending = false;
+          if (brewActive && currentState.shotStop.active) shotStopPredictor.reset(millis());
+        }
         weightMeasurements.add(scalesGetWeight());
-        currentState.tarePending = false;
       }
       else {
         weightMeasurements.add(scalesGetWeight());
@@ -170,11 +173,19 @@ static void sensorsReadWeight(void) {
 
       if (brewActive) {
         currentState.shotWeight = currentState.tarePending ? 0.f : currentState.weight;
-        currentState.weightFlow = fmax(0.f, weightMeasurements.measurementChange().changeSpeed());
-        currentState.smoothedWeightFlow = smoothScalesFlow.updateEstimate(currentState.weightFlow);
+        if (!currentState.shotStop.active) {
+          currentState.weightFlow = fmax(0.f, weightMeasurements.measurementChange().changeSpeed());
+          currentState.smoothedWeightFlow = smoothScalesFlow.updateEstimate(currentState.weightFlow);
+        }
       }
     }
     scalesTimer = millis();
+  }
+  if (brewActive && currentState.shotStop.active) {
+    const uint32_t now = millis();
+    if (!currentState.tarePending) shotStopPredictor.add(scalesGetControlWeight(), now);
+    currentState.shotStop = shotStopPredictor.predict(now);
+    currentState.weightFlow = currentState.smoothedWeightFlow = currentState.shotStop.flowGPerS;
   }
 }
 
@@ -233,7 +244,7 @@ static void calculateWeightAndFlow(void) {
           }
         }
         currentState.consideredFlow = smoothConsideredFlow.updateEstimate(actualFlow);
-        currentState.shotWeight = currentState.scalesPresent ? currentState.shotWeight : currentState.shotWeight + actualFlow;
+        if (!currentState.scalesPresent && !currentState.shotStop.active) currentState.shotWeight += actualFlow;
       }
       currentState.waterPumped += consideredFlow;
     }
@@ -705,6 +716,13 @@ static void profiling(void) {
     espCommsSendShotData(shotSnapshot, 100);
 
     if (phaseProfiler.isFinished()) {
+      if (currentState.shotStop.active && profile.globalStopConditions.weight > 0.f) {
+        const auto &stop = currentState.shotStop;
+        LOG_INFO("Shot stop: measured %.2lf g, flow %.2lf g/s, projected %.2lf g, age %lu ms, filter %lu ms, expired %d",
+          static_cast<double>(stop.measuredWeightG), static_cast<double>(stop.flowGPerS),
+          static_cast<double>(stop.finalWeightG), static_cast<unsigned long>(stop.sampleAgeMs),
+          static_cast<unsigned long>(stop.smoothingDelayMs), static_cast<int>(stop.expired));
+      }
       setPumpOff();
       closeValve();
       brewActive = false;
@@ -754,6 +772,12 @@ static void brewDetect(void) {
     if (!paramsReset) {
       lcdWakeUp();
       brewParamsReset();
+      if (currentState.shotStop.active && ACTIVE_PROFILE(runningCfg).stopOnWeightState) {
+        // Establish the cup's zero before the pump can start. A rejected or
+        // stale frame keeps the brew pending instead of taring after liquid arrives.
+        if (!scalesTare()) return;
+        currentState.tarePending = false;
+      }
       paramsReset = true;
       brewActive = true;
     }
@@ -782,6 +806,9 @@ static void brewParamsReset(void) {
 
   weightMeasurements.clear();
   predictiveWeight.reset();
+  shotStopPredictor.reset(millis());
+  currentState.shotStop = {};
+  currentState.shotStop.active = scalesHasLocalHardware();
   phaseProfiler.reset();
 }
 

@@ -7,6 +7,8 @@
 #include "./tests/test_lcd_boiler_fill.cpp"
 #include "./tests/test_lcd_startup.cpp"
 #include "./tests/test_water_level.cpp"
+#include "./tests/test_scales_filter.cpp"
+#include "./tests/test_shot_stop.cpp"
 
 int main(int argc, char **argv) {
     UNITY_BEGIN();
@@ -18,5 +20,7 @@ int main(int argc, char **argv) {
     runAllLcdBoilerFillTests();
     runAllLcdStartupTests();
     runAllWaterLevelTests();
+    runAllScalesFilterTests();
+    runAllShotStopTests();
     UNITY_END();
 }
